@@ -6,30 +6,11 @@
         InitParameter()
     End Sub
 
-    'Public Shared Function getInfo(Optional ByVal channel As Integer = -1, Optional ByVal layer As Integer = -1, Optional ByVal onlyBackground As Boolean = False, Optional ByVal onlyForeground As Boolean = False) As String
-    '    Dim cmd As String = "INFO"
-    '    If channel > -1 Then
-    '        cmd = cmd & " " & getDestination(channel, layer)
-    '        If layer > -1 Then
-    '            If onlyBackground Then
-    '                cmd = cmd & " B"
-    '            ElseIf onlyForeground Then
-    '                cmd = cmd & " F"
-    '            End If
-    '        End If
-    '    End If
-    '    Return cmd
-    'End Function
-
-    'Public Shared Function getInfo(ByRef template As CasparCGTemplate) As String
-    '    Return escape("INFO TEMPLATE '" & template.getFullName & "'")
-    'End Function
-
     Private Sub InitParameter()
         addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, True))
         addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addParameter(New CommandParameter(Of Boolean)("only background", "only show background", False, True))
-        addParameter(New CommandParameter(Of Boolean)("only foreground", "only show foreground", False, True))
+        addParameter(New CommandParameter(Of Boolean)("only background", "Only show info of background", False, True))
+        addParameter(New CommandParameter(Of Boolean)("only foreground", "Only show info of foreground", False, True))
     End Sub
 
     Public Overrides Function getCommandString() As String

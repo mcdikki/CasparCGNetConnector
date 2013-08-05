@@ -1,19 +1,19 @@
-﻿Public Class Play
+﻿Public Class load
     Inherits AbstractCommand
 
     Public Sub New()
-        MyBase.New("PLAY", "Starts playing a media")
+        MyBase.New("LOAD", "Loads a media")
         InitParameter()
     End Sub
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal media As CasparCGMedia = Nothing, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
-        MyBase.New("PLAY", "Starts playing a media")
+        MyBase.New("LOAD", "Loads a media")
         InitParameter()
         Init(channel, layer, media.getFullName, looping, seek, length, transition, filter)
     End Sub
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal media As String = "", Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
-        MyBase.New("PLAY", "Starts playing a media")
+        MyBase.New("LOAD", "Loads a media")
         InitParameter()
         Init(channel, layer, media, looping, seek, length, transition, filter)
     End Sub
@@ -55,7 +55,7 @@
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "PLAY " & getDestination(getParameter("channel"), getParameter("layer"))
+        Dim cmd As String = "LOAD " & getDestination(getParameter("channel"), getParameter("layer"))
 
         If getParameter("media").isSet Then
             cmd = cmd & " '" & DirectCast(getParameter("media"), CommandParameter(Of String)).getValue() & "'"
