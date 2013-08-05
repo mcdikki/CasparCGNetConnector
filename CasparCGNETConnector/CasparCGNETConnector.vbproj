@@ -63,8 +63,13 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CasparCG.vb" />
+    <Compile Include="CasparCGCommandFactory.vb" />
+    <Compile Include="CasparCGConnection.vb" />
+    <Compile Include="CasparCGResponse.vb" />
+    <Compile Include="CasparCGTransition.vb" />
     <Compile Include="commands\AbstractCommand.vb" />
+    <Compile Include="commands\Info.vb" />
+    <Compile Include="commands\Play.vb" />
     <Compile Include="media\CasparCGAudio.vb" />
     <Compile Include="media\CasparCGMedia.vb" />
     <Compile Include="media\CasparCGMovie.vb" />

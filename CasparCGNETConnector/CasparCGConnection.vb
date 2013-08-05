@@ -97,9 +97,9 @@ Public Class CasparCGConnection
     End Sub
 
     Public Function isOSCSupported() As Boolean
-        If getVersionPart(getVersion, 0) = 2 Then
-            If getVersionPart(getVersion, 1) = 0 Then
-                If getVersionPart(getVersion, 2) <= 3 Then
+        If getVersionPart(0) = 2 Then
+            If getVersionPart(1) = 0 Then
+                If getVersionPart(2) <= 3 Then
                     Return False
                 Else
                     Return True
@@ -107,7 +107,7 @@ Public Class CasparCGConnection
             Else
                 Return True
             End If
-        ElseIf getVersionPart(getVersion, 0) < 2 Then
+        ElseIf getVersionPart(0) < 2 Then
             Return False
         Else
             Return True
@@ -132,7 +132,8 @@ Public Class CasparCGConnection
         Return ccgVersion
     End Function
 
-    Public Shared Function getVersionPart(Version As String, part As Integer) As Integer
+    Public Function getVersionPart(part As Integer, Optional Version As String = "") As Integer
+        If Version = "" Then Version = getVersion()
         Dim v() = Version.Split(".")
         If v.Length >= part Then
             Dim r As Integer
