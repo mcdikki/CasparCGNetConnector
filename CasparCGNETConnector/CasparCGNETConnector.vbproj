@@ -68,33 +68,41 @@
     <Compile Include="CasparCGResponse.vb" />
     <Compile Include="CasparCGTransition.vb" />
     <Compile Include="commands\AbstractCommand.vb" />
-    <Compile Include="commands\ByeCommand.vb" />
-    <Compile Include="commands\CallCommand.vb" />
-    <Compile Include="commands\CinfCommand.vb" />
-    <Compile Include="commands\ClearCommand.vb" />
-    <Compile Include="commands\ClsCommand.vb" />
-    <Compile Include="commands\InfoCommand.vb" />
-    <Compile Include="commands\InfoConfigCommand.vb" />
-    <Compile Include="commands\InfoPathsCommand.vb" />
-    <Compile Include="commands\InfoSystemCommand.vb" />
-    <Compile Include="commands\InfoTemplateCommand.vb" />
-    <Compile Include="commands\InfoServerCommand.vb" />
-    <Compile Include="commands\KillCommand.vb" />
-    <Compile Include="commands\LoadCommand.vb" />
-    <Compile Include="commands\LoadbgCommand.vb" />
-    <Compile Include="commands\PauseCommand.vb" />
-    <Compile Include="commands\PlayCommand.vb" />
-    <Compile Include="commands\RestartCommand.vb" />
-    <Compile Include="commands\StopCommand.vb" />
-    <Compile Include="commands\SwapCommand.vb" />
-    <Compile Include="commands\ThumbnailGenerateAllCommand.vb" />
-    <Compile Include="commands\ThumbnailGenerateCommand.vb" />
-    <Compile Include="commands\ThumbnailListCommand.vb" />
-    <Compile Include="commands\ThumbnailRetrieveCommand.vb" />
-    <Compile Include="commands\TlsCommand.vb" />
-    <Compile Include="commands\VersionFlashCommand.vb" />
-    <Compile Include="commands\VersionServerCommand.vb" />
-    <Compile Include="commands\VersionTemplatehostCommand.vb" />
+    <Compile Include="commands\basic\AddCommand.vb" />
+    <Compile Include="commands\basic\ByeCommand.vb" />
+    <Compile Include="commands\basic\CallCommand.vb" />
+    <Compile Include="commands\data\DataListCommand.vb" />
+    <Compile Include="commands\data\DataRemoveCommand.vb" />
+    <Compile Include="commands\data\DataRetrieveCommand.vb" />
+    <Compile Include="commands\data\DataStoreCommand.vb" />
+    <Compile Include="commands\query\CinfCommand.vb" />
+    <Compile Include="commands\basic\ClearCommand.vb" />
+    <Compile Include="commands\query\ClsCommand.vb" />
+    <Compile Include="commands\query\InfoCommand.vb" />
+    <Compile Include="commands\query\InfoConfigCommand.vb" />
+    <Compile Include="commands\query\InfoPathsCommand.vb" />
+    <Compile Include="commands\query\InfoSystemCommand.vb" />
+    <Compile Include="commands\query\InfoTemplateCommand.vb" />
+    <Compile Include="commands\query\InfoServerCommand.vb" />
+    <Compile Include="commands\basic\KillCommand.vb" />
+    <Compile Include="commands\basic\LoadCommand.vb" />
+    <Compile Include="commands\basic\LoadbgCommand.vb" />
+    <Compile Include="commands\basic\PauseCommand.vb" />
+    <Compile Include="commands\basic\PlayCommand.vb" />
+    <Compile Include="commands\basic\PrintCommand.vb" />
+    <Compile Include="commands\basic\RemoveCommand.vb" />
+    <Compile Include="commands\basic\RestartCommand.vb" />
+    <Compile Include="commands\basic\SetCommand.vb" />
+    <Compile Include="commands\basic\StopCommand.vb" />
+    <Compile Include="commands\basic\SwapCommand.vb" />
+    <Compile Include="commands\thumbnail\ThumbnailGenerateAllCommand.vb" />
+    <Compile Include="commands\thumbnail\ThumbnailGenerateCommand.vb" />
+    <Compile Include="commands\thumbnail\ThumbnailListCommand.vb" />
+    <Compile Include="commands\thumbnail\ThumbnailRetrieveCommand.vb" />
+    <Compile Include="commands\query\TlsCommand.vb" />
+    <Compile Include="commands\query\VersionFlashCommand.vb" />
+    <Compile Include="commands\query\VersionServerCommand.vb" />
+    <Compile Include="commands\query\VersionTemplatehostCommand.vb" />
     <Compile Include="media\CasparCGAudio.vb" />
     <Compile Include="media\CasparCGMedia.vb" />
     <Compile Include="media\CasparCGMovie.vb" />
@@ -136,7 +144,10 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="commands\cg\" />
+    <Folder Include="commands\mixer\" />
+  </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSXML2">
       <Guid>{F5078F18-C551-11D3-89B9-0000F81FE221}</Guid>

@@ -7,14 +7,31 @@ Public Class CasparCGConnection
     Private serveraddress As String = "localhost"
     Private serverport As Integer = 5250 ' std. acmp2 port
     Private client As TcpClient
-    Private reconnectTries = 1
     Private connectionAttemp = 0
-    Private reconnectTimeout = 1000 ' 1sec
     Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
-    Private timeout As Integer = 300 ' ms to wait for data before cancel receive
     Private ccgVersion As String = "0.0.0"
+    Private channels As Integer = 0
 
+    ''' <summary>
+    ''' Reads or sets the number of retires to perform if a connection can't be established
+    ''' </summary>
+    Public Property reconnectTries As Integer = 1
+    ''' <summary>
+    ''' Reads or sets the number of milliseconds to wait between two connection attempts
+    ''' </summary>
+    Public Property reconnectTimeout As Integer = 1000 ' 1sec
+    ''' <summary>
+    ''' Reads or sets the number of milliseconds to wait for incoming data before stop reading
+    ''' </summary>
+    Public Property timeout As Integer = 300 ' ms to wait for data before cancel receive
+
+    ''' <summary>
+    ''' Creates a new CasparCGConnection to the given serverAddress and serverPort
+    ''' </summary>
+    ''' <param name="serverAddress">the server ip or hostname</param>
+    ''' <param name="serverPort">the servers port</param>
+    ''' <remarks></remarks>
     Public Sub New(ByVal serverAddress As String, ByVal serverPort As Integer)
         connectionLock = New Semaphore(1, 1)
         Me.serveraddress = serverAddress
@@ -28,15 +45,18 @@ Public Class CasparCGConnection
     ''' <summary>
     ''' Connects to the given server and port and returns true if a connection could be established and false otherwise.
     ''' </summary>
+    ''' <returns>true, if and only if the connection is established, false otherwise</returns>
+    ''' <remarks></remarks>
     Public Function connect() As Boolean
         If Not client.Connected Then
             Try
                 client.Connect(serveraddress, serverport)
                 client.NoDelay = True
-                If client.Connected Then
+                If client.Connected Then   
                     connectionAttemp = 0
                     logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
                     ccgVersion = readServerVersion()
+                    channels = readServerChannels()
                 End If
             Catch e As Exception
                 logger.warn(e.Message)
@@ -65,7 +85,7 @@ Public Class CasparCGConnection
     ''' </summary>
     ''' <param name="serverAddress">the server ip or hostname</param>
     ''' <param name="serverPort">the servers port</param>
-    ''' <returns></returns>
+    ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     ''' <remarks></remarks>
     Public Function connect(ByVal serverAddress As String, ByVal serverPort As Integer) As Boolean
         Me.serveraddress = serverAddress
@@ -77,9 +97,9 @@ Public Class CasparCGConnection
     ''' Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not allready connected.
     ''' </summary>
     ''' <param name="tryConnect"></param>
-    ''' <returns></returns>
+    ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     ''' <remarks></remarks>
-    Public Function connected(Optional ByVal tryConnect As Boolean = False) As Boolean
+    Public Function isConnected(Optional ByVal tryConnect As Boolean = False) As Boolean
         If client.Connected Then
             Return True
         Else
@@ -90,14 +110,25 @@ Public Class CasparCGConnection
         End If
     End Function
 
+    ''' <summary>
+    ''' Disconnects and closes the connection to the CasparCG Server
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Sub close()
-        If client.Connected Then
+        If isConnected() Then
             Dim bye As New ByeCommand()
             bye.execute(Me)
             client.Client.Close()
+            ccgVersion = "0.0.0"
+            channels = 0
         End If
     End Sub
 
+    ''' <summary>
+    ''' Returns whether or not the connected CasparCG Server supports OSC
+    ''' </summary>
+    ''' <returns>true, if and only if a connection is established and the sever supports OSC</returns>
+    ''' <remarks></remarks>
     Public Function isOSCSupported() As Boolean
         If getVersionPart(0) = 2 Then
             If getVersionPart(1) = 0 Then
@@ -117,7 +148,7 @@ Public Class CasparCGConnection
     End Function
 
     Private Function readServerVersion() As String
-        If connected() Then
+        If isConnected() Then
             Dim response = sendCommand(CasparCGCommandFactory.getVersion)
             If Not IsNothing(response) AndAlso response.isOK Then
                 Return response.getData
@@ -126,20 +157,59 @@ Public Class CasparCGConnection
         Return "0.0.0"
     End Function
 
+    ''' <summary>
+    ''' Returns the version string of the connected CasparCG Server
+    ''' </summary>
+    ''' <returns>The version of the connected server or 0.0.0 if not connected</returns>
+    ''' <remarks></remarks>
     Public Function getVersion() As String
         Return ccgVersion
     End Function
 
+    ''' <summary>
+    ''' Returns a specific part of the version number. 
+    ''' e.g.: If the version is 2.0.1 Beta3, you would get 
+    ''' getVersionPart(0) = 2
+    ''' getVersionPart(2) = 1
+    ''' getVersionPart(3) = -1
+    ''' </summary>
+    ''' <param name="part">The part of the version starting by 0</param>
+    ''' <param name="Version">Optional version string to get the part form. If not set, the version of the connected server will be parsed</param>
+    ''' <returns>The numberical part of the version or -1 if the part is not pressent or not numerical</returns>
+    ''' <remarks></remarks>
     Public Function getVersionPart(part As Integer, Optional Version As String = "") As Integer
         If Version = "" Then Version = getVersion()
         Dim v() = Version.Split(".")
-        If v.Length >= part Then
+        If part > -1 AndAlso v.Length >= part Then
             Dim r As Integer
             If Integer.TryParse(v(part), r) Then
                 Return r
             End If
         End If
         Return -1
+    End Function
+
+    Private Function readServerChannels() As Integer
+        Dim ch As Integer = 0
+        If isConnected() Then
+            Dim cmd As New InfoCommand()
+            If Not IsNothing(cmd.execute(Me)) AndAlso cmd.getResponse.isOK Then
+                Dim lineArray() = cmd.getResponse.getData.Split(vbLf)
+                If Not IsNothing(lineArray) Then
+                    ch = lineArray.Length
+                End If
+            End If
+        End If
+        Return ch
+    End Function
+
+    ''' <summary>
+    ''' Returns the number of channels on the connected CasparCG Server
+    ''' </summary>
+    ''' <returns>The number of channels</returns>
+    ''' <remarks></remarks>
+    Public Function getServerChannels() As Integer
+        Return channels
     End Function
 
 
@@ -149,7 +219,7 @@ Public Class CasparCGConnection
     ''' <param name="cmd"></param>
     ''' <remarks></remarks>
     Public Sub sendAsyncCommand(ByVal cmd As String)
-        If connected(tryConnect) Then
+        If isConnected(tryConnect) Then
             connectionLock.WaitOne()
             logger.debug("CasparCGConnection.sendAsyncCommand: Send command: " & cmd)
             client.GetStream.Write(System.Text.UTF8Encoding.UTF8.GetBytes(cmd & vbCrLf), 0, cmd.Length + 2)
@@ -166,7 +236,7 @@ Public Class CasparCGConnection
     ''' </summary>
     ''' <param name="cmd"></param>
     Public Function sendCommand(ByVal cmd As String) As CasparCGResponse
-        If connected(tryConnect) Then
+        If isConnected(tryConnect) Then
             connectionLock.WaitOne()
             Dim buffer() As Byte
 
@@ -209,4 +279,49 @@ Public Class CasparCGConnection
         End If
     End Function
 
+    ''' <summary>
+    ''' Returns the CasparCG Server address this connection is using
+    ''' </summary>
+    ''' <returns>The IP or DNS address of this connection</returns>
+    ''' <remarks></remarks>
+    Public Function getServerAddress() As String
+        Return serveraddress
+    End Function
+
+    ''' <summary>
+    ''' Returns the port number this connection is using
+    ''' </summary>
+    ''' <returns>The TCP port nummber of this connection</returns>
+    ''' <remarks></remarks>
+    Public Function getServerPort() As Integer
+        Return serverport
+    End Function
+
+    ''' <summary>
+    ''' Sets the address on which this connection tries to connect to the casparCG Server.
+    ''' </summary>
+    ''' <param name="serverAddress">The IP or DNS address of the server</param>
+    ''' <returns>True if this connection is not connected and the address could be set, False otherwise. </returns>
+    ''' <remarks></remarks>
+    Public Function setServerAddress(ByVal serverAddress As String) As Boolean
+        If Not isConnected() Then
+            Me.serveraddress = serverAddress
+            Return True
+        Else : Return False
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Sets the port on which this connection tries to connect to the casparCG Server.
+    ''' </summary>
+    ''' <param name="serverPort">The TCP port number</param>
+    ''' <returns>True if this connection is not connected and the port could be set, False otherwise. </returns>
+    ''' <remarks></remarks>
+    Public Function setServerPort(ByVal serverPort As Integer) As Boolean
+        If Not isConnected() Then
+            Me.serverport = serverPort
+            Return True
+        Else : Return False
+        End If
+    End Function
 End Class
