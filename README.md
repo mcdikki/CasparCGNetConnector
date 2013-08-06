@@ -24,7 +24,7 @@ This software is licensed under the [Gnu GPL v3] [2].
 Features
 --------
 
-This connector framework was written for [CasparsPlayoutClient][3] and ofers the follwing features:  
+This connector framework was written for [CasparsPlayoutClient][3] and offers the follwing features:  
   * easy connection
   * duplex communication with the [CasparCG Server][1]
   * built in [CasparCG Server][1] command classes 
