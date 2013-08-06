@@ -3,6 +3,8 @@ Imports System.Net.Sockets
 Imports System.Threading
 
 Public Class CasparCGConnection
+    Implements IDisposable
+
     Private connectionLock As Semaphore
     Private serveraddress As String = "localhost"
     Private serverport As Integer = 5250 ' std. acmp2 port
@@ -52,7 +54,7 @@ Public Class CasparCGConnection
             Try
                 client.Connect(serveraddress, serverport)
                 client.NoDelay = True
-                If client.Connected Then   
+                If client.Connected Then
                     connectionAttemp = 0
                     logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
                     ccgVersion = readServerVersion()
@@ -324,4 +326,30 @@ Public Class CasparCGConnection
         Else : Return False
         End If
     End Function
+
+#Region "IDisposable Support"
+    Private disposedValue As Boolean ' So ermitteln Sie überflüssige Aufrufe
+
+    ' IDisposable
+    Protected Overridable Sub Dispose(disposing As Boolean)
+        If Not Me.disposedValue Then
+            If disposing Then
+                ' TODO: Verwalteten Zustand löschen (verwaltete Objekte).
+                close()
+                client = Nothing
+                connectionLock.Dispose()
+                connectionLock = Nothing
+            End If
+        End If
+        Me.disposedValue = True
+    End Sub
+
+    ' Dieser Code wird von Visual Basic hinzugefügt, um das Dispose-Muster richtig zu implementieren.
+    Public Sub Dispose() Implements IDisposable.Dispose
+        ' Ändern Sie diesen Code nicht. Fügen Sie oben in Dispose(disposing As Boolean) Bereinigungscode ein.
+        Dispose(True)
+        GC.SuppressFinalize(Me)
+    End Sub
+#End Region
+
 End Class
