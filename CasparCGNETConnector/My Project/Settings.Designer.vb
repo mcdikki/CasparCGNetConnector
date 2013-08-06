@@ -64,9 +64,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.CasparCGVBNETConnector.My.MySettings
+        Friend ReadOnly Property Settings() As Global.CasparCGNETConnector.My.MySettings
             Get
-                Return Global.CasparCGVBNETConnector.My.MySettings.Default
+                Return Global.CasparCGNETConnector.My.MySettings.Default
             End Get
         End Property
     End Module
