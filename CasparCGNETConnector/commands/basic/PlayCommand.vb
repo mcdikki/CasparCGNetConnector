@@ -1,4 +1,20 @@
-﻿Public Class PlayCommand
+﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'' Author: Christopher Diekkamp
+'' Email: christopher@development.diekkamp.de
+'' GitHub: https://github.com/mcdikki
+'' 
+'' This software is licensed under the 
+'' GNU General Public License Version 3 (GPLv3).
+'' See http://www.gnu.org/licenses/gpl-3.0-standalone.html 
+'' for a copy of the license.
+''
+'' You are free to copy, use and modify this software.
+'' Please let know of any changes and improofments you made to it.
+''
+'' Thank you!
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Public Class PlayCommand
     Inherits AbstractCommand
 
     Public Sub New()
@@ -22,8 +38,8 @@
         If channel > 0 Then DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
 
-        If Media.Length > 0 Then
-            DirectCast(getParameter("media"), CommandParameter(Of String)).setValue(Media)
+        If media.Length > 0 Then
+            DirectCast(getParameter("media"), CommandParameter(Of String)).setValue(media)
         End If
         If looping Then
             DirectCast(getParameter("looping"), CommandParameter(Of Boolean)).setValue(looping)
@@ -37,8 +53,8 @@
         If length > 0 Then
             DirectCast(getParameter("length"), CommandParameter(Of Integer)).setValue(length)
         End If
-        If Filter.Length > 0 Then
-            DirectCast(getParameter("filter"), CommandParameter(Of String)).setValue(Filter)
+        If filter.Length > 0 Then
+            DirectCast(getParameter("filter"), CommandParameter(Of String)).setValue(filter)
         End If
     End Sub
 
