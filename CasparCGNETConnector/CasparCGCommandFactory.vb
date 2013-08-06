@@ -69,7 +69,7 @@
         Return Nothing
     End Function
 
-
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getLoadbg(ByVal channel As Integer, ByVal layer As Integer, ByVal media As String, Optional ByRef autostarting As Boolean = False, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "") As String
         Dim cmd As String = "LOADBG " & getDestination(channel, layer) & " '" & media & "'"
 
@@ -95,6 +95,7 @@
         Return escape(cmd)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getLoad(ByVal channel As Integer, ByVal layer As Integer, ByVal media As String, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "") As String
         Dim cmd As String = "LOAD " & getDestination(channel, layer) & " '" & media & "'"
 
@@ -117,6 +118,7 @@
         Return escape(cmd)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getPlay(ByVal channel As Integer, ByVal layer As Integer, Optional ByVal media As String = "", Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "") As String
         Dim cmd As String = "PLAY " & getDestination(channel, layer)
 
@@ -142,6 +144,7 @@
         Return escape(cmd)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getPlay(ByVal channel As Integer, ByVal layer As Integer, ByVal media As CasparCGMedia, Optional ByVal looping As Boolean = False, Optional ByVal fill As Boolean = True, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "") As String
         If IsNothing(media) Then
             Return getPlay(channel, layer, , looping, seek, length, transition, filter)
@@ -158,6 +161,7 @@
         End If
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCall(ByVal channel As Integer, ByVal layer As Integer, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "") As String
         Dim cmd As String = "CALL " & getDestination(channel, layer)
 
@@ -180,22 +184,27 @@
         Return cmd
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getSwap(ByVal channelA As Integer, ByVal channelB As Integer) As String
         Return "SWAP " & channelA & " " & channelB
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getSwap(ByVal channelA As Integer, ByVal channelB As Integer, ByVal layerA As Integer, ByVal layerB As Integer) As String
         Return "SWAP " & channelA & "-" & layerA & " " & channelB & "-" & layerB
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getStop(ByVal channel As Integer, ByVal layer As Integer) As String
         Return "STOP " & getDestination(channel, layer)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getPause(ByVal channel As Integer, ByVal layer As Integer) As String
         Return "PAUSE " & getDestination(channel, layer)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getClear(Optional ByVal channel As Integer = -1, Optional ByVal layer As Integer = -1) As String
         Dim cmd As String = "CLEAR"
         If channel > -1 Then
@@ -204,6 +213,7 @@
         Return cmd
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getInfo(Optional ByVal channel As Integer = -1, Optional ByVal layer As Integer = -1, Optional ByVal onlyBackground As Boolean = False, Optional ByVal onlyForeground As Boolean = False) As String
         Dim cmd As String = "INFO"
         If channel > -1 Then
@@ -219,35 +229,43 @@
         Return cmd
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getInfo(ByRef template As CasparCGTemplate) As String
         Return escape("INFO TEMPLATE '" & template.getFullName & "'")
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getThumbnail(ByVal media As String) As String
         Return escape("THUMBNAIL RETRIEVE '" & media & "'")
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getThumbnail(ByVal media As CasparCGMedia) As String
         Return escape("THUMBNAIL RETRIEVE '" & media.getFullName & "'")
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getThumbnailGenerate(ByVal media As String) As String
         Return escape("THUMBNAIL GENERATE '" & media & "'")
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getThumbnailGenerate(ByVal media As CasparCGMedia) As String
         Return escape("THUMBNAIL GENERATE '" & media.getFullName & "'")
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getThumbnailList() As String
         Return "THUMBNAIL LIST"
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getVersion(Optional ByVal ofPart As String = "Server") As String
         Return "VERSION " & ofPart
     End Function
 
     '' CG CMD für Flashtemplates
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGAdd(ByVal channel As Integer, ByVal layer As Integer, ByVal template As CasparCGTemplate, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False) As String
         Dim cmd As String = "CG " & getDestination(channel, layer) & " ADD " & flashlayer & " " & template.getFullName
 
@@ -260,34 +278,42 @@
         Return escape(cmd)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGRemove(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer) As String
         Return "CG " & getDestination(channel, layer) & " REMOVE " & flashlayer
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGPlay(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer) As String
         Return "CG " & getDestination(channel, layer) & " PLAY " & flashlayer
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGStop(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer) As String
         Return "CG " & getDestination(channel, layer) & " STOP " & flashlayer
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGNext(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer) As String
         Return "CG " & getDestination(channel, layer) & " NEXT " & flashlayer
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGUpdate(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer, ByRef data As CasparCGTemplateData) As String
         Return "CG " & getDestination(channel, layer) & " UPDATE " & flashlayer & " " & escape(data.toXML)
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGInvoke(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer, ByVal method As String) As String
         Return "CG " & getDestination(channel, layer) & " INVOKE " & flashlayer & " " & method
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCGClear(ByVal channel As Integer, ByVal layer As Integer) As String
         Return "CG " & getDestination(channel, layer) & " CLEAR"
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Private Shared Function getDestination(ByVal channel As Integer, ByVal layer As Integer) As String
         Dim cmd As String
         If channel > -1 Then
@@ -301,10 +327,12 @@
         Return cmd
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getCls() As String
         Return "CLS"
     End Function
 
+    <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _
     Public Shared Function getTls() As String
         Return "TLS"
     End Function
