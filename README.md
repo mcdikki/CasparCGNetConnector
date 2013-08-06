@@ -54,8 +54,8 @@ cmd.execute(con)</pre>
     <pre>
 con.sendCommand("play 1-1 amb")</pre>  
 
-If you are interrested in the [CasparCG Server][1] response, you can check in the CasparCGResponse.
-Both, the ***execute()*** and the ***sendCommand()*** methods returning a CasparCGResponse object holding:
+If you are interrested in the [CasparCG Server][1] response, you can check the CasparCGResponse.
+Both, the ***execute()*** and the ***sendCommand()*** method is returning a CasparCGResponse object holding:
   * the [CasparCG Server][1] response code
     <pre>response.getCode() as integer</pre>
   * the received data as string
