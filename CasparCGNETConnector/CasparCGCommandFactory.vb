@@ -1,5 +1,75 @@
 ﻿Public Class CasparCGCommandFactory
 
+    ''' <summary>
+    ''' Enummerates the possible CasparCGCommands
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Enum Command
+        'Basic cmd
+        PlayCommand
+        StopCommand
+        LoadCommand
+        LoadBgCommand
+        PauseCommand
+        CallCommand
+        SwapCommand
+        ClearCommand
+        AddCommand
+        RemoveCommand
+        PrintCommand
+        SetCommand
+        ByeCommand
+        KillCommand
+        RestartCommand
+
+        'Data cmd
+        DataListCommand
+        DataStoreCommand
+        DataRetrieveCommand
+        DataRemoveCommand
+
+        'Query cmd
+        ClsCommand
+        TlsCommand
+        CinfCommand
+        InfoCommand
+        InfoTemplateCommand
+        InfoConfigCommand
+        InfoPathsCommand
+        InfoServer
+        InfoSystemCommand
+        VersionServerCommand
+        VersionFlashCommand
+        VersionTemplatehostCommand
+
+        'Thumbnail cmd
+        ThumbnailListCommand
+        ThumbnailGenerateCommand
+        ThumbnailGenerateAllCommand
+        ThumbnailRetrieveCommand
+
+        'CG cmd
+        ''ToDo
+
+        'Mixer cmd
+        ''ToDo
+
+    End Enum
+
+    ''' <summary>
+    ''' Returns an instance of the given command or nothing. You have to fill the command parameter your self before calling execute!
+    ''' </summary>
+    ''' <param name="command">The command</param>
+    ''' <returns>an instance of the requested command or nothing if the requested command was not found</returns>
+    ''' <remarks></remarks>
+    Public Function getCommand(ByVal command As Command) As ICommand
+        '' ToDo
+
+        Throw New NotImplementedException("The getCommand() function is not implemented yet. Please instanciate the desired command class by your self")
+        Return Nothing
+    End Function
+
+
     Public Shared Function getLoadbg(ByVal channel As Integer, ByVal layer As Integer, ByVal media As String, Optional ByRef autostarting As Boolean = False, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "") As String
         Dim cmd As String = "LOADBG " & getDestination(channel, layer) & " '" & media & "'"
 

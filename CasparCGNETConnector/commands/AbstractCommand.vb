@@ -1,6 +1,5 @@
 ﻿Public MustInherit Class AbstractCommand
-
-    '' ToDo
+    Implements ICommand
 
     Private name As String
     Private desc As String
@@ -16,7 +15,7 @@
         parameter = New List(Of ICommandParameter)
     End Sub
 
-    Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse
+    Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse Implements ICommand.execute
         If isCompatible(connection) Then
             response = connection.sendCommand(getCommandString)
             Return getResponse()
@@ -25,33 +24,33 @@
         End If
     End Function
 
-    Public Function getResponse() As CasparCGResponse
+    Public Function getResponse() As CasparCGResponse Implements ICommand.getResponse
         Return response
     End Function
 
-    Public Function getName() As String
+    Public Function getName() As String Implements ICommand.getName
         Return name
     End Function
 
-    Public Function getDescribtion() As String
+    Public Function getDescribtion() As String Implements ICommand.getDescribtion
         Return desc
     End Function
 
-    Public Function getParameterNames() As List(Of String)
+    Public Function getParameterNames() As List(Of String) Implements ICommand.getParameterNames
         Return pNames
     End Function
 
-    Public Function getParameter(ByVal parameterName As String) As ICommandParameter
+    Public Function getParameter(ByVal parameterName As String) As ICommandParameter Implements ICommand.getParameter
         If pNames.Contains(parameterName.ToLower) Then
             Return parameter.Item(pNames.IndexOf(parameterName.ToLower))
         End If
         Return Nothing
     End Function
 
-    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
+    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommand.isCompatible
         Dim reqVersion() = getRequiredVersion()
         For i As Integer = 0 To reqVersion.Length - 1
-            If reqVersion(i) > connection.getVersionPart(i) Then Return False 
+            If reqVersion(i) > connection.getVersionPart(i) Then Return False
         Next
 
         Dim maxVersion() = getMaxAllowedVersion()
@@ -113,10 +112,9 @@
     ''
     '' Abstract part
     ''
-    Public MustOverride Function getCommandString() As String
-    Public MustOverride Function getRequiredVersion() As Integer()
-    Public MustOverride Function getMaxAllowedVersion() As Integer()
-
+    Public MustOverride Function getCommandString() As String Implements ICommand.getCommandString
+    Public MustOverride Function getRequiredVersion() As Integer() Implements ICommand.getRequiredVersion
+    Public MustOverride Function getMaxAllowedVersion() As Integer() Implements ICommand.getMaxAllowedVersion
 
 End Class
 
