@@ -14,6 +14,8 @@
 '' Thank you!
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+Imports System
+
 Public Class CasparCGCommandFactory
 
     ''' <summary>
@@ -78,11 +80,15 @@ Public Class CasparCGCommandFactory
     ''' <param name="command">The command</param>
     ''' <returns>an instance of the requested command or nothing if the requested command was not found</returns>
     ''' <remarks></remarks>
-    Public Function getCommand(ByVal command As Command) As ICommand
+    Public Shared Function getCommand(ByVal command As Command) As ICommand
         '' ToDo
+        Dim cmd As ICommand = getInstance(Type.GetType("CasparCGNETConnector." & command.ToString))
+        'Throw New NotImplementedException("The getCommand() function is not implemented yet. Please instanciate the desired command class by your self")
+        Return cmd
+    End Function
 
-        Throw New NotImplementedException("The getCommand() function is not implemented yet. Please instanciate the desired command class by your self")
-        Return Nothing
+    Private Shared Function getInstance(ByVal t As System.Type) As Object
+        Return t.GetConstructor(New System.Type() {}).Invoke(New Object() {})
     End Function
 
     <Obsolete("This method is deprecated and will be remove with the next release. Please see the ICommand classes isntead.")> _

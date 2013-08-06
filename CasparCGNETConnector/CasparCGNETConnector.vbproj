@@ -75,6 +75,7 @@
     <Compile Include="commands\data\DataRemoveCommand.vb" />
     <Compile Include="commands\data\DataRetrieveCommand.vb" />
     <Compile Include="commands\data\DataStoreCommand.vb" />
+    <Compile Include="commands\ICommand.vb" />
     <Compile Include="commands\query\CinfCommand.vb" />
     <Compile Include="commands\basic\ClearCommand.vb" />
     <Compile Include="commands\query\ClsCommand.vb" />

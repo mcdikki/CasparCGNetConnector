@@ -31,6 +31,12 @@ Public MustInherit Class AbstractCommand
         parameter = New List(Of ICommandParameter)
     End Sub
 
+    ''' <summary>
+    ''' Executes the command using the given connection and returns the <see cref="CasparCGResponse">CasparCGResponse</see>.
+    ''' Throws a <see cref="NotSupportedException">NotSupportedException</see> if the command is not compatible to the CasparCG Server version.
+    ''' </summary>
+    ''' <param name="connection">the CasparCGConnection to execute the command on</param>
+    ''' <returns>a CasparCGResponse if, and only if the command is compatible to the connected server version, else throws a NotSupportedException</returns>
     Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse Implements ICommand.execute
         If isCompatible(connection) Then
             response = connection.sendCommand(getCommandString)
@@ -40,22 +46,44 @@ Public MustInherit Class AbstractCommand
         End If
     End Function
 
+    ''' <summary>
+    ''' Returns the <see cref=" CasparCGResponse ">CasparCGResponse</see> of the last command execution or nothing.
+    ''' </summary>
+    ''' <returns>the <see cref=" CasparCGResponse ">CasparCGResponse</see> or nothing</returns>
     Public Function getResponse() As CasparCGResponse Implements ICommand.getResponse
         Return response
     End Function
 
+    ''' <summary>
+    ''' Returns the name of this command
+    ''' </summary>
+    ''' <returns>The name of this command</returns>
     Public Function getName() As String Implements ICommand.getName
         Return name
     End Function
 
+    ''' <summary>
+    ''' Returns the describtion of this command
+    ''' </summary>
+    ''' <returns>the describtion of this command</returns>
+    ''' <remarks></remarks>
     Public Function getDescribtion() As String Implements ICommand.getDescribtion
         Return desc
     End Function
 
+    ''' <summary>
+    ''' Returns a list of all <seealso cref=" ICommandParameter ">parameter</seealso> names of this command
+    ''' </summary>
+    ''' <returns>a list of paramter names</returns>
     Public Function getParameterNames() As List(Of String) Implements ICommand.getParameterNames
         Return pNames
     End Function
 
+    ''' <summary>
+    ''' Returns the <seealso cref=" ICommandParameter ">parameter</seealso> ot the given name or nothing if no parameter of this name exists.
+    ''' </summary>
+    ''' <param name="parameterName">the all lowercase name of the parameter</param>
+    ''' <returns>the <seealso cref=" ICommandParameter ">parameter</seealso> if, and only if, it exists, else nothing</returns>
     Public Function getParameter(ByVal parameterName As String) As ICommandParameter Implements ICommand.getParameter
         If pNames.Contains(parameterName.ToLower) Then
             Return parameter.Item(pNames.IndexOf(parameterName.ToLower))
@@ -63,6 +91,11 @@ Public MustInherit Class AbstractCommand
         Return Nothing
     End Function
 
+    ''' <summary>
+    ''' Returns whether or not this command is compatible to the CasparCG Server version of the given connection.
+    ''' </summary>
+    ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
+    ''' <returns>true, if and only if the commmand is compatible</returns>
     Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommand.isCompatible
         Dim reqVersion() = getRequiredVersion()
         For i As Integer = 0 To reqVersion.Length - 1
@@ -113,7 +146,6 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <param name="str"></param>
     ''' <returns></returns>
-    ''' <remarks></remarks>
     Public Shared Function escape(ByVal str As String) As String
         ' Backslash
         str = str.Replace("\", "\\")
@@ -135,11 +167,38 @@ Public MustInherit Class AbstractCommand
 End Class
 
 Public Interface ICommandParameter
+    ''' <summary>
+    ''' Returns the name of this parameter
+    ''' </summary>
+    ''' <returns>The name of this parameter</returns>
     Function getName() As String
+    ''' <summary>
+    ''' Returns a describtion of this parameter
+    ''' </summary>
+    ''' <returns>The describtion</returns>
     Function getDesc() As String
+    ''' <summary>
+    ''' Returns whether or not this parameter is optional
+    ''' </summary>
+    ''' <returns>Returns whether or not this parameter is optional</returns>
     Function isOptional() As Boolean
+    ''' <summary>
+    ''' Returns whether or not this parameter has been set to a specific value.
+    ''' </summary>
+    ''' <returns>Returns whether or not the value has been set</returns>
     Function isSet() As Boolean
+    ''' <summary>
+    ''' Returns the value type of this paramter. You can use this to generate the right input for the setValue() method
+    ''' </summary>
+    ''' <returns>System.Type - The System.Type of this parameters value</returns>
     Function getGenericType() As Type
+    ''' <summary>
+    ''' Returns the type of this parameter instance: <code>CommandParameter(Of t).getType()</code>.
+    ''' Use this to Convert the parameter into the right type with:
+    ''' <code>CTypeDynamic(paramterObject, parameterObject.getGenericParameterType).setValue(value)</code>
+    ''' </summary>
+    ''' <returns>the System.Type of this parameter</returns>
+    Function getGenericParameterType() As Type
 End Interface
 
 Public Class CommandParameter(Of t)
@@ -166,6 +225,10 @@ Public Class CommandParameter(Of t)
         Return desc
     End Function
 
+    ''' <summary>
+    ''' Returns the default value of this parameter or nothing
+    ''' </summary>
+    ''' <returns>the default parameter or nothing</returns>
     Public Function getDefault() As t
         Return defaultValue
     End Function
@@ -174,14 +237,37 @@ Public Class CommandParameter(Of t)
         Return _isOptional
     End Function
 
+    ''' <summary>
+    ''' Returns the value of this parameter
+    ''' </summary>
+    ''' <returns>the value of this parameter</returns>
     Public Function getValue() As t
         Return value
     End Function
 
+    ''' <summary>
+    ''' Returns the value type of this paramter. You can use this to generate the right input for the setValue() method
+    ''' </summary>
+    ''' <returns>System.Type - The System.Type of this parameters value</returns>
     Public Function getGenericType() As Type Implements ICommandParameter.getGenericType
-        Return value.GetType
+        Dim instance As t
+        Return instance.GetType
     End Function
 
+    ''' <summary>
+    ''' Returns the type of this parameter instance: CommandParameter(Of t).getType().
+    ''' Use this to Convert the parameter into the right type with:
+    ''' CTypeDynamic(paramterObject, parameterObject.getGenericParameterType).setValue(value)
+    ''' </summary>
+    ''' <returns>the System.Type of this parameter</returns>
+    Public Function getGenericParameterType() As Type Implements ICommandParameter.getGenericParameterType
+        Return Me.GetType
+    End Function
+
+    ''' <summary>
+    ''' Sets the value of this parameter
+    ''' </summary>
+    ''' <param name="value">the value to set this parameter to</param>
     Public Sub setValue(ByRef value As t)
         _isSet = True
         Me.value = value
