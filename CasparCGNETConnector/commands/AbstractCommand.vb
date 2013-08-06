@@ -16,7 +16,7 @@
         parameter = New List(Of ICommandParameter)
     End Sub
 
-    Public Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse
+    Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse
         If isCompatible(connection) Then
             response = connection.sendCommand(getCommandString)
             Return getResponse()
@@ -79,14 +79,14 @@
     End Sub
 
 
-    Protected Shared Function getDestination(ByVal channel As CommandParameter(Of Integer), ByVal layer As CommandParameter(Of Integer)) As String
+    Protected Shared Function getDestination(ByRef channel As CommandParameter(Of Integer), Optional ByRef layer As CommandParameter(Of Integer) = Nothing) As String
         Dim cmd As String
         If channel.isSet() Then
             cmd = channel.getValue
         Else
-            cmd = "0"
+            cmd = "1"
         End If
-        If layer.isSet Then
+        If Not IsNothing(layer) AndAlso layer.isSet Then
             cmd = cmd & "-" & layer.getValue
         End If
         Return cmd

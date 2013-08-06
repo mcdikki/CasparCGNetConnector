@@ -92,6 +92,8 @@ Public Class CasparCGConnection
 
     Public Sub close()
         If client.Connected Then
+            Dim bye As New ByeCommand()
+            bye.execute(Me)
             client.Client.Close()
         End If
     End Sub
@@ -112,10 +114,6 @@ Public Class CasparCGConnection
         Else
             Return True
         End If
-    End Function
-
-    Public Function isThumbnailSupported() As Boolean
-        Return isOSCSupported()
     End Function
 
     Private Function readServerVersion() As String

@@ -1,12 +1,12 @@
-﻿Friend Class ByeCommand
+﻿Public Class DataListCommand
     Inherits AbstractCommand
 
     Public Sub New()
-        MyBase.New("BYE", "Disconnects from the server")
+        MyBase.New("DATA LIST", "Lists all stored data on the server")
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return "BYE"
+        Return "DATA LIST"
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
