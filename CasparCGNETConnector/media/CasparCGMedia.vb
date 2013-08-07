@@ -105,7 +105,7 @@ Public MustInherit Class CasparCGMedia
     End Function
 
     Public Sub setBase64Thumb(ByRef base64Thumb As String)
-        thumbB64 = base64Thumb
+        thumbB64 = CasparCGUtil.repairBase64(base64Thumb)
     End Sub
 
     Public Function getInfo(ByVal info As String) As String

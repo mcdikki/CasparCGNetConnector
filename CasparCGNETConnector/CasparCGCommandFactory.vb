@@ -82,6 +82,11 @@ Public Class CasparCGCommandFactory
         MixerKeyerCommand
         MixerMastervolumeCommand
         MixerClearCommand
+        MixerChromaCommand
+        MixerContrastCommand
+        MixerVideoOpacityCommand
+        MixerBrightnessCommand
+        MixerSaturationCommand
         MixerStraighAlphaOutputCommand
         ChannelGridCommand
 

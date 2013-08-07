@@ -67,15 +67,31 @@
     <Compile Include="CasparCGConnection.vb" />
     <Compile Include="CasparCGResponse.vb" />
     <Compile Include="CasparCGTransition.vb" />
+    <Compile Include="CasparCGUtil.vb" />
     <Compile Include="commands\AbstractCommand.vb" />
     <Compile Include="commands\basic\AddCommand.vb" />
     <Compile Include="commands\basic\ByeCommand.vb" />
     <Compile Include="commands\basic\CallCommand.vb" />
+    <Compile Include="commands\cg\CgAddCommand.vb" />
+    <Compile Include="commands\cg\CgRemoveCommand.vb" />
+    <Compile Include="commands\cg\CgClearCommand.vb" />
+    <Compile Include="commands\cg\CgPlayCommand.vb" />
+    <Compile Include="commands\cg\CgStopCommand.vb" />
+    <Compile Include="commands\cg\CgNextCommand.vb" />
+    <Compile Include="commands\cg\CgUpdateCommand.vb" />
+    <Compile Include="commands\cg\CgInvokeCommand.vb" />
     <Compile Include="commands\data\DataListCommand.vb" />
     <Compile Include="commands\data\DataRemoveCommand.vb" />
     <Compile Include="commands\data\DataRetrieveCommand.vb" />
     <Compile Include="commands\data\DataStoreCommand.vb" />
     <Compile Include="commands\ICommand.vb" />
+    <Compile Include="commands\mixer\ChannelGridCommand.vb" />
+    <Compile Include="commands\mixer\MixerBlendCommand.vb" />
+    <Compile Include="commands\mixer\MixerChromaCommand.vb" />
+    <Compile Include="commands\mixer\MixerKeyerCommand.vb" />
+    <Compile Include="commands\mixer\MixerClearCommand.vb" />
+    <Compile Include="commands\mixer\MixerMastervolumeCommand.vb" />
+    <Compile Include="commands\mixer\MixerStraightAlphaOutputCommand.vb" />
     <Compile Include="commands\query\CinfCommand.vb" />
     <Compile Include="commands\basic\ClearCommand.vb" />
     <Compile Include="commands\query\ClsCommand.vb" />
@@ -145,10 +161,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="commands\cg\" />
-    <Folder Include="commands\mixer\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <COMReference Include="MSXML2">
       <Guid>{F5078F18-C551-11D3-89B9-0000F81FE221}</Guid>

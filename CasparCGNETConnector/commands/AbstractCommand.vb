@@ -128,7 +128,7 @@ Public MustInherit Class AbstractCommand
     End Sub
 
     Protected Sub addParameter(ByRef param As ICommandParameter)
-        If Not IsNothing(param) Then
+        If Not IsNothing(param) And Not pNames.Contains(param.getName) Then
             parameter.Add(param)
             pNames.Add(param.getName)
         End If
