@@ -78,6 +78,12 @@ Public Class CasparCGCommandFactory
 
         'Mixer cmd
         ''ToDo
+        MixerBlendCommand
+        MixerKeyerCommand
+        MixerMastervolumeCommand
+        MixerClearCommand
+        MixerStraighAlphaOutputCommand
+        ChannelGridCommand
 
     End Enum
 
