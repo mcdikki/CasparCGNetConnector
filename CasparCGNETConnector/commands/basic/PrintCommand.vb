@@ -37,9 +37,9 @@ Public Class PrintCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "PRINT " & getDestination(getParameter("channel"))
         If getParameter("file").isSet Then
-            cmd = cmd & " " & DirectCast(getParameter("parameter"), CommandParameter(Of String)).getValue
+            cmd = cmd & " '" & DirectCast(getParameter("parameter"), CommandParameter(Of String)).getValue & "'"
         End If
-        Return cmd
+        Return escape(cmd)
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

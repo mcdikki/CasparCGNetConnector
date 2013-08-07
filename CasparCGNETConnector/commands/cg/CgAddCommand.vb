@@ -56,7 +56,7 @@ Public Class CgAddCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "CG " & getDestination(getParameter("channel"), getParameter("layer")) & " ADD"
 
-        cmd = cmd & " " & DirectCast(getParameter("template"), CommandParameter(Of String)).getValue
+        cmd = cmd & " '" & DirectCast(getParameter("template"), CommandParameter(Of String)).getValue & "'"
         cmd = cmd & " " & DirectCast(getParameter("flashlayer"), CommandParameter(Of Integer)).getValue
 
         If getParameter("play on load").isSet AndAlso DirectCast(getParameter("play on load"), CommandParameter(Of Boolean)).getValue Then
@@ -65,10 +65,10 @@ Public Class CgAddCommand
             cmd = cmd & " 0"
         End If
         If getParameter("data").isSet Then
-            cmd = cmd & " " & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue
+            cmd = cmd & " '" & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue & "'"
         End If
 
-        Return cmd
+        Return escape(cmd)
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

@@ -33,10 +33,10 @@ Public Class InfoCommand
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
 
         If onlyBackground Then
-            DirectCast(getParameter("onlyBackground"), CommandParameter(Of Boolean)).setValue(onlyBackground)
+            DirectCast(getParameter("only background"), CommandParameter(Of Boolean)).setValue(onlyBackground)
         End If
         If onlyForeground Then
-            DirectCast(getParameter("onlyForeground"), CommandParameter(Of Boolean)).setValue(onlyForeground)
+            DirectCast(getParameter("only foreground"), CommandParameter(Of Boolean)).setValue(onlyForeground)
         End If
         If delay Then
             DirectCast(getParameter("delay"), CommandParameter(Of Boolean)).setValue(delay)

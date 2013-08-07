@@ -35,7 +35,7 @@ Public Class DataStoreCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return "DATA STORE " & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue() & " " & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue()
+        Return escape("DATA STORE '" & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue() & "' '" & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue() & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

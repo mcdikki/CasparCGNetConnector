@@ -42,9 +42,9 @@ Public Class CgUpdateCommand
         Dim cmd As String = "CG " & getDestination(getParameter("channel"), getParameter("layer")) & " UPDATE"
 
         cmd = cmd & " " & DirectCast(getParameter("flashlayer"), CommandParameter(Of Integer)).getValue
-        cmd = cmd & " " & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue
+        cmd = cmd & " '" & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue & "'"
 
-        Return cmd
+        Return escape(cmd)
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

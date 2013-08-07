@@ -33,7 +33,7 @@ Public Class DataRetrieveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return "DATA RETRIEVE " & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue()
+        Return escape("DATA RETRIEVE '" & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue() & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
