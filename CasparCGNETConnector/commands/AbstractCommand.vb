@@ -42,7 +42,7 @@ Public MustInherit Class AbstractCommand
             response = connection.sendCommand(getCommandString)
             Return getResponse()
         Else
-            Throw New NotSupportedException("The command " & getName() & " is not supported by the server version " & connection.getVersion)
+            Throw New NotSupportedException("The command " & getName() & "(min: " & getVersionString(getRequiredVersion()) & " max: " & getVersionString(getMaxAllowedVersion()) & ")is not supported by the server version " & connection.getVersion)
         End If
     End Function
 
@@ -162,6 +162,18 @@ Public MustInherit Class AbstractCommand
         str = str.Replace("'", "\'")
         str = str.Replace("""", "\""")
         Return str
+    End Function
+
+    Public Shared Function getVersionString(ByRef version() As Integer) As String
+        If version.Length > 0 Then
+            Dim v As String = ""
+            For Each vp As Integer In version
+                v = v & "." & vp
+            Next
+            Return v.Substring(1)
+        Else
+            Return ""
+        End If
     End Function
 
 
