@@ -78,15 +78,19 @@ Public Class CasparCGCommandFactory
 
         'Mixer cmd
         ''ToDo
+        MixerClearCommand
         MixerBlendCommand
         MixerKeyerCommand
-        MixerMastervolumeCommand
-        MixerClearCommand
+        MixerFillCommand
+        MixerClipCommand
         MixerChromaCommand
         MixerContrastCommand
         MixerVideoOpacityCommand
         MixerBrightnessCommand
         MixerSaturationCommand
+        MixerLevelsCommand
+        MixerVolumeCommand
+        MixerMastervolumeCommand
         MixerStraighAlphaOutputCommand
         ChannelGridCommand
 
