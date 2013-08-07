@@ -97,15 +97,23 @@ Public MustInherit Class AbstractCommand
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the commmand is compatible</returns>
     Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommand.isCompatible
+        ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
         For i As Integer = 0 To reqVersion.Length - 1
             If reqVersion(i) > connection.getVersionPart(i) Then Return False
         Next
 
+        ' Check if version isn't to high
         Dim maxVersion() = getMaxAllowedVersion()
         For i As Integer = 0 To maxVersion.Length - 1
             If maxVersion(i) < connection.getVersionPart(i) Then Return False
         Next
+
+        ' Check if all parameter which are set suiteable for the version
+        For Each p In parameter
+            If p.isSet AndAlso Not p.isCompatible(connection) Then Return False
+        Next
+
         Return True
     End Function
 
@@ -199,6 +207,25 @@ Public Interface ICommandParameter
     ''' </summary>
     ''' <returns>the System.Type of this parameter</returns>
     Function getGenericParameterType() As Type
+
+    ''' <summary>
+    ''' Returns the required version to run this parameter
+    ''' </summary>
+    ''' <returns>the version to run this parameter as array of Integer</returns>
+    Function getRequiredVersion() As Integer()
+
+    ''' <summary>
+    ''' Returns the maximum version to run this parameter
+    ''' </summary>
+    ''' <returns>the highest version to run this parameter as array of Integer</returns>
+    Function getMaxAllowedVersion() As Integer()
+
+    ''' <summary>
+    ''' Returns whether or not this parameter is compatible to the CasparCG Server version of the given connection.
+    ''' </summary>
+    ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
+    ''' <returns>true, if and only if the parameter is compatible</returns>
+    Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
 End Interface
 
 Public Class CommandParameter(Of t)
@@ -209,8 +236,10 @@ Public Class CommandParameter(Of t)
     Private value As t
     Private _isOptional As Boolean
     Private _isSet As Boolean
+    Private minVersion() As Integer
+    Private maxVersion() As Integer
 
-    Public Sub New(ByVal name As String, ByVal describtion As String, defaultvalue As t, isOptionalParameter As Boolean)
+    Public Sub New(ByVal name As String, ByVal describtion As String, defaultvalue As t, isOptionalParameter As Boolean, Optional ByVal minVersion() As Integer = Nothing, Optional ByVal maxVersion() As Integer = Nothing)
         Me.name = name
         Me.desc = describtion
         Me.defaultValue = defaultvalue
@@ -275,6 +304,48 @@ Public Class CommandParameter(Of t)
 
     Public Function isSet() As Boolean Implements ICommandParameter.isSet
         Return _isSet
+    End Function
+
+    ''' <summary>
+    ''' Returns the required version to run this parameter
+    ''' </summary>
+    ''' <returns>the version to run this parameter as array of Integer</returns>
+    Function getRequiredVersion() As Integer() Implements ICommandParameter.getRequiredVersion
+        If Not IsNothing(minVersion) Then
+            Return minVersion
+        Else
+            Return {1}
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Returns the maximum version to run this parameter
+    ''' </summary>
+    ''' <returns>the highest version to run this parameter as array of Integer</returns>
+    Function getMaxAllowedVersion() As Integer() Implements ICommandParameter.getMaxAllowedVersion
+        If Not IsNothing(minVersion) Then
+            Return maxVersion
+        Else
+            Return {Integer.MaxValue}
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Returns whether or not this parameter is compatible to the CasparCG Server version of the given connection.
+    ''' </summary>
+    ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
+    ''' <returns>true, if and only if the parameter is compatible</returns>
+    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommandParameter.isCompatible
+        Dim reqVersion() = getRequiredVersion()
+        For i As Integer = 0 To reqVersion.Length - 1
+            If reqVersion(i) > connection.getVersionPart(i) Then Return False
+        Next
+
+        Dim maxVersion() = getMaxAllowedVersion()
+        For i As Integer = 0 To maxVersion.Length - 1
+            If maxVersion(i) < connection.getVersionPart(i) Then Return False
+        Next
+        Return True
     End Function
 
 End Class
