@@ -86,8 +86,16 @@
     <Compile Include="commands\data\DataStoreCommand.vb" />
     <Compile Include="commands\ICommand.vb" />
     <Compile Include="commands\mixer\ChannelGridCommand.vb" />
-    <Compile Include="commands\mixer\MixerBlendCommand.vb" />
+    <Compile Include="commands\mixer\MixerFillCommand.vb" />
+    <Compile Include="commands\mixer\MixerContrastCommand.vb" />
+    <Compile Include="commands\mixer\MixerLevelsCommand.vb" />
+    <Compile Include="commands\mixer\MixerVolumeCommand.vb" />
+    <Compile Include="commands\mixer\MixerSaturationCommand.vb" />
+    <Compile Include="commands\mixer\MixerBrightnessCommand.vb" />
+    <Compile Include="commands\mixer\MixerOpacityCommand.vb" />
     <Compile Include="commands\mixer\MixerChromaCommand.vb" />
+    <Compile Include="commands\mixer\MixerBlendCommand.vb" />
+    <Compile Include="commands\mixer\MixerClipCommand.vb" />
     <Compile Include="commands\mixer\MixerKeyerCommand.vb" />
     <Compile Include="commands\mixer\MixerClearCommand.vb" />
     <Compile Include="commands\mixer\MixerMastervolumeCommand.vb" />

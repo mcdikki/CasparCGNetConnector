@@ -38,7 +38,7 @@ Public MustInherit Class AbstractCommand
     ''' <param name="connection">the CasparCGConnection to execute the command on</param>
     ''' <returns>a CasparCGResponse if, and only if the command is compatible to the connected server version, else throws a NotSupportedException</returns>
     Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse Implements ICommand.execute
-        If isCompatible(connection) Then
+        If isCompatible(connection) AndAlso connection.strictVersionControl Then
             response = connection.sendCommand(getCommandString)
             Return getResponse()
         Else
@@ -99,21 +99,49 @@ Public MustInherit Class AbstractCommand
     Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommand.isCompatible
         ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
-        For i As Integer = 0 To reqVersion.Length - 1
-            If reqVersion(i) >= connection.getVersionPart(i) Then Return False
-        Next
+        Dim i As Integer = 0
+        logger.debug("Check reqVersion of command " & getName())
+        While i < reqVersion.Length
+            If reqVersion(i) < connection.getVersionPart(i) Then
+                logger.debug("Need: " & reqVersion(i) & " <= " & connection.getVersionPart(i) & " is '<' --> OK!")
+                Exit While
+            ElseIf reqVersion(i) > connection.getVersionPart(i) Then
+                logger.debug("Need: " & reqVersion(i) & " <= " & connection.getVersionPart(i) & " is '>' --> FAILED!")
+                Return False
+            End If
+            logger.debug("Need: " & reqVersion(i) & " <= " & connection.getVersionPart(i) & " is '=' --> OK!")
+            i = i + 1
+        End While
 
         ' Check if version isn't to high
         Dim maxVersion() = getMaxAllowedVersion()
-        For i As Integer = 0 To maxVersion.Length - 1
-            If maxVersion(i) <= connection.getVersionPart(i) Then Return False
-        Next
+        i = 0
+        logger.debug("Check maxAllowedVersion")
+        While i < maxVersion.Length OrElse connection.getVersionPart(i) > -1
+            If i < maxVersion.Length Then
+                If maxVersion(i) < connection.getVersionPart(i) Then
+                    logger.debug("Need: " & maxVersion(i) & " >= " & connection.getVersionPart(i) & " is '<' --> FAILED!")
+                    Return False
+                ElseIf maxVersion(i) > connection.getVersionPart(i) Then
+                    logger.debug("Need: " & maxVersion(i) & " >= " & connection.getVersionPart(i) & " is '>' --> OK!")
+                    Exit While
+                Else
+                    logger.debug("Need: " & maxVersion(i) & " >= " & connection.getVersionPart(i) & " is '=' --> OK!")
+                End If
+            ElseIf connection.getVersionPart(i) > 0 Then
+                logger.debug("Need: 0 >= " & connection.getVersionPart(i) & " is '<' --> FAILED!")
+                Return False
+            End If
+            i = i + 1
+        End While
 
         ' Check if all parameter which are set are suiteable for the version
+        logger.debug("Checking command parameter")
         For Each p In parameter
             If p.isSet AndAlso Not p.isCompatible(connection) Then Return False
         Next
 
+        logger.debug("Command " & getName() & " is compatible with CasparCG " & connection.getVersion)
         Return True
     End Function
 
@@ -348,15 +376,43 @@ Public Class CommandParameter(Of t)
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the parameter is compatible</returns>
     Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommandParameter.isCompatible
+        ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
-        For i As Integer = 0 To reqVersion.Length - 1
-            If reqVersion(i) >= connection.getVersionPart(i) Then Return False
-        Next
+        Dim i As Integer = 0
+        logger.debug("Check reqVersion of parameter " & getName())
+        While i < reqVersion.Length
+            If reqVersion(i) < connection.getVersionPart(i) Then
+                logger.debug("Need: " & reqVersion(i) & " <= " & connection.getVersionPart(i) & " is '<' --> OK!")
+                Exit While
+            ElseIf reqVersion(i) > connection.getVersionPart(i) Then
+                logger.debug("Need: " & reqVersion(i) & " <= " & connection.getVersionPart(i) & " is '>' --> FAILED!")
+                Return False
+            End If
+            logger.debug("Need: " & reqVersion(i) & " <= " & connection.getVersionPart(i) & " is '=' --> OK!")
+            i = i + 1
+        End While
 
+        ' Check if version isn't to high
         Dim maxVersion() = getMaxAllowedVersion()
-        For i As Integer = 0 To maxVersion.Length - 1
-            If maxVersion(i) <= connection.getVersionPart(i) Then Return False
-        Next
+        i = 0
+        logger.debug("Check maxAllowedVersion")
+        While i < maxVersion.Length OrElse connection.getVersionPart(i) > -1
+            If i < maxVersion.Length Then
+                If maxVersion(i) < connection.getVersionPart(i) Then
+                    logger.debug("Need: " & maxVersion(i) & " >= " & connection.getVersionPart(i) & " is '<' --> FAILED!")
+                    Return False
+                ElseIf maxVersion(i) > connection.getVersionPart(i) Then
+                    logger.debug("Need: " & maxVersion(i) & " >= " & connection.getVersionPart(i) & " is '>' --> OK!")
+                    Exit While
+                Else
+                    logger.debug("Need: " & maxVersion(i) & " >= " & connection.getVersionPart(i) & " is '=' --> OK!")
+                End If
+            ElseIf connection.getVersionPart(i) > 0 Then
+                logger.debug("Need: 0 >= " & connection.getVersionPart(i) & " is '<' --> FAILED!")
+                Return False
+            End If
+            i = i + 1
+        End While
         Return True
     End Function
 

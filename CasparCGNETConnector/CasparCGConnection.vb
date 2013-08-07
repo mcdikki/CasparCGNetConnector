@@ -28,7 +28,7 @@ Public Class CasparCGConnection
     Private connectionAttemp = 0
     Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
-    Private ccgVersion As String = "0.0.0"
+    Private ccgVersion As String = "-1.-1.-1"
     Private channels As Integer = 0
 
     ''' <summary>
@@ -43,6 +43,12 @@ Public Class CasparCGConnection
     ''' Reads or sets the number of milliseconds to wait for incoming data before stop reading
     ''' </summary>
     Public Property timeout As Integer = 300 ' ms to wait for data before cancel receive
+
+    ''' <summary>
+    ''' Gets or sets whether strict version control is activated. If True, only commands that pass the isCompatible() check will be executed.
+    ''' </summary>
+    Public Property strictVersionControl As Boolean = True
+
 
     ''' <summary>
     ''' Creates a new CasparCGConnection to the given serverAddress and serverPort
@@ -167,12 +173,12 @@ Public Class CasparCGConnection
 
     Private Function readServerVersion() As String
         If isConnected() Then
-            Dim response = sendCommand(CasparCGCommandFactory.getVersion)
-            If Not IsNothing(response) AndAlso response.isOK Then
-                Return response.getData
+            Dim cmd As New VersionServerCommand()
+            If cmd.execute(Me).isOK Then
+                Return cmd.getResponse.getData
             End If
         End If
-        Return "0.0.0"
+        Return "-1.-1.-1"
     End Function
 
     ''' <summary>
@@ -238,7 +244,7 @@ Public Class CasparCGConnection
     ''' <remarks></remarks>
     Public Sub sendAsyncCommand(ByVal cmd As String)
         If isConnected(tryConnect) Then
-            connectionLock.WaitOne()
+            connectionLock.WaitOne(timeout)
             logger.debug("CasparCGConnection.sendAsyncCommand: Send command: " & cmd)
             client.GetStream.Write(System.Text.UTF8Encoding.UTF8.GetBytes(cmd & vbCrLf), 0, cmd.Length + 2)
             logger.debug("CasparCGConnection.sendAsyncCommand: Command sent")

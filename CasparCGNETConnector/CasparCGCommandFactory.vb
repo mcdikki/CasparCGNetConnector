@@ -77,7 +77,6 @@ Public Class CasparCGCommandFactory
         CgInvokeCommand
 
         'Mixer cmd
-        ''ToDo
         MixerClearCommand
         MixerBlendCommand
         MixerKeyerCommand

@@ -69,10 +69,11 @@ Public Class InfoCommand
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
-        Return {2}
+        Return {1}
     End Function
 
     Public Overrides Function getMaxAllowedVersion() As Integer()
+        'Return {2, 0, 4}
         Return {Integer.MaxValue}
     End Function
 End Class

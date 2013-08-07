@@ -26,7 +26,7 @@ Public Class VersionServerCommand
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
-        Return {1}
+        Return {-1} ' have to be -1 because when this command is executed, the server version is not known and thus -1.-1.-1
     End Function
 
     Public Overrides Function getMaxAllowedVersion() As Integer()
