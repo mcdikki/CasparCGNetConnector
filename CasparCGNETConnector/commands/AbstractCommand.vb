@@ -100,16 +100,16 @@ Public MustInherit Class AbstractCommand
         ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
         For i As Integer = 0 To reqVersion.Length - 1
-            If reqVersion(i) > connection.getVersionPart(i) Then Return False
+            If reqVersion(i) >= connection.getVersionPart(i) Then Return False
         Next
 
         ' Check if version isn't to high
         Dim maxVersion() = getMaxAllowedVersion()
         For i As Integer = 0 To maxVersion.Length - 1
-            If maxVersion(i) < connection.getVersionPart(i) Then Return False
+            If maxVersion(i) <= connection.getVersionPart(i) Then Return False
         Next
 
-        ' Check if all parameter which are set suiteable for the version
+        ' Check if all parameter which are set are suiteable for the version
         For Each p In parameter
             If p.isSet AndAlso Not p.isCompatible(connection) Then Return False
         Next
@@ -338,12 +338,12 @@ Public Class CommandParameter(Of t)
     Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommandParameter.isCompatible
         Dim reqVersion() = getRequiredVersion()
         For i As Integer = 0 To reqVersion.Length - 1
-            If reqVersion(i) > connection.getVersionPart(i) Then Return False
+            If reqVersion(i) >= connection.getVersionPart(i) Then Return False
         Next
 
         Dim maxVersion() = getMaxAllowedVersion()
         For i As Integer = 0 To maxVersion.Length - 1
-            If maxVersion(i) < connection.getVersionPart(i) Then Return False
+            If maxVersion(i) <= connection.getVersionPart(i) Then Return False
         Next
         Return True
     End Function

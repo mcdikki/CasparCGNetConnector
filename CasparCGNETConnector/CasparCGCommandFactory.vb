@@ -67,7 +67,14 @@ Public Class CasparCGCommandFactory
         ThumbnailRetrieveCommand
 
         'CG cmd
-        ''ToDo
+        CgAddCommand
+        CgRemoveCommand
+        CgPlayCommand
+        CgStopCommand
+        CgNextCommand
+        CgClearCommand
+        CgUpdateCommand
+        CgInvokeCommand
 
         'Mixer cmd
         ''ToDo

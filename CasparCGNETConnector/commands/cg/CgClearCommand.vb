@@ -14,31 +14,28 @@
 '' Thank you!
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Class PrintCommand
+Public Class CgClearCommand
     Inherits AbstractCommand
 
     Public Sub New()
-        MyBase.New("PRINT", "Saves a screenshot of a given channel")
+        MyBase.New("CG CLEAR", "Clears all layers and any state that might be stored")
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, Optional ByVal file As String = "")
-        MyBase.New("PRINT", "Saves a screenshot of a given channel")
-        InitParameter()
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer)
+        MyBase.New("CG CLEAR", "Clears all layers and any state that might be stored")
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If Not IsNothing(file) AndAlso file.Length > 0 Then DirectCast(getParameter("file"), CommandParameter(Of String)).setValue(file)
+        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
     End Sub
 
     Private Sub InitParameter()
         addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addParameter(New CommandParameter(Of String)("file", "The destination filename", "", True, {2, 0, 4}))
+        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "PRINT " & getDestination(getParameter("channel"))
-        If getParameter("file").isSet Then
-            cmd = cmd & " " & DirectCast(getParameter("parameter"), CommandParameter(Of String)).getValue
-        End If
+        Dim cmd As String = "CG " & getDestination(getParameter("channel"), getParameter("layer")) & " CLEAR"
+
         Return cmd
     End Function
 

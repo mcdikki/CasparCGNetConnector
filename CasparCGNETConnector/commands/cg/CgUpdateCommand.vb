@@ -14,31 +14,36 @@
 '' Thank you!
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Class PrintCommand
+Public Class CgUpdateCommand
     Inherits AbstractCommand
 
     Public Sub New()
-        MyBase.New("PRINT", "Saves a screenshot of a given channel")
+        MyBase.New("CG Update", "Sends new data to the template on specified layer")
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, Optional ByVal file As String = "")
-        MyBase.New("PRINT", "Saves a screenshot of a given channel")
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer, ByVal data As String)
+        MyBase.New("CG Update", "Sends new data to the template on specified layer")
         InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If Not IsNothing(file) AndAlso file.Length > 0 Then DirectCast(getParameter("file"), CommandParameter(Of String)).setValue(file)
+        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        DirectCast(getParameter("flashlayer"), CommandParameter(Of Integer)).setValue(flashlayer)
+        If Not IsNothing(data) AndAlso data.Length > 0 Then DirectCast(getParameter("data"), CommandParameter(Of String)).setValue(data)
     End Sub
 
     Private Sub InitParameter()
         addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addParameter(New CommandParameter(Of String)("file", "The destination filename", "", True, {2, 0, 4}))
+        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
+        addParameter(New CommandParameter(Of String)("data", "The xml data string", "", True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "PRINT " & getDestination(getParameter("channel"))
-        If getParameter("file").isSet Then
-            cmd = cmd & " " & DirectCast(getParameter("parameter"), CommandParameter(Of String)).getValue
-        End If
+        Dim cmd As String = "CG " & getDestination(getParameter("channel"), getParameter("layer")) & " UPDATE"
+
+        cmd = cmd & " " & DirectCast(getParameter("flashlayer"), CommandParameter(Of Integer)).getValue
+        cmd = cmd & " " & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue
+
         Return cmd
     End Function
 
