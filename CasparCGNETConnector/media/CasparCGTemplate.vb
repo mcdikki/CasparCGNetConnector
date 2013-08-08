@@ -75,6 +75,18 @@ Public Class CasparCGTemplate
         End If
     End Sub
 
+    Public Overrides Sub fillMediaInfo(ByRef connection As CasparCGConnection, Optional channel As Integer = 1)
+        If connection.isConnected Then
+            Dim info As New InfoTemplateCommand(Me)
+            If info.execute(connection).isOK Then
+                parseXML(info.getResponse.getXMLData)
+            Else
+                logger.err("CasparCGTemplate.fillMediaInfo: Error loading xml data received from server for " & toString())
+                logger.err("CasparCGTemplate.fillMediaInfo: ServerMessage dump: " & info.getResponse.getServerMessage)
+            End If
+        End If
+    End Sub
+
     Private Sub addComponent(ByRef component As CasparCGTemplateComponent)
         If Not components.ContainsValue(component) Then
             components.Add(component.getName, component)

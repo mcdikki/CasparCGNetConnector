@@ -88,6 +88,38 @@ Public MustInherit Class CasparCGMedia
         End If
     End Sub
 
+
+    ''' <summary>
+    ''' Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
+    ''' </summary>
+    ''' <param name="connection">The connection on which the info should be requested</param>
+    ''' <param name="channel">The channel to load the media on</param>
+    ''' <remarks></remarks>
+    Public Overridable Sub fillMediaInfo(ByRef connection As CasparCGConnection, Optional ByVal channel As Integer = 1)
+        If connection.isConnected() Then
+            Dim layer = connection.getFreeLayer(channel)
+            Dim cmd As ICommand = New LoadbgCommand(channel, layer, getFullName)
+            Dim clear = New ClearCommand(channel, layer)
+            If cmd.execute(connection).isOK Then
+                Dim infoDoc As New MSXML2.DOMDocument
+                cmd = New InfoCommand(channel, layer, True)
+                If infoDoc.loadXML(cmd.execute(connection).getXMLData()) AndAlso Not IsNothing(infoDoc.selectSingleNode("producer").selectSingleNode("destination")) Then
+                    If infoDoc.selectSingleNode("producer").selectSingleNode("destination").selectSingleNode("producer").selectSingleNode("type").nodeTypedValue.Equals("separated-producer") Then
+                        parseXML(infoDoc.selectSingleNode("producer").selectSingleNode("destination").selectSingleNode("producer").selectSingleNode("fill").selectSingleNode("producer").xml)
+                    Else
+                        parseXML(infoDoc.selectSingleNode("producer").selectSingleNode("destination").selectSingleNode("producer").xml)
+                    End If
+                Else
+                    logger.err("CasparCGMedia.fillMediaInfo: Error loading xml data received from server for " & toString() & ". Error: " & infoDoc.parseError.reason)
+                    logger.err("CasparCGMedia.fillMediaInfo: ServerMessages dump: " & cmd.getResponse.getServerMessage)
+                End If
+            Else
+                logger.err("CasparCGMedia.fillMediaInfo: Error getting media information. Server messages was: " & cmd.getResponse.getServerMessage)
+            End If
+            clear.execute(connection)
+        End If
+    End Sub
+
     Public Function getName() As String
         Return name
     End Function

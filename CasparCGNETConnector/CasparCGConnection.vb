@@ -349,6 +349,51 @@ Public Class CasparCGConnection
         End If
     End Function
 
+
+    ''' <summary>
+    ''' Returns whether or not a layer of a channel is free, which means no producer is playing on it.
+    ''' </summary>
+    ''' <param name="layer"></param>
+    ''' <param name="channel"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function isLayerFree(ByVal layer As Integer, ByVal channel As Integer, Optional ByVal onlyForeground As Boolean = False, Optional ByVal onlyBackground As Boolean = False) As Boolean
+        If isConnected() Then
+            Dim info As New InfoCommand(channel, layer, onlyBackground, onlyForeground)
+            Dim doc As New MSXML2.DOMDocument()
+            If info.execute(Me).isOK AndAlso doc.loadXML(info.getResponse.getXMLData) Then
+                For Each type As MSXML2.IXMLDOMNode In doc.getElementsByTagName("type")
+                    If Not type.nodeTypedValue.Equals("empty-producer") Then
+                        Return False
+                    End If
+                Next
+                Return True
+            Else
+                If Not IsNothing(doc.parseError) Then
+                    logger.warn("ServerController.isLayerFree: Error checking layer." & vbNewLine & doc.parseError.reason & vbNewLine & doc.parseError.line & ":" & doc.parseError.linepos & vbNewLine & doc.parseError.srcText)
+                    logger.warn("Server command and response was: " & info.getResponse.getCommand & vbNewLine & info.getResponse.getServerMessage)
+                Else
+                    logger.warn("ServerController.isLayerFree: Could not check layer. Server response was incorrect.")
+                End If
+            End If
+        End If
+        Return False
+    End Function
+
+    ''' <summary>
+    ''' Returns the smallest free layer of the given channel
+    ''' </summary>
+    ''' <param name="channel"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Function getFreeLayer(ByVal channel As Integer) As Integer
+        Dim layer As Integer = Integer.MaxValue
+        While Not isLayerFree(layer, channel) AndAlso layer > 0
+            layer = layer - 1
+        End While
+        Return layer
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' So ermitteln Sie überflüssige Aufrufe
 
