@@ -29,23 +29,46 @@ Public Module Example
     Public Sub Main()
         connection = New CasparCGConnection("localhost", 5250)
         connection.connect()
-        Console.WriteLine("==================================")
-        Console.WriteLine("=== Start Test_Manual_Command: ===")
-        Console.WriteLine("==================================")
-        Test_Manual_Command()
-        Console.WriteLine()
-        Console.WriteLine("=====================================")
-        Console.WriteLine("=== Start Test_Automatic_Command: ===")
-        Console.WriteLine("=====================================")
-        Test_Automatic_Command()
-        Console.WriteLine()
-        Console.WriteLine("=====================================")
-        Console.WriteLine("=== Start Test_Plaintext_Command: ===")
-        Console.WriteLine("=====================================")
-        Test_Plaintext_Command()
+        Console.WriteLine("Please choose the function to run or enter Q to exit:")
+        Console.WriteLine(vbTab & "1. Test_Manual_Command")
+        Console.WriteLine(vbTab & "2. Test_Automatic_Command")
+        Console.WriteLine(vbTab & "3. Test_Plaintext_Command")
+        Console.WriteLine(vbTab & "4. Test_CasparCGMedia_Classes")
+        Console.WriteLine(vbTab & "Q. Quit program")
+        Dim i As String = Console.ReadKey().KeyChar
+        While i.ToUpper <> "Q"
+            Select Case i
+                Case "1"
+                    Console.WriteLine("==================================")
+                    Console.WriteLine("=== Start Test_Manual_Command: ===")
+                    Console.WriteLine("==================================")
+                    Test_Manual_Command()
+                Case "2"
+                    Console.WriteLine("=====================================")
+                    Console.WriteLine("=== Start Test_Automatic_Command: ===")
+                    Console.WriteLine("=====================================")
+                    Test_Automatic_Command()
+                Case "3"
+                    Console.WriteLine("=====================================")
+                    Console.WriteLine("=== Start Test_Plaintext_Command: ===")
+                    Console.WriteLine("=====================================")
+                    Test_Plaintext_Command()
+                Case "4"
+                    Console.WriteLine("=========================================")
+                    Console.WriteLine("=== Start Test_CasparCGMedia_Classes: ===")
+                    Console.WriteLine("=========================================")
+                    Test_CasparCGMedia_Classes()
+            End Select
+            Console.WriteLine()
+            Console.WriteLine("Please choose the function to run or enter Q to exit:")
+            Console.WriteLine(vbTab & "1. Test_Manual_Command")
+            Console.WriteLine(vbTab & "2. Test_Automatic_Command")
+            Console.WriteLine(vbTab & "3. Test_Plaintext_Command")
+            Console.WriteLine(vbTab & "4. Test_CasparCGMedia_Classes")
+            Console.WriteLine(vbTab & "Q. Quit program")
+            i = Console.ReadKey().KeyChar
+        End While
         connection.close()
-        Console.WriteLine("Press any key to quit program") 
-        Console.ReadKey()
     End Sub
 
     ''' <summary>
@@ -176,6 +199,84 @@ Public Module Example
         Else
             Console.WriteLine("Not connected!")
         End If
+    End Sub
+
+    ''' <summary>
+    ''' We will have a look at the CasparCGMedia classes here and how we can use them. 
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub Test_CasparCGMedia_Classes()
+        '' The CasparCGMedia classes are ment as objects, representing the media files on the casparCG server
+        '' There are 5 subclasses: 
+        ''      CasparCGMovie
+        ''      CasparGAudio
+        ''      CasparCGStill
+        ''      CasparCGColor 
+        ''      CasparCGTemplate
+        '' In the simplest way, they are just a store for the name of a media. But they offer some very cool functions for your client, too.
+        '' You can use them to store metadata. They are designed to hold the metadata from casparCG server, but you can add your own two.
+        ''
+        '' If you call Info for a layer with some media loaded or Info template for a specified template, you retrieve a xml string form the server.
+        '' In this string you find a lot of usefull information.
+        '' With the CasparCGMedia classes you can retrieve and save them automatically just by calling .fillMediaInfo.
+        '' You have to specify the connection and the channel to use for the information retrieval. This is important,
+        '' as you can use the same CasparCGMedia with a lot of different servers and connections. Beside that, retrieving information
+        '' of media other than templates requires to load the clip/still or audio at least to the background. If you're using this function
+        '' with in a client, it should not work on a channel that is live to minimize the chance of an accidently collision with the live playout.
+        ''
+        '' Ok, enought words, let's code something:
+        '' We will define a CasparCGMedia with a Movie
+        '' retrieve the information of it,
+        '' set a thumbnail if possible,
+        '' add some custom metadata
+        '' add show everthing we know about it
+
+        '' Define new media with name amb
+        Console.WriteLine("Creating media..")
+        Dim media As CasparCGMedia = New CasparCGMovie("amb")
+
+        '' Fill the informations on channel 1 - the layer will automatically be choosen to be the first free layer.
+        Console.WriteLine("Filling media...")
+        media.fillMediaInfo(connection, 1)
+
+        '' Add the thumbnail if it is supported by the server (> 2.0.4)
+        Console.WriteLine("Retrieving thumbnail...")
+        Dim cmd As New ThumbnailRetrieveCommand(media)
+
+        '' Check if the command is runnable with our connection
+        '' We don't need to do this, the execute command will check anyway,
+        '' but so we can print a nice message ;-)
+        If cmd.isCompatible(connection) Then
+            Console.WriteLine("Thumbs are supported by the server.")
+            cmd.execute(connection)
+            media.setBase64Thumb(cmd.getResponse.getData)
+        Else
+            Console.WriteLine("Sorry bro, no thumbs on that server :-(")
+        End If
+
+        '' Add custom metadata
+        Console.WriteLine("Add custom metadata...")
+        media.addInfo("isFavorite", "yes")
+        media.addInfo("Played number of times", "0")
+
+        '' Assume we would play the media now...
+        '' ...
+        '' Then we would increment the Played number of times metadata
+        Console.WriteLine("Set custom metadata...")
+        media.setInfo("Played number of times", Integer.Parse(media.getInfo("Played number of times")) + 1)
+
+
+        '' show everything we know about the media
+        Console.WriteLine("Media name: " & media.getName)
+        Console.WriteLine("Media type: " & [Enum].GetName(GetType(CasparCGMedia.MediaType), media.getMediaType))
+        Console.WriteLine("Media full name (with path): " & media.getFullName)
+        Console.WriteLine("Media path: " & media.getPath)
+        Console.WriteLine("Media has thumbnail: " & (media.getBase64Thumb.Length > 0).ToString)
+        Console.WriteLine("Metadata of media:")
+        For Each info As String In media.getInfos.Keys
+            Console.WriteLine(vbTab & info & ": " & media.getInfo(info))
+        Next
+
     End Sub
 
 End Module
