@@ -58,7 +58,7 @@ Public Class InfoCommand
             If getParameter("layer").isSet Then
                 If getParameter("only background").isSet AndAlso DirectCast(getParameter("only background"), CommandParameter(Of Boolean)).getValue Then
                     cmd = cmd & " B"
-                ElseIf getParameter("only foreground").isSet AndAlso DirectCast(getParameter("only foreround"), CommandParameter(Of Boolean)).getValue Then
+                ElseIf getParameter("only foreground").isSet AndAlso DirectCast(getParameter("only foreground"), CommandParameter(Of Boolean)).getValue Then
                     cmd = cmd & " F"
                 End If
             ElseIf getParameter("delay").isSet AndAlso DirectCast(getParameter("delay"), CommandParameter(Of Boolean)).getValue Then

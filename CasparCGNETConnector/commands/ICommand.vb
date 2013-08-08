@@ -50,6 +50,12 @@ Public Interface ICommand
     Function getParameterNames() As List(Of String)
 
     ''' <summary>
+    ''' Returns a list of all <seealso cref=" ICommandParameter ">parameter</seealso> of this command
+    ''' </summary>
+    ''' <returns>a list of paramters</returns>
+    Function getParameters() As List(Of ICommandParameter)
+
+    ''' <summary>
     ''' Returns the <seealso cref=" ICommandParameter ">parameter</seealso> ot the given name or nothing if no parameter of this name exists.
     ''' </summary>
     ''' <param name="parameterName">the all lowercase name of the parameter</param>

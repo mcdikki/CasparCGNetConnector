@@ -155,7 +155,7 @@ Public MustInherit Class AbstractCommand
         End If
     End Sub
 
-    Public Function getParamters() As ICommandParameter
+    Public Function getParamters() As List(Of ICommandParameter) Implements ICommand.getParameters
         Return parameter
     End Function
 
@@ -228,7 +228,7 @@ Public Interface ICommandParameter
     ''' Returns a describtion of this parameter
     ''' </summary>
     ''' <returns>The describtion</returns>
-    Function getDesc() As String
+    Function getDescribtion() As String
     ''' <summary>
     ''' Returns whether or not this parameter is optional
     ''' </summary>
@@ -294,7 +294,7 @@ Public Class CommandParameter(Of t)
         Return name
     End Function
 
-    Public Function getDesc() As String Implements ICommandParameter.getDesc
+    Public Function getDescribtion() As String Implements ICommandParameter.getDescribtion
         Return desc
     End Function
 
@@ -323,8 +323,7 @@ Public Class CommandParameter(Of t)
     ''' </summary>
     ''' <returns>System.Type - The System.Type of this parameters value</returns>
     Public Function getGenericType() As Type Implements ICommandParameter.getGenericType
-        Dim instance As t
-        Return instance.GetType
+        Return GetType(t)
     End Function
 
     ''' <summary>

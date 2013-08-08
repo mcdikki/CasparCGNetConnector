@@ -21,20 +21,31 @@ Imports CasparCGNETConnector
 ''' </summary>
 ''' <remarks></remarks>
 ''' 
-Public Class Example
+Public Module Example
 
     Private connection As CasparCGConnection
 
-    Public Sub New()
+
+    Public Sub Main()
         connection = New CasparCGConnection("localhost", 5250)
-
-    End Sub
-
-
-    Public Sub start()
+        connection.connect()
+        Console.WriteLine("==================================")
+        Console.WriteLine("=== Start Test_Manual_Command: ===")
+        Console.WriteLine("==================================")
         Test_Manual_Command()
+        Console.WriteLine()
+        Console.WriteLine("=====================================")
+        Console.WriteLine("=== Start Test_Automatic_Command: ===")
+        Console.WriteLine("=====================================")
         Test_Automatic_Command()
-        Test_Plaintext_Commands()
+        Console.WriteLine()
+        Console.WriteLine("=====================================")
+        Console.WriteLine("=== Start Test_Plaintext_Command: ===")
+        Console.WriteLine("=====================================")
+        Test_Plaintext_Command()
+        connection.close()
+        Console.WriteLine("Press any key to quit program") 
+        Console.ReadKey()
     End Sub
 
     ''' <summary>
@@ -57,9 +68,6 @@ Public Class Example
         '' to execute the command, we need the connection to the server via which
         '' we will execute it.
 
-        '' Connect
-        connection.connect()
-
         '' execute command
         command.execute(connection)
 
@@ -77,8 +85,9 @@ Public Class Example
 
         '' List the parameters of the command
         Console.WriteLine("Paramters of " & command.getName)
-        For Each param In command.getParameterNames
-            Console.WriteLine(param & " of type " & command.getParameter(param).GetType.ToString & " is optional: " & command.getParameter(param).isOptional)
+        For Each param In command.getParameters
+            Console.WriteLine(vbTab & param.getName & ":")
+            Console.WriteLine(vbTab & vbTab & "type: " & param.getGenericType.ToString & vbNewLine & vbTab & vbTab & "is optional: " & param.isOptional)
         Next
 
         '' Lets assume we know the parameter and their types, then we can cast directly and set them
@@ -91,15 +100,12 @@ Public Class Example
         '' This time, we check the response directly from the execute return
         If command.execute(connection).isOK Then
             '' Info returns XML data, so we can use getXMLData to see them
-            Console.WriteLine(command.getResponse.getXMLData)
+            Console.WriteLine("The xml responded by the command: " & vbNewLine & command.getResponse.getXMLData)
         End If
 
         '' At last, we're going to stop the looped playback of amb
         command = New StopCommand(1, 1)
         command.execute(connection)
-
-        '' Closing the connection
-        connection.close()
     End Sub
 
 
@@ -116,22 +122,25 @@ Public Class Example
         For Each c In [Enum].GetValues(GetType(CasparCGCommandFactory.Command))
             Console.WriteLine("Found Command " & c.ToString)
             commands.Add(CasparCGCommandFactory.getCommand(c))
-            For Each param In commands.Last.getParameterNames
-                Console.WriteLine(param & " of type " & commands.Last.getParameter(param).GetType.ToString & " is optional: " & commands.Last.getParameter(param).isOptional)
+            For Each param In commands.Last.getParameters
+                Console.WriteLine(vbTab & param.getName & ":")
+                Console.WriteLine(vbTab & vbTab & "type: " & param.getGenericType.ToString & vbNewLine & vbTab & vbTab & "is optional: " & param.isOptional)
             Next
         Next
 
         '' Pick a random command and fill the needed parameters by asking the user
-        Dim cmd As ICommand = commands.Item(Math.Abs(Rnd() * commands.Count))
-        Console.WriteLine("Picked " & cmd.getName & " as command. Please fill the following parameters.")
+        Dim r As New System.Random(System.DateTime.Now.Millisecond)
+        Dim cmd As ICommand = commands.Item(r.Next(0, commands.Count - 1))
+        Console.WriteLine("Picked " & cmd.getName & " as command. " & vbNewLine & "Describtion: " & cmd.getDescribtion & vbNewLine & "Please fill the following parameters:")
 
         '' Now comes the dirty part.
         '' we need to dynamically cast the parameter object and its value object
-        For Each p In cmd.getParameterNames
-            Dim parameter = CTypeDynamic(cmd.getParameter(p), cmd.getParameter(p).getGenericParameterType)
+        For Each p In cmd.getParameters
+            Dim parameter = CTypeDynamic(p, p.getGenericParameterType)
             If Not parameter.isOptional Then
-                Dim value = CTypeDynamic(parameter.getDefault(), cmd.getParameter(p).getGenericType)
-                value = CTypeDynamic(Console.ReadLine("Parameter: " & p & " (Describtion: " & parameter.getDescribtion & ")"), cmd.getParameter(p).getGenericType)
+                Dim value = CTypeDynamic(parameter.getDefault(), p.getGenericType)
+                Console.WriteLine("Parameter: " & p.getName & " (Describtion: " & p.getDescribtion & "): ")
+                value = CTypeDynamic(Console.ReadLine(), p.getGenericType)
                 parameter.setValue(value)
             End If
         Next
@@ -142,28 +151,31 @@ Public Class Example
     ''' <summary>
     ''' In this method, we will look how to send plaintext commands like in old school style ;-)
     ''' </summary>
-    Public Sub Test_Plaintext_Commands()
+    Public Sub Test_Plaintext_Command()
         '' For plaintext commands you can simply pass a string to the 
         '' CasparCGConnection.sendCommand() function.
         '' As with the execute() of the command classes, you will get 
         '' a CasparCGResponse in return.
 
-        '' Connect and check if connected
-        If connection.connect() Then
+        '' check if connected
+        If connection.isConnected() Then
             '' When sending commands via sendCommand, you don't need to end with a new line,
             '' but you have to take a look at correct character escaping
-            Dim cmd As String = "Play 1-1 amb"
+            Console.WriteLine("Please type the command you want to send to the server:")
+            Dim cmd As String = Console.ReadLine()
 
+            Console.WriteLine("Try to excute plaintext command '" & cmd & "'")
             Dim response As CasparCGResponse = connection.sendCommand(cmd)
             If response.isOK Then
                 Console.WriteLine("Yeah, everthing went well!")
             ElseIf response.isERR Then
-                Console.WriteLine("Well, something went wrong...")
+                Console.WriteLine("Well, something went wrong... - What's the error code and describtion:" & vbNewLine & response.getCode & " = " & [Enum].GetName(GetType(CasparCGResponse.CasparReturnCode), response.getCode))
             ElseIf response.isUNKNOWN Then
                 Console.WriteLine("Hmm, that is funny, let's see the whole server message: " & response.getServerMessage)
             End If
-            connection.close()
+        Else
+            Console.WriteLine("Not connected!")
         End If
     End Sub
 
-End Class
+End Module

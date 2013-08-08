@@ -27,7 +27,7 @@ Public Class CasparCGCommandFactory
         PlayCommand
         StopCommand
         LoadCommand
-        LoadBgCommand
+        LoadbgCommand
         PauseCommand
         CallCommand
         SwapCommand
@@ -54,7 +54,7 @@ Public Class CasparCGCommandFactory
         InfoTemplateCommand
         InfoConfigCommand
         InfoPathsCommand
-        InfoServer
+        InfoServerCommand
         InfoSystemCommand
         VersionServerCommand
         VersionFlashCommand
@@ -84,13 +84,13 @@ Public Class CasparCGCommandFactory
         MixerClipCommand
         MixerChromaCommand
         MixerContrastCommand
-        MixerVideoOpacityCommand
+        MixerOpacityCommand
         MixerBrightnessCommand
         MixerSaturationCommand
         MixerLevelsCommand
         MixerVolumeCommand
         MixerMastervolumeCommand
-        MixerStraighAlphaOutputCommand
+        MixerStraightAlphaOutputCommand
         ChannelGridCommand
 
     End Enum
