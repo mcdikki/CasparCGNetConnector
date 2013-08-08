@@ -155,6 +155,10 @@ Public MustInherit Class AbstractCommand
         End If
     End Sub
 
+    Public Function getParamters() As ICommandParameter
+        Return parameter
+    End Function
+
     Protected Sub addParameter(ByRef param As ICommandParameter)
         If Not IsNothing(param) And Not pNames.Contains(param.getName) Then
             parameter.Add(param)
