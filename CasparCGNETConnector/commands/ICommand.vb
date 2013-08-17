@@ -37,11 +37,11 @@ Public Interface ICommand
     Function getName() As String
 
     ''' <summary>
-    ''' Returns the describtion of this command
+    ''' Returns the Description of this command
     ''' </summary>
-    ''' <returns>the describtion of this command</returns>
+    ''' <returns>the Description of this command</returns>
     ''' <remarks></remarks>
-    Function getDescribtion() As String
+    Function getDescription() As String
 
     ''' <summary>
     ''' Returns a list of all <seealso cref=" ICommandParameter ">parameter</seealso> names of this command

@@ -24,9 +24,9 @@ Public MustInherit Class AbstractCommand
     Private pNames As List(Of String)
 
 
-    Public Sub New(ByVal name As String, ByVal describtion As String)
+    Public Sub New(ByVal name As String, ByVal Description As String)
         Me.name = name
-        Me.desc = describtion
+        Me.desc = Description
         pNames = New List(Of String)
         parameter = New List(Of ICommandParameter)
     End Sub
@@ -63,11 +63,11 @@ Public MustInherit Class AbstractCommand
     End Function
 
     ''' <summary>
-    ''' Returns the describtion of this command
+    ''' Returns the Description of this command
     ''' </summary>
-    ''' <returns>the describtion of this command</returns>
+    ''' <returns>the Description of this command</returns>
     ''' <remarks></remarks>
-    Public Function getDescribtion() As String Implements ICommand.getDescribtion
+    Public Function getDescription() As String Implements ICommand.getDescription
         Return desc
     End Function
 
@@ -225,10 +225,10 @@ Public Interface ICommandParameter
     ''' <returns>The name of this parameter</returns>
     Function getName() As String
     ''' <summary>
-    ''' Returns a describtion of this parameter
+    ''' Returns a Description of this parameter
     ''' </summary>
-    ''' <returns>The describtion</returns>
-    Function getDescribtion() As String
+    ''' <returns>The Description</returns>
+    Function getDescription() As String
     ''' <summary>
     ''' Returns whether or not this parameter is optional
     ''' </summary>
@@ -283,9 +283,9 @@ Public Class CommandParameter(Of t)
     Private minVersion() As Integer
     Private maxVersion() As Integer
 
-    Public Sub New(ByVal name As String, ByVal describtion As String, defaultvalue As t, isOptionalParameter As Boolean, Optional ByVal minVersion() As Integer = Nothing, Optional ByVal maxVersion() As Integer = Nothing)
+    Public Sub New(ByVal name As String, ByVal Description As String, defaultvalue As t, isOptionalParameter As Boolean, Optional ByVal minVersion() As Integer = Nothing, Optional ByVal maxVersion() As Integer = Nothing)
         Me.name = name
-        Me.desc = describtion
+        Me.desc = Description
         Me.defaultValue = defaultvalue
         Me._isOptional = isOptionalParameter
     End Sub
@@ -294,7 +294,7 @@ Public Class CommandParameter(Of t)
         Return name
     End Function
 
-    Public Function getDescribtion() As String Implements ICommandParameter.getDescribtion
+    Public Function getDescription() As String Implements ICommandParameter.getDescription
         Return desc
     End Function
 

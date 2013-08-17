@@ -178,6 +178,44 @@ Public MustInherit Class CasparCGMedia
         Return out
     End Function
 
+    Public Overridable Function toXml() As String
+        Dim configDoc As New MSXML2.DOMDocument
+        Dim pnode As MSXML2.IXMLDOMNode
+        Dim node As MSXML2.IXMLDOMNode
+        ' Kopfdaten eintragen
+        pnode = configDoc.createElement("media")
+        node = configDoc.createElement("name")
+        node.nodeTypedValue = getFullName()
+        pnode.appendChild(node)
+        node = configDoc.createElement("type")
+        node.nodeTypedValue = getMediaType()
+        pnode.appendChild(node)
+        node = configDoc.createElement("typename")
+        node.nodeTypedValue = getMediaType().ToString
+        pnode.appendChild(node)
+        node = configDoc.createElement("uuid")
+        node.nodeTypedValue = getUuid()
+        pnode.appendChild(node)
+
+        '' Add all mediaInformation found by INFO
+        node = configDoc.createElement("infos")
+        Dim inode As MSXML2.IXMLDOMNode
+        For Each info As String In getInfos().Keys
+            'setInfo(info.nodeName, info.nodeTypedValue)
+            inode = configDoc.createElement(info)
+            inode.nodeTypedValue = getInfo(info)
+            node.appendChild(inode)
+        Next
+        pnode.appendChild(node)
+
+        node = configDoc.createElement("thumb")
+        node.nodeTypedValue = getBase64Thumb()
+        pnode.appendChild(node)
+
+        configDoc.appendChild(pnode) 
+        Return configDoc.xml
+    End Function
+
     ''
     '' Only for testing!
     '' To solve the problem that frehly startet items will be marked stopped as 

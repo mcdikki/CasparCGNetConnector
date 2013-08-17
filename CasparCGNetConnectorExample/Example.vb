@@ -184,6 +184,8 @@ Public Module Example
         If connection.isConnected() Then
             '' When sending commands via sendCommand, you don't need to end with a new line,
             '' but you have to take a look at correct character escaping
+            '' To make that easier, you can use CasparCGCommandFactory.esacep(String) as String.
+            '' But beware, it corrects esacaping, it can't gues if e.g. a name has to be escaped or not.
             Console.WriteLine("Please type the command you want to send to the server:")
             Dim cmd As String = Console.ReadLine()
 
@@ -267,6 +269,8 @@ Public Module Example
 
 
         '' show everything we know about the media
+        '' this could be done with media.toString() too,
+        '' but I wanted to show the members of media
         Console.WriteLine("Media name: " & media.getName)
         Console.WriteLine("Media type: " & [Enum].GetName(GetType(CasparCGMedia.MediaType), media.getMediaType))
         Console.WriteLine("Media full name (with path): " & media.getFullName)

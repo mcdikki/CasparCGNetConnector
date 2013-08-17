@@ -380,21 +380,21 @@ Public Class CasparCGCommandFactory
     'End Function
 
 
-    ' ''' <summary>
-    ' ''' Escapes the string str as needed for casparCG Server
-    ' ''' </summary>
-    ' ''' <param name="str"></param>
-    ' ''' <returns></returns>
-    ' ''' <remarks></remarks>
-    'Public Shared Function escape(ByVal str As String) As String
-    '    ' Backslash
-    '    str = str.Replace("\", "\\")
+    ''' <summary>
+    ''' Escapes the string str as needed for casparCG Server
+    ''' </summary>
+    ''' <param name="str"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Shared Function escape(ByVal str As String) As String
+        ' Backslash
+        str = str.Replace("\", "\\")
 
-    '    ' Hochkommata
-    '    str = str.Replace("'", "\'")
-    '    str = str.Replace("""", "\""")
-    '    Return str
-    'End Function
+        ' Hochkommata
+        str = str.Replace("'", "\'")
+        str = str.Replace("""", "\""")
+        Return str
+    End Function
 
 End Class
 

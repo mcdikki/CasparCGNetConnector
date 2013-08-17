@@ -65,7 +65,11 @@ Public Class CasparCGResponse
     Public Shared Function parseReturnCommand(ByVal serverMessage As String) As String
         If Not IsNothing(serverMessage) AndAlso serverMessage.Length > 3 Then
             serverMessage = serverMessage.Trim().Substring(4) ' Code wegschneiden
-            Return serverMessage.Substring(0, serverMessage.IndexOf(" "))
+            If serverMessage.Contains(" ") Then
+                Return serverMessage.Substring(0, serverMessage.IndexOf(" "))
+            Else
+                Return serverMessage
+            End If
         End If
         Return ""
     End Function

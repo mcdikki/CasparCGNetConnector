@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="CasparCGCommandFactory.vb" />
     <Compile Include="CasparCGConnection.vb" />
+    <Compile Include="CasparCGMediaFactory.vb" />
     <Compile Include="CasparCGResponse.vb" />
     <Compile Include="CasparCGTransition.vb" />
     <Compile Include="CasparCGUtil.vb" />
