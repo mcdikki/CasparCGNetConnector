@@ -131,7 +131,7 @@
     <Compile Include="commands\query\VersionServerCommand.vb" />
     <Compile Include="commands\query\VersionTemplatehostCommand.vb" />
     <Compile Include="media\CasparCGAudio.vb" />
-    <Compile Include="media\CasparCGMedia.vb" />
+    <Compile Include="media\AbstractCasparCGMedia.vb" />
     <Compile Include="media\CasparCGMovie.vb" />
     <Compile Include="media\CasparCGStill.vb" />
     <Compile Include="media\CasparCGTemplate.vb" />

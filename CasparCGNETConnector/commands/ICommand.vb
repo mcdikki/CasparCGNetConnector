@@ -87,5 +87,8 @@ Public Interface ICommand
     ''' <returns>the highest version to run this command as array of Integer</returns>
     Function getMaxAllowedVersion() As Integer()
 
+
+    Function toXml() As MSXML2.DOMDocument
+
 End Interface
 

@@ -17,24 +17,24 @@
 '' Factory for all CasparCGMedia 
 Public Class CasparCGMediaFactory
 
-    Public Shared Function createMedia(ByVal xml As String, Optional fillFromName As Boolean = False, Optional ByRef connection As CasparCGConnection = Nothing) As CasparCGMedia
+    Public Shared Function createMedia(ByVal xml As String, Optional fillFromName As Boolean = False, Optional ByRef connection As CasparCGConnection = Nothing) As AbstractCasparCGMedia
         Dim configDoc As New MSXML2.DOMDocument
-        Dim media As CasparCGMedia
+        Dim media As AbstractCasparCGMedia
         If configDoc.loadXML(xml) AndAlso configDoc.hasChildNodes AndAlso configDoc.firstChild.nodeName.Equals("media") Then
             'name und Typ bestimmen:
             Try
                 Dim pnode As MSXML2.IXMLDOMNode = configDoc.firstChild
                 Dim name = pnode.selectSingleNode("name").nodeTypedValue
                 Select Case pnode.selectSingleNode("type").nodeTypedValue
-                    Case CasparCGMedia.MediaType.AUDIO
+                    Case AbstractCasparCGMedia.MediaType.AUDIO
                         media = New CasparCGAudio(name)
-                    Case CasparCGMedia.MediaType.COLOR
+                    Case AbstractCasparCGMedia.MediaType.COLOR
                         media = New CasparCGColor(name)
-                    Case CasparCGMedia.MediaType.MOVIE
+                    Case AbstractCasparCGMedia.MediaType.MOVIE
                         media = New CasparCGMovie(name)
-                    Case CasparCGMedia.MediaType.STILL
+                    Case AbstractCasparCGMedia.MediaType.STILL
                         media = New CasparCGStill(name)
-                    Case CasparCGMedia.MediaType.TEMPLATE
+                    Case AbstractCasparCGMedia.MediaType.TEMPLATE
                         media = New CasparCGTemplate(name)
                     Case Else
                         Return Nothing

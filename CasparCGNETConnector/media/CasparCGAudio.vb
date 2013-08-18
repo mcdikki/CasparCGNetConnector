@@ -16,7 +16,7 @@
 
 <Serializable()> _
 Public Class CasparCGAudio
-    Inherits CasparCGMedia
+    Inherits AbstractCasparCGMedia
 
     Public Sub New(ByVal name As String)
         MyBase.New(name)
@@ -26,7 +26,7 @@ Public Class CasparCGAudio
         MyBase.New(name, xml)
     End Sub
 
-    Public Overrides Function clone() As CasparCGMedia
+    Public Overrides Function clone() As AbstractCasparCGMedia
         Dim media As New CasparCGAudio(getFullName)
         For Each info As String In getInfos.Keys
             media.addInfo(info, getInfo(info))
@@ -34,7 +34,7 @@ Public Class CasparCGAudio
         Return media
     End Function
 
-    Public Overrides Function getMediaType() As CasparCGMedia.MediaType
+    Public Overrides Function getMediaType() As AbstractCasparCGMedia.MediaType
         Return MediaType.AUDIO
     End Function
 

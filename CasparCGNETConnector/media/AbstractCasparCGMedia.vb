@@ -18,7 +18,7 @@
 '' movies, stills, audios, colors and template
 
 <Serializable()> _
-Public MustInherit Class CasparCGMedia
+Public MustInherit Class AbstractCasparCGMedia
     Private name As String
     Private path As String
     Private Infos As Dictionary(Of String, String)
@@ -55,7 +55,7 @@ Public MustInherit Class CasparCGMedia
         Return uuid.ToString
     End Function
 
-    Public MustOverride Function clone() As CasparCGMedia
+    Public MustOverride Function clone() As AbstractCasparCGMedia
 
     Public Function parseName(ByVal nameWithPath As String) As String
         If nameWithPath.Contains("\") Then

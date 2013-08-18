@@ -16,7 +16,7 @@
 
 <Serializable()> _
 Public Class CasparCGTemplate
-    Inherits CasparCGMedia
+    Inherits AbstractCasparCGMedia
 
     Private components As Dictionary(Of String, CasparCGTemplateComponent)
     Private data As CasparCGTemplateData
@@ -34,7 +34,7 @@ Public Class CasparCGTemplate
         parseXML(xml)
     End Sub
 
-    Public Overrides Function clone() As CasparCGMedia
+    Public Overrides Function clone() As AbstractCasparCGMedia
         Dim media As New CasparCGTemplate(getFullName)
         For Each info As String In getInfos.Keys
             media.addInfo(info, getInfo(info))
@@ -46,7 +46,7 @@ Public Class CasparCGTemplate
         Return media
     End Function
 
-    Public Overrides Function getMediaType() As CasparCGMedia.MediaType
+    Public Overrides Function getMediaType() As AbstractCasparCGMedia.MediaType
         Return MediaType.TEMPLATE
     End Function
 

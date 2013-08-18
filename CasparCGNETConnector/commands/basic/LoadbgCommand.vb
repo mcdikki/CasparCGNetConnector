@@ -22,7 +22,7 @@ Public Class LoadbgCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal media As CasparCGMedia = Nothing, Optional ByVal autostarting As Boolean = False, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
+    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal media As AbstractCasparCGMedia = Nothing, Optional ByVal autostarting As Boolean = False, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
         MyBase.New("LOADBG", "Loads a media to the background")
         InitParameter()
         Init(channel, layer, media.getFullName, autostarting, looping, seek, length, transition, filter)

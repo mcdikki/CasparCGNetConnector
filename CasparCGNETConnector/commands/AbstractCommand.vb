@@ -208,6 +208,36 @@ Public MustInherit Class AbstractCommand
         End If
     End Function
 
+    Public Function toXml() As MSXML2.DOMDocument Implements ICommand.toXml
+        Dim configDoc As New MSXML2.DOMDocument
+        Dim pnode As MSXML2.IXMLDOMNode
+        Dim node As MSXML2.IXMLDOMNode
+        ' Kopfdaten eintragen
+        pnode = configDoc.createElement("command")
+        node = configDoc.createElement("name")
+        node.nodeTypedValue = getName()
+        pnode.appendChild(node)
+        node = configDoc.createElement("type")
+        node.nodeTypedValue = Me.GetType.ToString
+        pnode.appendChild(node)
+        node = configDoc.createElement("description")
+        node.nodeTypedValue = getDescription()
+        pnode.appendChild(node)
+        'node = configDoc.createElement("reqVersion")
+        'node.nodeTypedValue = getRequiredVersion()
+        'pnode.appendChild(node)
+        'node = configDoc.createElement("maxVersion")
+        'node.nodeTypedValue = getMaxAllowedVersion()
+        'pnode.appendChild(node)
+
+        '' Add all parameter
+        For Each param In getParamters()
+            pnode.appendChild(param.toXml().firstChild)
+        Next
+        configDoc.appendChild(pnode)
+        Return configDoc
+    End Function
+
 
     ''
     '' Abstract part
@@ -270,6 +300,8 @@ Public Interface ICommandParameter
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the parameter is compatible</returns>
     Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
+
+    Function toXml() As MSXML2.DOMDocument
 End Interface
 
 Public Class CommandParameter(Of t)
@@ -417,6 +449,42 @@ Public Class CommandParameter(Of t)
             i = i + 1
         End While
         Return True
+    End Function
+
+    Public Function toXml() As MSXML2.DOMDocument Implements ICommandParameter.toXml
+        Dim configDoc As New MSXML2.DOMDocument
+        Dim pnode As MSXML2.IXMLDOMNode
+        Dim node As MSXML2.IXMLDOMNode
+        ' Kopfdaten eintragen
+        pnode = configDoc.createElement("parameter")
+        node = configDoc.createElement("name")
+        node.nodeTypedValue = getName()
+        pnode.appendChild(node)
+        node = configDoc.createElement("parameterType")
+        node.nodeTypedValue = getGenericParameterType().ToString
+        pnode.appendChild(node)
+        node = configDoc.createElement("valueType")
+        node.nodeTypedValue = getGenericType().ToString
+        pnode.appendChild(node)
+        node = configDoc.createElement("description")
+        node.nodeTypedValue = getDescription()
+        pnode.appendChild(node)
+        node = configDoc.createElement("optional")
+        node.nodeTypedValue = isOptional()
+        pnode.appendChild(node)
+        'node = configDoc.createElement("reqVersion")
+        'node.nodeTypedValue = getRequiredVersion()
+        'pnode.appendChild(node)
+        'node = configDoc.createElement("maxVersion")
+        'node.nodeTypedValue = getMaxAllowedVersion()
+        'pnode.appendChild(node)
+        If isSet() Then
+            node = configDoc.createElement("value")
+            node.nodeTypedValue = getValue()
+            pnode.appendChild(node)
+        End If
+        configDoc.appendChild(pnode)
+        Return configDoc
     End Function
 
 End Class

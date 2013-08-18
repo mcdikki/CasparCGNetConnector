@@ -27,7 +27,7 @@ Public Class ThumbnailGenerateCommand
         DirectCast(getParameter("media"), CommandParameter(Of String)).setValue(media)
     End Sub
 
-    Public Sub New(ByVal media As CasparCGMedia)
+    Public Sub New(ByVal media As AbstractCasparCGMedia)
         MyBase.New("THUMBNAIL GENERATE", "Requests the server to (re-)generate the thumbnails for a specific media file")
         InitParameter()
         DirectCast(getParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
