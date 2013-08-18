@@ -28,6 +28,7 @@ Public Class CasparCGCommandFactory
         StopCommand
         LoadCommand
         LoadbgCommand
+        RouteCommand
         PauseCommand
         CallCommand
         SwapCommand
