@@ -15,37 +15,46 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 '' Factory for all CasparCGMedia 
-Module CasparCGMediaFactory
+Public Class CasparCGMediaFactory
 
-    Public Function createMedia(ByVal xml As String) As CasparCGMedia
+    Public Shared Function createMedia(ByVal xml As String, Optional fillFromName As Boolean = False, Optional ByRef connection As CasparCGConnection = Nothing) As CasparCGMedia
         Dim configDoc As New MSXML2.DOMDocument
         Dim media As CasparCGMedia
         If configDoc.loadXML(xml) AndAlso configDoc.hasChildNodes AndAlso configDoc.firstChild.nodeName.Equals("media") Then
             'name und Typ bestimmen:
-            Dim pnode As MSXML2.IXMLDOMNode = configDoc.firstChild
-            Dim name = pnode.selectSingleNode("name").nodeTypedValue
-            Select Case pnode.selectSingleNode("type").nodeTypedValue
-                Case CasparCGMedia.MediaType.AUDIO
-                    media = New CasparCGAudio(name, pnode.selectSingleNode("infos").xml)
-                Case CasparCGMedia.MediaType.COLOR
-                    media = New CasparCGColor(name, pnode.selectSingleNode("infos").xml)
-                Case CasparCGMedia.MediaType.MOVIE
-                    media = New CasparCGMovie(name, pnode.selectSingleNode("infos").xml)
-                    media.setBase64Thumb(pnode.selectSingleNode("thumb").nodeTypedValue)
-                Case CasparCGMedia.MediaType.STILL
-                    media = New CasparCGStill(name, pnode.selectSingleNode("infos").xml)
-                    media.setBase64Thumb(pnode.selectSingleNode("thumb").nodeTypedValue)
-                Case CasparCGMedia.MediaType.TEMPLATE
-                    media = New CasparCGTemplate(name, pnode.selectSingleNode("infos").xml)
-                Case Else
-                    Return Nothing
-            End Select
+            Try
+                Dim pnode As MSXML2.IXMLDOMNode = configDoc.firstChild
+                Dim name = pnode.selectSingleNode("name").nodeTypedValue
+                Select Case pnode.selectSingleNode("type").nodeTypedValue
+                    Case CasparCGMedia.MediaType.AUDIO
+                        media = New CasparCGAudio(name)
+                    Case CasparCGMedia.MediaType.COLOR
+                        media = New CasparCGColor(name)
+                    Case CasparCGMedia.MediaType.MOVIE
+                        media = New CasparCGMovie(name)
+                    Case CasparCGMedia.MediaType.STILL
+                        media = New CasparCGStill(name)
+                    Case CasparCGMedia.MediaType.TEMPLATE
+                        media = New CasparCGTemplate(name)
+                    Case Else
+                        Return Nothing
+                End Select
 
-            Return media
-        Else
-            logger.warn("CasparCGMediaFactory.createMedia: Can't read xml. No media created. Reason: No or a wrong xml definition was given.")
-            Return Nothing
+                If fillFromName AndAlso Not IsNothing(connection) Then
+                    media.fillMediaInfo(connection)
+                    Dim cmd As New ThumbnailRetrieveCommand(media)
+                    If cmd.execute(connection).isOK Then media.setBase64Thumb(cmd.getResponse.getXMLData)
+                ElseIf Not IsNothing(pnode.selectSingleNode("infos")) Then
+                    media.parseXML(pnode.selectSingleNode("infos").xml)
+                    media.setBase64Thumb(pnode.selectSingleNode("thumb").nodeTypedValue)
+                End If
+
+                Return media
+            Catch e As Exception
+                logger.err("CasparCGMediaFactory.createMedia: Error while parsing a CasparCGMedia from xml definition. Error was: " + e.Message)
+            End Try
         End If
-
+        logger.warn("CasparCGMediaFactory.createMedia: Can't read xml. No media created. Reason: No or a wrong xml definition was given.")
+        Return Nothing
     End Function
-End Module
+End Class

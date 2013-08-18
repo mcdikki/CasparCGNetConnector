@@ -178,7 +178,7 @@ Public MustInherit Class CasparCGMedia
         Return out
     End Function
 
-    Public Overridable Function toXml() As String
+    Public Overridable Function toXml() As MSXML2.DOMDocument
         Dim configDoc As New MSXML2.DOMDocument
         Dim pnode As MSXML2.IXMLDOMNode
         Dim node As MSXML2.IXMLDOMNode
@@ -212,8 +212,8 @@ Public MustInherit Class CasparCGMedia
         node.nodeTypedValue = getBase64Thumb()
         pnode.appendChild(node)
 
-        configDoc.appendChild(pnode) 
-        Return configDoc.xml
+        configDoc.appendChild(pnode)
+        Return configDoc
     End Function
 
     ''

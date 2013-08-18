@@ -73,6 +73,7 @@
     <Compile Include="commands\basic\AddCommand.vb" />
     <Compile Include="commands\basic\ByeCommand.vb" />
     <Compile Include="commands\basic\CallCommand.vb" />
+    <Compile Include="commands\basic\PlayCommand.vb" />
     <Compile Include="commands\cg\CgAddCommand.vb" />
     <Compile Include="commands\cg\CgRemoveCommand.vb" />
     <Compile Include="commands\cg\CgClearCommand.vb" />
@@ -114,7 +115,7 @@
     <Compile Include="commands\basic\LoadCommand.vb" />
     <Compile Include="commands\basic\LoadbgCommand.vb" />
     <Compile Include="commands\basic\PauseCommand.vb" />
-    <Compile Include="commands\basic\PlayCommand.vb" />
+    <Compile Include="commands\basic\RouteCommand.vb" />
     <Compile Include="commands\basic\PrintCommand.vb" />
     <Compile Include="commands\basic\RemoveCommand.vb" />
     <Compile Include="commands\basic\RestartCommand.vb" />
