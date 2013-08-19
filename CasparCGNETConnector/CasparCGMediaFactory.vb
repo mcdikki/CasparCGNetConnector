@@ -47,6 +47,8 @@ Public Class CasparCGMediaFactory
                 ElseIf Not IsNothing(pnode.selectSingleNode("infos")) Then
                     media.parseXML(pnode.selectSingleNode("infos").xml)
                     media.setBase64Thumb(pnode.selectSingleNode("thumb").nodeTypedValue)
+                ElseIf Not IsNothing(pnode.selectSingleNode("template")) Then
+                    media.parseXML(pnode.selectSingleNode("template").xml)
                 End If
 
                 Return media
