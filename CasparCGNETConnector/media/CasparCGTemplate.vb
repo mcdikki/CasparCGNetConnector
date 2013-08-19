@@ -127,6 +127,35 @@ Public Class CasparCGTemplate
         Return out
     End Function
 
+    Public Overrides Function toXml() As MSXML2.DOMDocument
+        Dim domDoc As MSXML2.DOMDocument = MyBase.toXml
+        Dim pnode As MSXML2.IXMLDOMNode = domDoc.firstChild
+        Dim node As MSXML2.IXMLDOMElement = domDoc.createElement("template")
+        pnode.removeChild(pnode.selectSingleNode("infos"))
+
+        ' Add attributes to template tag
+        For Each info As String In getInfos.Keys
+            node.setAttribute(info, getInfo(info))
+        Next
+
+        ' add components
+        Dim cnode = domDoc.createElement("components")
+        For Each comp In getComponents()
+            cnode.appendChild(comp.toXML.firstChild)
+        Next
+        node.appendChild(cnode)
+
+        ' add instances
+        Dim inode = domDoc.createElement("instances")
+        For Each inst In data.getInstances
+            inode.appendChild(inst.toXML.firstChild)
+        Next
+        node.appendChild(inode)
+
+        pnode.appendChild(node)
+        Return domDoc
+    End Function
+
 End Class
 
 Public Class CasparCGTemplateData
@@ -176,12 +205,15 @@ Public Class CasparCGTemplateData
         Return instances.ContainsKey(instanceName)
     End Function
 
-    Public Function toXML() As String
-        Dim xml As String = "<templateData>"
+    Public Function toXML() As MSXML2.DOMDocument
+        Dim domDoc As New MSXML2.DOMDocument
+        domDoc.appendChild(domDoc.createElement("templateData"))
+
         For Each instance As CasparCGTemplateInstance In instances.Values
-            xml = xml & instance.toXML
-        Next
-        Return xml & "</templateData>"
+            domDoc.firstChild.appendChild(instance.toXML.firstChild)
+        Next 
+
+        Return domDoc
     End Function
 
 End Class
@@ -233,12 +265,17 @@ Public Class CasparCGTemplateComponent
         Return properties.ContainsKey(name)
     End Function
 
-    Public Function toXML() As String
-        Dim xml As String = "<component name='" & name & "'>"
+    Public Function toXML() As MSXML2.DOMDocument
+        Dim domDoc As New MSXML2.DOMDocument
+        Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("component")
+        pnode.setAttribute("name", name)
+
         For Each prop As CasparCGTemplateComponentProperty In properties.Values
-            xml = xml & prop.toXML
+            pnode.appendChild(prop.toXML.firstChild)
         Next
-        Return xml & "</component>"
+        domDoc.appendChild(pnode)
+
+        Return domDoc
     End Function
 
 End Class
@@ -267,8 +304,15 @@ Public Class CasparCGTemplateComponentProperty
         End If
     End Sub
 
-    Public Function toXML() As String
-        Return "<property name='" & propertyName & "' type='" & propertyType & "' info='" & propertyInfo & "'/>"
+    Public Function toXML() As MSXML2.DOMDocument
+        Dim domDoc As New MSXML2.DOMDocument
+        Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("property")
+        pnode.setAttribute("name", propertyName)
+        pnode.setAttribute("type", propertyType)
+        pnode.setAttribute("info", propertyInfo)
+        domDoc.appendChild(pnode)
+        Return domDoc
+        'Return "<property name='" & propertyName & "' type='" & propertyType & "' info='" & propertyInfo & "'/>"
     End Function
 
 End Class
@@ -318,11 +362,33 @@ Public Class CasparCGTemplateInstance
         Return name
     End Function
 
-    Public Function toXML() As String
-        Dim xml As String = "<componentData id='" & getName() & "'>"
-        For Each prop As CasparCGTemplateComponentProperty In values.Keys
-            xml = xml & "<data id='" & prop.propertyName & "' value='" & values.Item(prop) & "'>"
-        Next
-        Return xml & "</componentData>"
+    Public Function toXML() As MSXML2.DOMDocument
+        Dim domDoc As New MSXML2.DOMDocument
+        Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("instance")
+        pnode.setAttribute("name", getName)
+        pnode.setAttribute("type", getComponent.getName)
+        domDoc.appendChild(pnode)
+
+        Return domDoc
     End Function
+
+    'Public Function toXML() As MSXML2.DOMDocument
+    '    Dim domDoc As New MSXML2.DOMDocument
+    '    Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("componentData")
+    '    pnode.setAttribute("id", getName)
+
+    '    Dim node As MSXML2.IXMLDOMElement
+    '    'Dim xml As String = "<componentData id='" & getName() & "'>"
+    '    For Each prop As CasparCGTemplateComponentProperty In values.Keys
+    '        node = domDoc.createElement("data")
+    '        node.setAttribute("id", prop.propertyName)
+    '        node.setAttribute("value", values.Item(prop))
+    '        pnode.appendChild(node)
+    '        'xml = xml & "<data id='" & prop.propertyName & "' value='" & values.Item(prop) & "'>"
+    '    Next
+    '    domDoc.appendChild(pnode)
+
+    '    Return domDoc
+    '    'Return xml & "</componentData>"
+    'End Function
 End Class

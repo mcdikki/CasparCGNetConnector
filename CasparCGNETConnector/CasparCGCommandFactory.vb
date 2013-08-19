@@ -111,7 +111,6 @@ Public Class CasparCGCommandFactory
             command = "CasparCGNETConnector." & command
         End If
         Dim cmd As ICommand = getInstance(Type.GetType(command))
-        'Throw New NotImplementedException("The getCommand() function is not implemented yet. Please instanciate the desired command class by your self")
         Return cmd
     End Function
 
