@@ -38,7 +38,7 @@ Public MustInherit Class AbstractCommand
     ''' <param name="connection">the CasparCGConnection to execute the command on</param>
     ''' <returns>a CasparCGResponse if, and only if the command is compatible to the connected server version, else throws a NotSupportedException</returns>
     Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse Implements ICommand.execute
-        If isCompatible(connection) AndAlso connection.strictVersionControl Then
+        If connection.strictVersionControl OrElse isCompatible(connection) Then
             response = connection.sendCommand(getCommandString)
             Return getResponse()
         Else

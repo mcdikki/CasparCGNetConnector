@@ -174,9 +174,12 @@ Public Class CasparCGConnection
     Private Function readServerVersion() As String
         If isConnected() Then
             Dim cmd As New VersionServerCommand()
+            Dim tmpStrict As Boolean = strictVersionControl()
+            strictVersionControl = False
             If cmd.execute(Me).isOK Then
                 Return cmd.getResponse.getData
             End If
+            strictVersionControl = tmpStrict
         End If
         Return "-1.-1.-1"
     End Function
