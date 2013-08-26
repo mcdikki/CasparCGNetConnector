@@ -18,6 +18,7 @@ Imports System.Net
 Imports System.Net.Sockets
 Imports System.Threading
 
+
 Public Class CasparCGConnection
     Implements IDisposable
 

@@ -154,7 +154,7 @@ Public Module Example
         '' Pick a random command and fill the needed parameters by asking the user
         Dim r As New System.Random(System.DateTime.Now.Millisecond)
         Dim cmd As ICommand = commands.Item(r.Next(0, commands.Count - 1))
-        Console.WriteLine("Picked " & cmd.getName & " as command. " & vbNewLine & "Describtion: " & cmd.getDescribtion & vbNewLine & "Please fill the following parameters:")
+        Console.WriteLine("Picked " & cmd.getName & " as command. " & vbNewLine & "Describtion: " & cmd.getDescription & vbNewLine & "Please fill the following parameters:")
 
         '' Now comes the dirty part.
         '' we need to dynamically cast the parameter object and its value object
@@ -162,7 +162,7 @@ Public Module Example
             Dim parameter = CTypeDynamic(p, p.getGenericParameterType)
             If Not parameter.isOptional Then
                 Dim value = CTypeDynamic(parameter.getDefault(), p.getGenericType)
-                Console.WriteLine("Parameter: " & p.getName & " (Describtion: " & p.getDescribtion & "): ")
+                Console.WriteLine("Parameter: " & p.getName & " (Describtion: " & p.getDescription & "): ")
                 value = CTypeDynamic(Console.ReadLine(), p.getGenericType)
                 parameter.setValue(value)
             End If
@@ -235,7 +235,7 @@ Public Module Example
 
         '' Define new media with name amb
         Console.WriteLine("Creating media..")
-        Dim media As CasparCGMedia = New CasparCGMovie("amb")
+        Dim media As AbstractCasparCGMedia = New CasparCGMovie("amb")
 
         '' Fill the informations on channel 1 - the layer will automatically be choosen to be the first free layer.
         Console.WriteLine("Filling media...")
@@ -272,7 +272,7 @@ Public Module Example
         '' this could be done with media.toString() too,
         '' but I wanted to show the members of media
         Console.WriteLine("Media name: " & media.getName)
-        Console.WriteLine("Media type: " & [Enum].GetName(GetType(CasparCGMedia.MediaType), media.getMediaType))
+        Console.WriteLine("Media type: " & [Enum].GetName(GetType(AbstractCasparCGMedia.MediaType), media.getMediaType))
         Console.WriteLine("Media full name (with path): " & media.getFullName)
         Console.WriteLine("Media path: " & media.getPath)
         Console.WriteLine("Media has thumbnail: " & (media.getBase64Thumb.Length > 0).ToString)
