@@ -31,6 +31,7 @@ Public Class CasparCGConnection
     Private tryConnect As Boolean = False
     Private ccgVersion As String = "-1.-1.-1"
     Private channels As Integer = 0
+    Private WithEvents timer As New Timers.Timer(500)
 
     ''' <summary>
     ''' Reads or sets the number of retires to perform if a connection can't be established
@@ -50,6 +51,12 @@ Public Class CasparCGConnection
     ''' </summary>
     Public Property strictVersionControl As Boolean = True
 
+    ''' <summary>
+    ''' Fires if this connection has been disconnected.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    Public Event disconnected(ByRef sender As Object)
+
 
     ''' <summary>
     ''' Creates a new CasparCGConnection to the given serverAddress and serverPort
@@ -64,6 +71,8 @@ Public Class CasparCGConnection
         client = New TcpClient()
         client.SendBufferSize = buffersize
         client.ReceiveBufferSize = buffersize
+        client.ReceiveTimeout = timeout
+        client.SendTimeout = timeout
         client.NoDelay = True
     End Sub
 
@@ -76,8 +85,8 @@ Public Class CasparCGConnection
         If Not client.Connected Then
             Try
                 client.Connect(serveraddress, serverport)
-                client.NoDelay = True
                 If client.Connected Then
+                    timer.Start()
                     connectionAttemp = 0
                     logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
                     ccgVersion = readServerVersion()
@@ -143,10 +152,20 @@ Public Class CasparCGConnection
         If isConnected() Then
             Dim bye As New ByeCommand()
             bye.execute(Me)
-            client.Client.Close()
-            ccgVersion = "0.0.0"
-            channels = 0
+            closed()
         End If
+    End Sub
+
+    Private Sub closed()
+        timer.Stop()
+        client.Client.Close()
+        RaiseEvent disconnected(Me)
+        ccgVersion = "0.0.0"
+        channels = 0
+    End Sub
+
+    Private Sub checkConnection() Handles timer.Elapsed
+        If Not isConnected() Then close()
     End Sub
 
     ''' <summary>
@@ -277,7 +296,7 @@ Public Class CasparCGConnection
             ' send cmd
             logger.debug("CasparCGConnection.sendCommand: Send command: " & cmd)
             client.GetStream.Write(System.Text.UTF8Encoding.UTF8.GetBytes(cmd & vbCrLf), 0, cmd.Length + 2)
-            Dim timer As New Stopwatch
+            Dim timer, timeouttimer As New Stopwatch
             timer.Start()
 
             ' Waiting for the response:
@@ -287,23 +306,33 @@ Public Class CasparCGConnection
                 '                                                                                                                                                                                                                                                                                                         '' Version BUGFIX    201 THUMBNAIL RETRIEVE OK
                 Do Until (input.Trim().Length > 3) AndAlso (((input.Trim().Substring(0, 3) = "201" OrElse input.Trim().Substring(0, 3) = "200") AndAlso (input.EndsWith(vbLf & vbCrLf) OrElse input.EndsWith(vbCrLf & " " & vbCrLf))) OrElse (input.Trim().Substring(0, 3) <> "201" AndAlso input.Trim().Substring(0, 3) <> "200" AndAlso input.EndsWith(vbCrLf)) OrElse (input.Trim().Length > 16 AndAlso input.Trim().Substring(0, 14) = "201 VERSION OK" AndAlso input.EndsWith(vbCrLf)) OrElse (input.Trim().Length > 27 AndAlso input.Trim().Substring(0, 25) = "201 THUMBNAIL RETRIEVE OK" AndAlso input.EndsWith(vbCrLf)))
                     If client.Available > 0 Then
+                        timeouttimer.Stop()
                         size = client.Available
                         ReDim buffer(size)
                         client.GetStream.Read(buffer, 0, size)
                         input = input & System.Text.UTF8Encoding.UTF8.GetString(buffer, 0, size)
+                    Else
+                        If timeouttimer.ElapsedMilliseconds > timeout Then
+                            Throw New TimeoutException("The remote host took to long for an answer. Timeout = " & timeout & "ms.")
+                        End If
+                        If Not timeouttimer.IsRunning Then timeouttimer.Restart()
                     End If
                 Loop
+
+                timer.Stop()
+                logger.debug("CasparCGConnection.sendCommand: Waited " & timer.ElapsedMilliseconds & "ms for an answer and received " & input.Length & " Bytes to read.")
+                connectionLock.Release()
+                logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "': " & input)
+                Return New CasparCGResponse(input, cmd)
+
             Catch e As Exception
                 logger.err("CasparCGConnection.sendCommand: Error: " & e.Message)
+                closed()
+                Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
             End Try
-            timer.Stop()
-            logger.debug("CasparCGConnection.sendCommand: Waited " & timer.ElapsedMilliseconds & "ms for an answer and received " & input.Length & " Bytes to read.")
-            connectionLock.Release()
-            logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "': " & input)
-            Return New CasparCGResponse(input, cmd)
         Else
             logger.err("CasparCGConnection.sendCommand: Not connected to server. Can't send command.")
-            Return Nothing
+            Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
         End If
     End Function
 
