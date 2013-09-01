@@ -56,6 +56,11 @@ Public Class CasparCGConnection
     ''' </summary>
     ''' <param name="sender"></param>
     Public Event disconnected(ByRef sender As Object)
+    ''' <summary>
+    ''' Fires if this connection has been connected to the remote host.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    Public Event connected(ByRef sender As Object)
 
 
     ''' <summary>
@@ -91,6 +96,7 @@ Public Class CasparCGConnection
                     logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
                     ccgVersion = readServerVersion()
                     channels = readServerChannels()
+                    RaiseEvent connected(Me)
                 End If
             Catch e As Exception
                 logger.warn(e.Message)
