@@ -38,7 +38,7 @@ Public Class CinfCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return "CINF"
+        Return escape("CINF '" & DirectCast(getParameter("media"), CommandParameter(Of String)).getValue & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

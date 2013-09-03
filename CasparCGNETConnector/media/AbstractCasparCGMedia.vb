@@ -114,7 +114,7 @@ Public MustInherit Class AbstractCasparCGMedia
                     logger.err("CasparCGMedia.fillMediaInfo: ServerMessages dump: " & cmd.getResponse.getServerMessage)
                 End If
             Else
-                logger.err("CasparCGMedia.fillMediaInfo: Error getting media information. Server messages was: " & cmd.getResponse.getServerMessage)
+                logger.err("CasparCGMedia.fillMediaInfo: Error getting media information for " & getName() & ". Server messages was: " & cmd.getResponse.getServerMessage)
             End If
             clear.execute(connection)
         End If

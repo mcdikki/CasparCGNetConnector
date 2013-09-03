@@ -38,8 +38,8 @@ Public Class ThumbnailGenerateCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd = "THUMBNAIL GENERATE " & DirectCast(getParameter("media"), CommandParameter(Of String)).getValue
-        Return cmd
+        Dim cmd = "THUMBNAIL GENERATE '" & DirectCast(getParameter("media"), CommandParameter(Of String)).getValue & "'"
+        Return escape(cmd)
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

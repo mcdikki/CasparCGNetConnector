@@ -278,7 +278,8 @@ Public Class CasparCGConnection
         If isConnected(tryConnect) Then
             connectionLock.WaitOne(timeout)
             logger.debug("CasparCGConnection.sendAsyncCommand: Send command: " & cmd)
-            client.GetStream.Write(System.Text.UTF8Encoding.UTF8.GetBytes(cmd & vbCrLf), 0, cmd.Length + 2)
+            Dim buffer() As Byte = System.Text.Encoding.UTF8.GetBytes(cmd & vbCrLf)
+            client.GetStream.Write(buffer, 0, buffer.Length)
             logger.debug("CasparCGConnection.sendAsyncCommand: Command sent")
             connectionLock.Release()
         Else : logger.err("CasparCGConnection.sendAsyncCommand: Not connected to server. Can't send command.")
@@ -304,7 +305,9 @@ Public Class CasparCGConnection
 
             ' send cmd
             logger.debug("CasparCGConnection.sendCommand: Send command: " & cmd)
-            client.GetStream.Write(System.Text.UTF8Encoding.UTF8.GetBytes(cmd & vbCrLf), 0, cmd.Length + 2)
+
+            buffer = System.Text.Encoding.UTF8.GetBytes(cmd & vbCrLf)
+            client.GetStream.Write(buffer, 0, buffer.Length)
             Dim timer, timeouttimer As New Stopwatch
             timer.Start()
 
@@ -319,10 +322,10 @@ Public Class CasparCGConnection
                         size = client.Available
                         ReDim buffer(size)
                         client.GetStream.Read(buffer, 0, size)
-                        input = input & System.Text.UTF8Encoding.UTF8.GetString(buffer, 0, size)
+                        input = input & System.Text.Encoding.UTF8.GetString(buffer, 0, size)
                     Else
                         If timeouttimer.ElapsedMilliseconds > timeout Then
-                            Throw New TimeoutException("The remote host took to long for an answer. Timeout = " & timeout & "ms.")
+                            Throw New TimeoutException("The remote host took to long for an answer. Timeout after " & timeout & "ms.")
                         End If
                         If Not timeouttimer.IsRunning Then timeouttimer.Restart()
                     End If

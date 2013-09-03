@@ -33,7 +33,7 @@ Public Class DataRemoveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return "DATA REMOVE " & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue()
+        Return escape("DATA REMOVE '" & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue() & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
