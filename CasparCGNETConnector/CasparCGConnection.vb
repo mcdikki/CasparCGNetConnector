@@ -180,7 +180,10 @@ Public Class CasparCGConnection
     ''' <returns>true, if and only if a connection is established and the sever supports OSC</returns>
     ''' <remarks></remarks>
     Public Function isOSCSupported() As Boolean
-        If getVersionPart(0) = 2 Then
+        If My.Computer.Info.OSFullName.Contains("Windows XP") Then
+            logger.log("CasparCGConnection.isOSCSupported: Dected Windows XP. OSC is not supported on WinXP.")
+            Return False
+        ElseIf getVersionPart(0) = 2 Then
             If getVersionPart(1) = 0 Then
                 If getVersionPart(2) <= 3 Then
                     Return False

@@ -191,8 +191,9 @@ Public MustInherit Class AbstractCommand
         str = str.Replace("\", "\\")
 
         ' Hochkommata
-        str = str.Replace("'", "\'")
+        'str = str.Replace("'", "\'")
         str = str.Replace("""", "\""")
+        str = str.Replace("'", """")
         Return str
     End Function
 
