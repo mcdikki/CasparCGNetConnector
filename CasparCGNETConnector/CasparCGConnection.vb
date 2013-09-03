@@ -51,6 +51,8 @@ Public Class CasparCGConnection
     ''' </summary>
     Public Property strictVersionControl As Boolean = True
 
+    Public Property disconnectOnTimeout As Boolean = True
+
     ''' <summary>
     ''' Fires if this connection has been disconnected.
     ''' </summary>
@@ -279,8 +281,13 @@ Public Class CasparCGConnection
             connectionLock.WaitOne(timeout)
             logger.debug("CasparCGConnection.sendAsyncCommand: Send command: " & cmd)
             Dim buffer() As Byte = System.Text.Encoding.UTF8.GetBytes(cmd & vbCrLf)
-            client.GetStream.Write(buffer, 0, buffer.Length)
-            logger.debug("CasparCGConnection.sendAsyncCommand: Command sent")
+            Try
+                client.GetStream.Write(buffer, 0, buffer.Length)
+                logger.debug("CasparCGConnection.sendAsyncCommand: Command sent")
+            Catch e As Exception
+                logger.err("CasparCGConnection.sendAsyncCommand: Error sending the command: " & cmd)
+                logger.err("CasparCGConnection.sendAsyncCommand: Error was: " & e.Message)
+            End Try
             connectionLock.Release()
         Else : logger.err("CasparCGConnection.sendAsyncCommand: Not connected to server. Can't send command.")
         End If
@@ -339,8 +346,13 @@ Public Class CasparCGConnection
 
             Catch e As Exception
                 logger.err("CasparCGConnection.sendCommand: Error: " & e.Message)
-                closed()
-                Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
+                logger.debug("CasparCGConnection.sendCommand: So far reveived from server:" & vbNewLine & input)
+                If disconnectOnTimeout Then
+                    closed()
+                    Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
+                Else
+                    Return New CasparCGResponse("000 TIMEOUT", cmd)
+                End If
             End Try
         Else
             logger.err("CasparCGConnection.sendCommand: Not connected to server. Can't send command.")
