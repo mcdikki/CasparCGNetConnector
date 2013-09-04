@@ -23,7 +23,7 @@ Public MustInherit Class AbstractCasparCGMedia
     Private path As String
     Private Infos As Dictionary(Of String, String)
     Private updated As Boolean = False
-    Private uuid As New Guid
+    Private uuid As String
     Private thumbB64 As String = ""
 
     Public Enum MediaType
@@ -40,7 +40,7 @@ Public MustInherit Class AbstractCasparCGMedia
         Me.name = parseName(name)
         Me.path = parsePath(name)
         Infos = New Dictionary(Of String, String)
-        uuid = Guid.NewGuid
+        uuid = getFullName() & "(" & getMediaType.ToString & ")"
     End Sub
 
     Public Sub New(ByVal name As String, ByVal xml As String)
@@ -48,11 +48,11 @@ Public MustInherit Class AbstractCasparCGMedia
         Me.path = parsePath(name)
         Infos = New Dictionary(Of String, String)
         parseXML(xml)
-        uuid = Guid.NewGuid
+        uuid = getFullName() & "(" & getMediaType.ToString & ")"
     End Sub
 
     Public Function getUuid() As String
-        Return uuid.ToString
+        Return uuid
     End Function
 
     Public MustOverride Function clone() As AbstractCasparCGMedia
@@ -120,6 +120,20 @@ Public MustInherit Class AbstractCasparCGMedia
         End If
     End Sub
 
+    ''' <summary>
+    ''' Retrieves a thumbnail (if present and support) using the given serverconnection.
+    ''' </summary>
+    ''' <param name="connection">the connection to use</param>
+    Public Overridable Sub fillThumbnail(ByRef connection As CasparCGConnection)
+        ' get Thumbnail
+        Dim cmd = New ThumbnailRetrieveCommand(name)
+        If getMediaType() = MediaType.MOVIE Or getMediaType() = MediaType.STILL AndAlso cmd.isCompatible(connection) Then
+            If cmd.isCompatible(connection) AndAlso cmd.execute(connection).isOK Then
+                setBase64Thumb(cmd.getResponse.getData)
+            End If
+        End If
+    End Sub
+
     Public Function getName() As String
         Return name
     End Function
@@ -160,6 +174,14 @@ Public MustInherit Class AbstractCasparCGMedia
             Infos.Item(info) = value
         Else
             Infos.Add(info, value)
+        End If
+    End Sub
+
+    Public Sub setInfos(ByVal infos As Dictionary(Of String, String))
+        If Not IsNothing(infos) Then
+            Me.Infos = infos
+        Else
+            Me.Infos.Clear()
         End If
     End Sub
 

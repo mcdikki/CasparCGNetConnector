@@ -56,7 +56,7 @@ Public Class CasparCGTemplate
         If configDoc.hasChildNodes Then
             '' Attribute verarbeiten
             For Each attrib As MSXML2.IXMLDOMNode In configDoc.selectSingleNode("template").attributes
-                addInfo(attrib.nodeName, attrib.nodeTypedValue)
+                setInfo(attrib.nodeName, attrib.nodeTypedValue)
             Next
 
             '' Components verarbeiten
