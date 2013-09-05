@@ -25,6 +25,8 @@ Public MustInherit Class AbstractCasparCGMedia
     Private updated As Boolean = False
     Private uuid As String
     Private thumbB64 As String = ""
+    Public Event mediaFilled(ByRef sender)
+    Public Event thumbnailFilled(ByRef sender)
 
     Public Enum MediaType
         STILL = 0
@@ -109,6 +111,7 @@ Public MustInherit Class AbstractCasparCGMedia
                     Else
                         parseXML(infoDoc.selectSingleNode("producer").selectSingleNode("destination").selectSingleNode("producer").xml)
                     End If
+                    RaiseEvent mediaFilled(Me)
                 Else
                     logger.err("CasparCGMedia.fillMediaInfo: Error loading xml data received from server for " & toString() & ". Error: " & infoDoc.parseError.reason)
                     logger.err("CasparCGMedia.fillMediaInfo: ServerMessages dump: " & cmd.getResponse.getServerMessage)
@@ -130,6 +133,7 @@ Public MustInherit Class AbstractCasparCGMedia
         If getMediaType() = MediaType.MOVIE Or getMediaType() = MediaType.STILL AndAlso cmd.isCompatible(connection) Then
             If cmd.isCompatible(connection) AndAlso cmd.execute(connection).isOK Then
                 setBase64Thumb(cmd.getResponse.getData)
+                RaiseEvent thumbnailFilled(Me)
             End If
         End If
     End Sub
