@@ -78,8 +78,8 @@ Public Class CasparCGConnection
         client = New TcpClient()
         client.SendBufferSize = buffersize
         client.ReceiveBufferSize = buffersize
-        client.ReceiveTimeout = timeout
-        client.SendTimeout = timeout
+        'client.ReceiveTimeout = timeout
+        'client.SendTimeout = timeout
         client.NoDelay = True
     End Sub
 
@@ -349,8 +349,10 @@ Public Class CasparCGConnection
                 logger.debug("CasparCGConnection.sendCommand: So far reveived from server:" & vbNewLine & input)
                 If disconnectOnTimeout Then
                     closed()
+                    connectionLock.Release()
                     Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
                 Else
+                    connectionLock.Release()
                     Return New CasparCGResponse("000 TIMEOUT", cmd)
                 End If
             End Try
