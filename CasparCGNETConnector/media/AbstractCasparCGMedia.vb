@@ -126,7 +126,7 @@ Public MustInherit Class AbstractCasparCGMedia
     ''' <param name="connection">the connection to use</param>
     Public Overridable Sub fillThumbnail(ByRef connection As CasparCGConnection)
         ' get Thumbnail
-        Dim cmd = New ThumbnailRetrieveCommand(name)
+        Dim cmd = New ThumbnailRetrieveCommand(Me)
         If getMediaType() = MediaType.MOVIE Or getMediaType() = MediaType.STILL AndAlso cmd.isCompatible(connection) Then
             If cmd.isCompatible(connection) AndAlso cmd.execute(connection).isOK Then
                 setBase64Thumb(cmd.getResponse.getData)
