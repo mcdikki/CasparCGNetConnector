@@ -1,0 +1,46 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+CasparCGNetConnectorExample
+</name>
+</assembly>
+<members>
+<member name="M:CasparCGNetConnectorExample.Example.Test_Manual_Command">
+	<summary>
+ In this Sub, we will use the manual way of using the Command classes to execute a command on the server
+ </summary>
+</member><member name="M:CasparCGNetConnectorExample.Example.Test_Automatic_Command">
+	<summary>
+ In this sub, we will see how to explore and use the commands and their parameters in code. This is usefull if you want to built an UI.
+ </summary>
+</member><member name="M:CasparCGNetConnectorExample.Example.Test_Plaintext_Command">
+	<summary>
+ In this method, we will look how to send plaintext commands like in old school style ;-)
+ </summary>
+</member><member name="M:CasparCGNetConnectorExample.Example.Test_CasparCGMedia_Classes">
+	<summary>
+ We will have a look at the CasparCGMedia classes here and how we can use them. 
+ </summary>
+	<remarks></remarks>
+</member><member name="T:CasparCGNetConnectorExample.Example">
+	<summary>
+ This is an example of how to use the CasparCGNetConnector
+ </summary>
+	<remarks></remarks>
+</member><member name="P:CasparCGNetConnectorExample.My.Resources.Resources.ResourceManager">
+	<summary>
+  Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+</summary>
+</member><member name="P:CasparCGNetConnectorExample.My.Resources.Resources.Culture">
+	<summary>
+  Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+  Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+</summary>
+</member><member name="T:CasparCGNetConnectorExample.My.Resources.Resources">
+	<summary>
+  Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+</summary>
+</member>
+</members>
+</doc>

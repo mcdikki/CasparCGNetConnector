@@ -1,0 +1,14 @@
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNetConnectorExample.exe.config
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.vbprojResolveAssemblyReference.cache
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.Resources.resources
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.vbproj.GenerateResource.Cache
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNetConnectorExample.exe
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNetConnectorExample.pdb
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNetConnectorExample.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\logger.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.pdb
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.exe
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.pdb
