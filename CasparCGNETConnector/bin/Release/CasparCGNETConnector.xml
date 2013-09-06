@@ -22,6 +22,12 @@ CasparCGNETConnector
 	<summary>
  Gets or sets whether strict version control is activated. If True, only commands that pass the isCompatible() check will be executed.
  </summary>
+</member><member name="P:CasparCGNETConnector.CasparCGConnection.checkInterval">
+	<summary>
+ Reads or sets the interval in milliseconds the connection status will be checked.
+ </summary>
+	<value>The number of milliseconds between connection checks</value>
+	<returns>The number of milliseconds between connection checks</returns>
 </member><member name="E:CasparCGNETConnector.CasparCGConnection.disconnected">
 	<summary>
  Fires if this connection has been disconnected.

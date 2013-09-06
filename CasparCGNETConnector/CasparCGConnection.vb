@@ -27,11 +27,12 @@ Public Class CasparCGConnection
     Private serverport As Integer = 5250 ' std. acmp2 port
     Private client As TcpClient
     Private connectionAttemp = 0
+    Private _checkInterval As Integer = 500
     Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
     Private ccgVersion As String = "-1.-1.-1"
     Private channels As Integer = 0
-    Private WithEvents timer As New Timers.Timer(500)
+    Private WithEvents timer As New Timers.Timer(_checkInterval)
 
     ''' <summary>
     ''' Reads or sets the number of retires to perform if a connection can't be established
@@ -52,6 +53,21 @@ Public Class CasparCGConnection
     Public Property strictVersionControl As Boolean = True
 
     Public Property disconnectOnTimeout As Boolean = True
+
+    ''' <summary>
+    ''' Reads or sets the interval in milliseconds the connection status will be checked.
+    ''' </summary>
+    ''' <value>The number of milliseconds between connection checks</value>
+    ''' <returns>The number of milliseconds between connection checks</returns>
+    Public Property checkInterval As Integer
+        Get
+            Return _checkInterval
+        End Get
+        Set(value As Integer)
+            _checkInterval = value
+            timer.Interval = _checkInterval
+        End Set
+    End Property
 
     ''' <summary>
     ''' Fires if this connection has been disconnected.
@@ -78,8 +94,8 @@ Public Class CasparCGConnection
         client = New TcpClient()
         client.SendBufferSize = buffersize
         client.ReceiveBufferSize = buffersize
-        'client.ReceiveTimeout = timeout
-        'client.SendTimeout = timeout
+        client.ReceiveTimeout = timeout
+        client.SendTimeout = timeout
         client.NoDelay = True
     End Sub
 
@@ -89,8 +105,15 @@ Public Class CasparCGConnection
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     ''' <remarks></remarks>
     Public Function connect() As Boolean
-        If Not client.Connected Then
+        If Not isConnected() Then
             Try
+                'client.Close()
+                client = New TcpClient()
+                client.SendBufferSize = buffersize
+                client.ReceiveBufferSize = buffersize
+                client.ReceiveTimeout = timeout
+                client.SendTimeout = timeout
+                client.NoDelay = True
                 client.Connect(serveraddress, serverport)
                 If client.Connected Then
                     timer.Start()
@@ -119,7 +142,7 @@ Public Class CasparCGConnection
         Else
             logger.log("CasparCGConnection.connect: Allready connected to " & serveraddress & ":" & serverport.ToString)
         End If
-        Return client.Connected
+        Return isConnected()
     End Function
 
     ''' <summary>
@@ -142,13 +165,27 @@ Public Class CasparCGConnection
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     ''' <remarks></remarks>
     Public Function isConnected(Optional ByVal tryConnect As Boolean = False) As Boolean
-        If client.Connected Then
-            Return True
+        If client.Connected AndAlso client.Client.Poll(20, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(20, SelectMode.SelectError) Then
+            Dim blockingState As Boolean = client.Client.Blocking
+            Try
+                Dim tmp(1) As Byte
+                client.Client.Blocking = False
+                client.Client.Send(tmp, 0, SocketFlags.None)
+                Return Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0
+            Catch e As SocketException
+                If e.NativeErrorCode.Equals(10035) Then
+                    Return True
+                Else : Return False
+                End If
+            Finally
+                client.Client.Blocking = blockingState
+            End Try
         Else
             If tryConnect Then
-                connect()
+                Return connect()
+            Else
+                Return False
             End If
-            Return client.Connected
         End If
     End Function
 
@@ -160,13 +197,13 @@ Public Class CasparCGConnection
         If isConnected() Then
             Dim bye As New ByeCommand()
             bye.execute(Me)
-            closed()
         End If
+        closed()
     End Sub
 
     Private Sub closed()
         timer.Stop()
-        client.Client.Close()
+        client.Close()
         RaiseEvent disconnected(Me)
         ccgVersion = "0.0.0"
         channels = 0

@@ -23,21 +23,26 @@ Imports CasparCGNETConnector
 ''' 
 Public Module Example
 
-    Private connection As CasparCGConnection
+    Private WithEvents connection As CasparCGConnection
 
 
     Public Sub Main()
         connection = New CasparCGConnection("localhost", 5250)
-        connection.connect()
+        Console.WriteLine(" CasparCGNetConnector ")
+        Console.WriteLine("======================")
+        connect()
         Console.WriteLine("Please choose the function to run or enter Q to exit:")
         Console.WriteLine(vbTab & "1. Test_Manual_Command")
         Console.WriteLine(vbTab & "2. Test_Automatic_Command")
         Console.WriteLine(vbTab & "3. Test_Plaintext_Command")
         Console.WriteLine(vbTab & "4. Test_CasparCGMedia_Classes")
+        Console.WriteLine(vbTab & "5. Test_ConnectionBreakdown")
+        Console.WriteLine(vbTab & "C. Connect to casparCG")
         Console.WriteLine(vbTab & "Q. Quit program")
         Dim i As String = Console.ReadKey().KeyChar
         While i.ToUpper <> "Q"
-            Select Case i
+            Console.WriteLine()
+            Select Case i.ToUpper
                 Case "1"
                     Console.WriteLine("==================================")
                     Console.WriteLine("=== Start Test_Manual_Command: ===")
@@ -58,6 +63,13 @@ Public Module Example
                     Console.WriteLine("=== Start Test_CasparCGMedia_Classes: ===")
                     Console.WriteLine("=========================================")
                     Test_CasparCGMedia_Classes()
+                Case "5"
+                    Console.WriteLine("=======================================")
+                    Console.WriteLine("=== Start Test_ConnectionBreakdown: ===")
+                    Console.WriteLine("=======================================")
+                    Test_ConnectionBreakdown()
+                Case "C"
+                    connect()
             End Select
             Console.WriteLine()
             Console.WriteLine("Please choose the function to run or enter Q to exit:")
@@ -65,10 +77,44 @@ Public Module Example
             Console.WriteLine(vbTab & "2. Test_Automatic_Command")
             Console.WriteLine(vbTab & "3. Test_Plaintext_Command")
             Console.WriteLine(vbTab & "4. Test_CasparCGMedia_Classes")
+            Console.WriteLine(vbTab & "5. Test_ConnectionBreakdown")
+            Console.WriteLine(vbTab & "C. Connect to casparCG")
             Console.WriteLine(vbTab & "Q. Quit program")
             i = Console.ReadKey().KeyChar
         End While
         connection.close()
+    End Sub
+
+    Public Sub connect()
+        If Not connection.isConnected Then
+            Console.WriteLine("Try to connected to " & connection.getServerAddress & ":" & connection.getServerPort)
+            If Not connection.connect() Then
+                Console.WriteLine("Could not connect to casparCG.")
+            End If
+        Else
+            Console.WriteLine("Already connected to " & connection.getVersion & " @ " & connection.getServerAddress & ":" & connection.getServerPort)
+        End If
+    End Sub
+
+    Private Sub handleConnect(ByRef sender As Object) Handles connection.connected
+        Console.WriteLine("Connected to CasparCG " & connection.getVersion & " @ " & connection.getServerAddress & ":" & connection.getServerPort)
+    End Sub
+
+    Private Sub handleDisconnected(ByRef sender As Object) Handles connection.disconnected
+        Console.WriteLine("Connection has been dropped.")
+    End Sub
+
+    Public Sub Test_ConnectionBreakdown()
+        Console.WriteLine("Warning! This will start an endless loop that will only stop if you break the connection to the server.")
+        Console.WriteLine("Press Y to procced or any other key to cancel:")
+        If Console.ReadKey().KeyChar.ToString.ToUpper.Equals("Y") Then
+            Console.WriteLine("Started loop...")
+            While connection.isConnected
+                Threading.Thread.Sleep(250)
+            End While
+            Console.WriteLine("...stopped loop.")
+        End If
+        Console.WriteLine("You have to reconnect in order to use the other examples!")
     End Sub
 
     ''' <summary>
