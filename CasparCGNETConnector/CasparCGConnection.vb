@@ -27,7 +27,7 @@ Public Class CasparCGConnection
     Private serverport As Integer = 5250 ' std. acmp2 port
     Private client As TcpClient
     Private connectionAttemp = 0
-    Private _checkInterval As Integer = 500
+    Private _checkInterval As Integer = 5000
     Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
     Private ccgVersion As String = "-1.-1.-1"
@@ -165,21 +165,8 @@ Public Class CasparCGConnection
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     ''' <remarks></remarks>
     Public Function isConnected(Optional ByVal tryConnect As Boolean = False) As Boolean
-        If client.Connected AndAlso client.Client.Poll(20, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(20, SelectMode.SelectError) Then
-            Dim blockingState As Boolean = client.Client.Blocking
-            Try
-                Dim tmp(1) As Byte
-                client.Client.Blocking = False
-                client.Client.Send(tmp, 0, SocketFlags.None)
-                Return Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0
-            Catch e As SocketException
-                If e.NativeErrorCode.Equals(10035) Then
-                    Return True
-                Else : Return False
-                End If
-            Finally
-                client.Client.Blocking = blockingState
-            End Try
+        If client.Connected Then 'AndAlso client.Client.Poll(20, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(20, SelectMode.SelectError) Then
+            Return True
         Else
             If tryConnect Then
                 Return connect()
@@ -210,7 +197,30 @@ Public Class CasparCGConnection
     End Sub
 
     Private Sub checkConnection() Handles timer.Elapsed
-        If Not isConnected() Then close()
+        timer.Stop()
+        If client.Connected AndAlso client.Client.Poll(20, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(20, SelectMode.SelectError) Then
+            Dim blockingState As Boolean = client.Client.Blocking
+            client.ReceiveTimeout = 10
+            client.SendTimeout = 10
+            Try
+                Dim tmp(1) As Byte
+                client.Client.Blocking = False
+                'client.Client.Send(tmp, 0, SocketFlags.None)
+                If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
+                    Exit Sub
+                End If
+            Catch e As SocketException
+                If e.NativeErrorCode.Equals(10035) Then
+                    Exit Sub
+                End If
+            Finally
+                client.Client.Blocking = blockingState
+                client.ReceiveTimeout = timeout
+                client.SendTimeout = timeout
+                timer.Start()
+            End Try
+        End If
+        close()
     End Sub
 
     ''' <summary>
