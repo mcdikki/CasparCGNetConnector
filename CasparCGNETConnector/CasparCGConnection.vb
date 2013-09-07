@@ -212,8 +212,11 @@ Public Class CasparCGConnection
                 End If
             Catch e As Exception
             Finally
-                client.Client.Blocking = blockingState
-                timer.Start()
+                Try
+                    client.Client.Blocking = blockingState
+                    timer.Start()
+                Catch e As Exception
+                End Try
             End Try
         End If
         close()
