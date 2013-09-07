@@ -27,7 +27,7 @@ Public Class CasparCGConnection
     Private serverport As Integer = 5250 ' std. acmp2 port
     Private client As TcpClient
     Private connectionAttemp = 0
-    Private _checkInterval As Integer = 5000
+    Private _checkInterval As Integer = 500
     Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
     Private ccgVersion As String = "-1.-1.-1"
@@ -198,14 +198,11 @@ Public Class CasparCGConnection
 
     Private Sub checkConnection() Handles timer.Elapsed
         timer.Stop()
-        If client.Connected AndAlso client.Client.Poll(20, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(20, SelectMode.SelectError) Then
+        If client.Connected AndAlso client.Client.Poll(checkInterval, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(checkInterval, SelectMode.SelectError) Then
             Dim blockingState As Boolean = client.Client.Blocking
-            client.ReceiveTimeout = 10
-            client.SendTimeout = 10
             Try
                 Dim tmp(1) As Byte
                 client.Client.Blocking = False
-                'client.Client.Send(tmp, 0, SocketFlags.None)
                 If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
                     Exit Sub
                 End If
@@ -213,10 +210,9 @@ Public Class CasparCGConnection
                 If e.NativeErrorCode.Equals(10035) Then
                     Exit Sub
                 End If
+            Catch e As Exception
             Finally
                 client.Client.Blocking = blockingState
-                client.ReceiveTimeout = timeout
-                client.SendTimeout = timeout
                 timer.Start()
             End Try
         End If
