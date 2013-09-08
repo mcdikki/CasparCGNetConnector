@@ -242,6 +242,10 @@ Public MustInherit Class AbstractCasparCGMedia
         Return configDoc
     End Function
 
+    Public Function toXmlString()
+        Return toXml.xml
+    End Function
+
     ''
     '' Only for testing!
     '' To solve the problem that frehly startet items will be marked stopped as 
