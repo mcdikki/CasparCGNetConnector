@@ -246,6 +246,49 @@ Public MustInherit Class AbstractCasparCGMedia
         Return toXml.xml
     End Function
 
+    ''' <summary>
+    ''' Returns a AbstractCasparCGMedia containing the media described by the xml string or nothing if the xml string is invalid.
+    ''' </summary>
+    ''' <param name="xmlString"></param>
+    ''' <returns></returns>
+    Public Shared Function fromXml(ByVal xmlString As String) As AbstractCasparCGMedia
+        Dim xmlDoc As New MSXML2.DOMDocument
+        If xmlDoc.loadXML(xmlString) Then
+            Return fromXml(xmlDoc)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Returns an AbstractCasparCGMedia containing the media described by the xml document or nothing if the xml is invalid.
+    ''' </summary>
+    ''' <param name="xmlDoc"></param>
+    ''' <returns></returns>
+    Public Shared Function fromXml(ByVal xmlDoc As MSXML2.DOMDocument) As AbstractCasparCGMedia
+        If xmlDoc.hasChildNodes AndAlso xmlDoc.firstChild.nodeName.Equals("media") AndAlso Not IsNothing(xmlDoc.firstChild.selectSingleNode("name")) AndAlso Not IsNothing(xmlDoc.firstChild.selectSingleNode("typ")) Then
+            Dim m As AbstractCasparCGMedia
+            Select Case xmlDoc.firstChild.selectSingleNode("type").nodeTypedValue
+                Case MediaType.AUDIO
+                    m = New CasparCGAudio(xmlDoc.firstChild.selectSingleNode("name").nodeTypedValue)
+                Case MediaType.MOVIE
+                    m = New CasparCGMovie(xmlDoc.firstChild.selectSingleNode("name").nodeTypedValue)
+                Case MediaType.STILL
+                    m = New CasparCGStill(xmlDoc.firstChild.selectSingleNode("name").nodeTypedValue)
+                Case MediaType.TEMPLATE
+                    m = New CasparCGTemplate(xmlDoc.firstChild.selectSingleNode("name").nodeTypedValue)
+                Case MediaType.COLOR
+                    m = New CasparCGColor(xmlDoc.firstChild.selectSingleNode("name").nodeTypedValue)
+                Case Else
+                    Return Nothing
+            End Select
+
+            If Not IsNothing(xmlDoc.firstChild.selectSingleNode("infos")) Then m.parseXML(xmlDoc.firstChild.selectSingleNode("infos").nodeTypedValue)
+            If Not IsNothing(xmlDoc.firstChild.selectSingleNode("thumb")) Then m.setBase64Thumb(xmlDoc.firstChild.selectSingleNode("thumb").nodeTypedValue)
+        End If
+        Return Nothing
+    End Function
+
     ''
     '' Only for testing!
     '' To solve the problem that frehly startet items will be marked stopped as 
