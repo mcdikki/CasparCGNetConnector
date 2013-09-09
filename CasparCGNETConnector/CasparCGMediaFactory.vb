@@ -42,8 +42,7 @@ Public Class CasparCGMediaFactory
 
                 If fillFromName AndAlso Not IsNothing(connection) Then
                     media.fillMediaInfo(connection)
-                    Dim cmd As New ThumbnailRetrieveCommand(media)
-                    If cmd.execute(connection).isOK Then media.setBase64Thumb(cmd.getResponse.getXMLData)
+                    media.fillThumbnail(connection)
                 ElseIf Not IsNothing(pnode.selectSingleNode("infos")) Then
                     media.parseXML(pnode.selectSingleNode("infos").xml)
                     media.setBase64Thumb(pnode.selectSingleNode("thumb").nodeTypedValue)

@@ -203,6 +203,18 @@ CasparCGNETConnector
  Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
 	<param name="connection">the connection to use</param>
+</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fromXml(System.String)">
+	<summary>
+ Returns a AbstractCasparCGMedia containing the media described by the xml string or nothing if the xml string is invalid.
+ </summary>
+	<param name="xmlString"></param>
+	<returns></returns>
+</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fromXml(MSXML2.DOMDocument)">
+	<summary>
+ Returns an AbstractCasparCGMedia containing the media described by the xml document or nothing if the xml is invalid.
+ </summary>
+	<param name="xmlDoc"></param>
+	<returns></returns>
 </member><member name="M:CasparCGNETConnector.ICommand.execute(CasparCGNETConnector.CasparCGConnection@)">
 	<summary>
  Executes the command using the given connection and returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see>.

@@ -301,6 +301,9 @@ Public Module Example
         Else
             Console.WriteLine("Sorry bro, no thumbs on that server :-(")
         End If
+        '' there is also a handy function for that task:
+        ' media.fillThumbnail(connection) 
+
 
         '' Add custom metadata
         Console.WriteLine("Add custom metadata...")
