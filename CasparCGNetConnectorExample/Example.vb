@@ -68,6 +68,8 @@ Public Module Example
                     Console.WriteLine("=== Start Test_ConnectionBreakdown: ===")
                     Console.WriteLine("=======================================")
                     Test_ConnectionBreakdown()
+                Case "T"
+                    test()
                 Case "C"
                     connect()
             End Select
@@ -83,6 +85,11 @@ Public Module Example
             i = Console.ReadKey().KeyChar
         End While
         connection.close()
+    End Sub
+
+    Private Sub test()
+        Dim cmd As ICommand = New SwapCommand(-1, -1, 2, 1)
+        cmd.execute(connection)
     End Sub
 
     Public Sub connect()
