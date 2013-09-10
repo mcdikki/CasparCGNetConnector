@@ -24,6 +24,7 @@ Public Class MixerVolumeCommand
 
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal volume As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER VOLUME", "Changes the volume of the specified layer")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
         DirectCast(getParameter("volume"), CommandParameter(Of Single)).setValue(volume)

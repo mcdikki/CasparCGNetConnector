@@ -24,6 +24,7 @@ Public Class MixerClearCommand
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
         MyBase.New("MIXER CLEAR", "Reset all transformations")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
     End Sub

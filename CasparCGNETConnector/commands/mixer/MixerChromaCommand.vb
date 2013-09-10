@@ -24,6 +24,7 @@ Public Class MixerChromaCommand
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal color As String = "", Optional ByVal threshold As Single = 0.0, Optional ByVal softness As Single = 0.0)
         MyBase.New("MIXER CHROMA", "Enables chroma keying on the specified video layer")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
         If Not IsNothing(color) AndAlso color.Length > 0 Then DirectCast(getParameter("color"), CommandParameter(Of String)).setValue(color)

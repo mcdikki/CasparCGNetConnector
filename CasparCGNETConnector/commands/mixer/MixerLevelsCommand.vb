@@ -24,6 +24,7 @@ Public Class MixerLevelsCommand
 
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal minInput As Single, ByVal maxInput As Single, ByVal gamma As Single, ByVal minOutput As Single, ByVal maxOutput As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER LEVELS", "Documentation missing. Sorry :-(")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
         DirectCast(getParameter("min input"), CommandParameter(Of Single)).setValue(minInput)

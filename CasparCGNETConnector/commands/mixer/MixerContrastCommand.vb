@@ -24,6 +24,7 @@ Public Class MixerContrastCommand
 
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal contrast As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER CONTRAST", "Changes the contrast of the specified layer. The value is a float between 0 and 1")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
         DirectCast(getParameter("contrast"), CommandParameter(Of Single)).setValue(contrast)

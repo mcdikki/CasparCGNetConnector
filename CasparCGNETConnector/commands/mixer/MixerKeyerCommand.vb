@@ -24,6 +24,7 @@ Public Class MixerKeyerCommand
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal keyer As Boolean = False)
         MyBase.New("MIXER KEYER", "Replaces layer n+1's alpha channel with the alpha channel of layer n, and hides the RGB channels of layer n. If keyer equals 1 then the specified layer will not be rendered, instead it will be used as the key for the layer above. ")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
         DirectCast(getParameter("keyer"), CommandParameter(Of Boolean)).setValue(keyer)

@@ -24,6 +24,7 @@ Public Class MixerMastervolumeCommand
 
     Public Sub New(ByVal channel As Integer, ByVal volume As Single)
         MyBase.New("MIXER MASTERVOLUME", "Changes the volume of an entire channel. ")
+        InitParameter()
         DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         DirectCast(getParameter("volume"), CommandParameter(Of Single)).setValue(volume)
     End Sub
