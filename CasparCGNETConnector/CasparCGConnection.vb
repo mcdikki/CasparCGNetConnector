@@ -45,7 +45,7 @@ Public Class CasparCGConnection
     ''' <summary>
     ''' Reads or sets the number of milliseconds to wait for incoming data before stop reading
     ''' </summary>
-    Public Property timeout As Integer = 300 ' ms to wait for data before cancel receive
+    Public Property timeout As Integer = 3000 ' ms to wait for data before cancel receive
 
     ''' <summary>
     ''' Gets or sets whether strict version control is activated. If True, only commands that pass the isCompatible() check will be executed.

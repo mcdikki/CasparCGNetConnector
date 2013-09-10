@@ -88,8 +88,7 @@ Public Module Example
     End Sub
 
     Private Sub test()
-        Dim cmd As ICommand = New SwapCommand(-1, -1, 2, 1)
-        cmd.execute(connection)
+        ' Quick tests for debugging
     End Sub
 
     Public Sub connect()
