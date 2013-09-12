@@ -194,16 +194,22 @@ Public Class CasparCGConnection
         RaiseEvent disconnected(Me)
         ccgVersion = "0.0.0"
         channels = 0
+        logger.log("Logger.closed: Disconnected form server.")
     End Sub
 
     Private Sub checkConnection() Handles timer.Elapsed
         timer.Stop()
+        logger.debug("CasparCGConnection.checkConnection: Checking the connection...")
         If client.Connected AndAlso client.Client.Poll(checkInterval, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(checkInterval, SelectMode.SelectError) Then
             Dim blockingState As Boolean = client.Client.Blocking
             Try
                 Dim tmp(1) As Byte
                 client.Client.Blocking = False
-                If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
+                If connectionLock.WaitOne(checkInterval / 2) Then
+                    If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
+                        Exit Sub
+                    End If
+                Else
                     Exit Sub
                 End If
             Catch e As SocketException
@@ -213,13 +219,15 @@ Public Class CasparCGConnection
             Catch e As Exception
             Finally
                 Try
+                    connectionLock.Release()
                     client.Client.Blocking = blockingState
                     timer.Start()
                 Catch e As Exception
                 End Try
             End Try
         End If
-        close()
+        logger.warn("CasparCGConnection.checkConnection: Detected a broken connection.")
+        If disconnectOnTimeout Then close()
     End Sub
 
     ''' <summary>
@@ -387,7 +395,7 @@ Public Class CasparCGConnection
                 timer.Stop()
                 logger.debug("CasparCGConnection.sendCommand: Waited " & timer.ElapsedMilliseconds & "ms for an answer and received " & input.Length & " Bytes to read.")
                 connectionLock.Release()
-                logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "': " & input)
+                logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "'. The first 1024 bytes are: " & input.Substring(0, Math.Min(input.Length, 1024)))
                 Return New CasparCGResponse(input, cmd)
 
             Catch e As Exception

@@ -43,6 +43,7 @@ Public MustInherit Class AbstractCommand
                 response = connection.sendCommand(getCommandString)
                 Return getResponse()
             Else
+                logger.err("The command " & getName() & "(min: " & getVersionString(getRequiredVersion()) & " max: " & getVersionString(getMaxAllowedVersion()) & ")is not supported by the server version " & connection.getVersion)
                 Throw New NotSupportedException("The command " & getName() & "(min: " & getVersionString(getRequiredVersion()) & " max: " & getVersionString(getMaxAllowedVersion()) & ")is not supported by the server version " & connection.getVersion)
             End If
         Else
