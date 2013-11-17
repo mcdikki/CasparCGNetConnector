@@ -105,42 +105,50 @@ Public Class CasparCGConnection
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     ''' <remarks></remarks>
     Public Function connect() As Boolean
+
+        '' TODO: Check if a semaphor is needed so that multi connection attempts at the same time are not possible.
+
         If Not isConnected() Then
-            Try
-                'client.Close()
-                client = New TcpClient()
-                client.SendBufferSize = buffersize
-                client.ReceiveBufferSize = buffersize
-                client.ReceiveTimeout = timeout
-                client.SendTimeout = timeout
-                client.NoDelay = True
-                client.Connect(serveraddress, serverport)
-                If client.Connected Then
-                    timer.Start()
-                    connectionAttemp = 0
-                    logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
-                    ccgVersion = readServerVersion()
-                    channels = readServerChannels()
-                    RaiseEvent connected(Me)
-                End If
-            Catch e As Exception
-                logger.warn(e.Message)
-                If connectionAttemp < reconnectTries Then
-                    connectionAttemp = connectionAttemp + 1
-                    logger.warn("CasparCGConnection.connect: Try to reconnect " & connectionAttemp & "/" & reconnectTries)
-                    Dim i As Integer = 0
-                    Dim sw As New Stopwatch
-                    sw.Start()
-                    While sw.ElapsedMilliseconds < reconnectTimeout
-                    End While
-                    Return connect()
-                Else
-                    logger.err("CasparCGConnection.connect: Could not connect to " & serveraddress & ":" & serverport.ToString)
-                    Return False
-                End If
-            End Try
-        Else
-            logger.log("CasparCGConnection.connect: Allready connected to " & serveraddress & ":" & serverport.ToString)
+            If connectionLock.WaitOne Then
+                Try
+                    'client.Close()
+                    client = New TcpClient()
+                    client.SendBufferSize = buffersize
+                    client.ReceiveBufferSize = buffersize
+                    client.ReceiveTimeout = timeout
+                    client.SendTimeout = timeout
+                    client.NoDelay = True
+                    client.Connect(serveraddress, serverport)
+                    If client.Connected Then
+                        timer.Start()
+                        connectionAttemp = 0
+                        logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
+                        ccgVersion = readServerVersion()
+                        channels = readServerChannels()
+                        RaiseEvent connected(Me)
+                    End If
+                Catch e As Exception
+                    logger.warn(e.Message)
+                    If connectionAttemp < reconnectTries Then
+                        connectionAttemp = connectionAttemp + 1
+                        logger.warn("CasparCGConnection.connect: Try to reconnect " & connectionAttemp & "/" & reconnectTries)
+                        Dim i As Integer = 0
+                        Dim sw As New Stopwatch
+                        sw.Start()
+                        While sw.ElapsedMilliseconds < reconnectTimeout
+                        End While
+                        Return connect()
+                    Else
+                        logger.err("CasparCGConnection.connect: Could not connect to " & serveraddress & ":" & serverport.ToString)
+                        Return False
+                    End If
+                Finally
+                    connectionLock.Release()
+                End Try
+            Else
+                logger.log("CasparCGConnection.connect: Allready connected to " & serveraddress & ":" & serverport.ToString)
+                connectionLock.Release()
+            End If
         End If
         Return isConnected()
     End Function
@@ -191,6 +199,12 @@ Public Class CasparCGConnection
     Private Sub closed()
         timer.Stop()
         client.Close()
+        '' remove all leftover locks
+        Try
+            connectionLock.Release()
+        Catch e As Exception
+        End Try
+
         RaiseEvent disconnected(Me)
         ccgVersion = "0.0.0"
         channels = 0
