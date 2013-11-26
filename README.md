@@ -38,7 +38,7 @@ This connector framework was written for [CasparsPlayoutClient][3] and offers th
 Quick Start
 -----------
 
-See the [Wiki][4] for more detailed and complete Guide.
+See the [Wiki][4] for a more detailed and complete Guide.
 
 Add CasparCGNetConnector to your project and import the namespace where needed
 <pre>import CasparCGNetConnector</pre>
