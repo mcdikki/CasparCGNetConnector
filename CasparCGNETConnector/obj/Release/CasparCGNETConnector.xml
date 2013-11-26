@@ -61,7 +61,7 @@ CasparCGNETConnector
 	<remarks></remarks>
 </member><member name="M:CasparCGNETConnector.CasparCGConnection.isConnected(System.Boolean)">
 	<summary>
- Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not allready connected.
+ Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not Already connected.
  </summary>
 	<param name="tryConnect"></param>
 	<returns>true, if and only if the connection is established, false otherwise</returns>

@@ -100,6 +100,34 @@ Public Class CasparCGConnection
     End Sub
 
     ''' <summary>
+    ''' Creates a new CasparCGConnection to the given serverAddress and the default port
+    ''' </summary>
+    ''' <param name="serverAddress">the server ip or hostname</param>
+    Public Sub New(ByVal serverAddress As String)
+        connectionLock = New Semaphore(1, 1)
+        Me.serveraddress = serverAddress
+        client = New TcpClient()
+        client.SendBufferSize = buffersize
+        client.ReceiveBufferSize = buffersize
+        client.ReceiveTimeout = timeout
+        client.SendTimeout = timeout
+        client.NoDelay = True
+    End Sub
+
+    ''' <summary>
+    ''' Creates a new CasparCGConnection to localhost and the default port
+    ''' </summary>
+    Public Sub New()
+        connectionLock = New Semaphore(1, 1)
+        client = New TcpClient()
+        client.SendBufferSize = buffersize
+        client.ReceiveBufferSize = buffersize
+        client.ReceiveTimeout = timeout
+        client.SendTimeout = timeout
+        client.NoDelay = True
+    End Sub
+
+    ''' <summary>
     ''' Connects to the given server and port and returns true if a connection could be established and false otherwise.
     ''' </summary>
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
@@ -139,7 +167,6 @@ Public Class CasparCGConnection
                     connectionAttemp = connectionAttemp + 1
                     logger.warn("CasparCGConnection.connect: Try to reconnect " & connectionAttemp & "/" & reconnectTries)
                     Dim i As Integer = 0
-                    Dim sw As New Stopwatch
                     sw.Start()
                     While sw.ElapsedMilliseconds < reconnectTimeout
                     End While
@@ -152,7 +179,7 @@ Public Class CasparCGConnection
                 'connectionLock.Release()
             End Try
         Else
-            logger.log("CasparCGConnection.connect: Allready connected to " & serveraddress & ":" & serverport.ToString)
+            logger.log("CasparCGConnection.connect: Already connected to " & serveraddress & ":" & serverport.ToString)
             'connectionLock.Release()
         End If
         ' End If
@@ -173,7 +200,7 @@ Public Class CasparCGConnection
     End Function
 
     ''' <summary>
-    ''' Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not allready connected.
+    ''' Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not Already connected.
     ''' </summary>
     ''' <param name="tryConnect"></param>
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
@@ -205,16 +232,10 @@ Public Class CasparCGConnection
     Private Sub closed()
         timer.Stop()
         client.Close()
-        '' remove all leftover locks
-        Try
-            connectionLock.Release()
-        Catch e As Exception
-        End Try
-
         RaiseEvent disconnected(Me)
         ccgVersion = "0.0.0"
         channels = 0
-        logger.log("Logger.closed: Disconnected form server.")
+        logger.log("Logger.closed: Disconnected from server.")
     End Sub
 
     Private Sub checkConnection() Handles timer.Elapsed
