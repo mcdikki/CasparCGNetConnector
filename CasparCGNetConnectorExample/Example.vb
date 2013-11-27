@@ -137,7 +137,7 @@ Public Module Example
         '' You can eighter define the parameters at instanciation or later
         '' This time, we will do it all at once and create a play command for
         '' channel 1, layer 1, clip "amb", that loops
-        Dim command As ICommand = New PlayCommand(1, 1, "amb", True) '' I used ICommand as Type, so I can reuse command for all other commands
+        Dim command As AbstractCommand = New PlayCommand(1, 1, "amb", True) '' I used AbstractCommand as Type, so I can reuse command for all other commands
 
         '' Now that we have the command ready, we can execute it.
         '' to execute the command, we need the connection to the server via which
@@ -193,7 +193,7 @@ Public Module Example
         '' Then we create a random command and ask the user for the paramter inputs
 
         '' List all commands and their parameters
-        Dim commands As New List(Of ICommand)
+        Dim commands As New List(Of AbstractCommand)
         For Each c In [Enum].GetValues(GetType(CasparCGCommandFactory.Command))
             Console.WriteLine("Found Command " & c.ToString)
             commands.Add(CasparCGCommandFactory.getCommand(c))
@@ -205,8 +205,8 @@ Public Module Example
 
         '' Pick a random command and fill the needed parameters by asking the user
         Dim r As New System.Random(System.DateTime.Now.Millisecond)
-        Dim cmd As ICommand = commands.Item(r.Next(0, commands.Count - 1))
-        Console.WriteLine("Picked " & cmd.getName & " as command. " & vbNewLine & "Describtion: " & cmd.getDescription & vbNewLine & "Please fill the following parameters:")
+        Dim cmd As AbstractCommand = commands.Item(r.Next(0, commands.Count - 1))
+        Console.WriteLine("Picked " & cmd.getName & " as command. " & vbNewLine & "Description: " & cmd.getDescription & vbNewLine & "Please fill the following parameters:")
 
         '' Now comes the dirty part.
         '' we need to dynamically cast the parameter object and its value object
@@ -214,7 +214,7 @@ Public Module Example
             Dim parameter = CTypeDynamic(p, p.getGenericParameterType)
             If Not parameter.isOptional Then
                 Dim value = CTypeDynamic(parameter.getDefault(), p.getGenericType)
-                Console.WriteLine("Parameter: " & p.getName & " (Describtion: " & p.getDescription & "): ")
+                Console.WriteLine("Parameter: " & p.getName & " (Description: " & p.getDescription & "): ")
                 value = CTypeDynamic(Console.ReadLine(), p.getGenericType)
                 parameter.setValue(value)
             End If
@@ -246,7 +246,7 @@ Public Module Example
             If response.isOK Then
                 Console.WriteLine("Yeah, everthing went well!")
             ElseIf response.isERR Then
-                Console.WriteLine("Well, something went wrong... - What's the error code and describtion:" & vbNewLine & response.getCode & " = " & [Enum].GetName(GetType(CasparCGResponse.CasparReturnCode), response.getCode))
+                Console.WriteLine("Well, something went wrong... - What's the error code and description:" & vbNewLine & response.getCode & " = " & [Enum].GetName(GetType(CasparCGResponse.CasparReturnCode), response.getCode))
             ElseIf response.isUNKNOWN Then
                 Console.WriteLine("Hmm, that is funny, let's see the whole server message: " & response.getServerMessage)
             End If

@@ -45,6 +45,15 @@ CasparCGNETConnector
 	<param name="serverAddress">the server ip or hostname</param>
 	<param name="serverPort">the servers port</param>
 	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor(System.String)">
+	<summary>
+ Creates a new CasparCGConnection to the given serverAddress and the default port
+ </summary>
+	<param name="serverAddress">the server ip or hostname</param>
+</member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor">
+	<summary>
+ Creates a new CasparCGConnection to localhost and the default port
+ </summary>
 </member><member name="M:CasparCGNETConnector.CasparCGConnection.connect">
 	<summary>
  Connects to the given server and port and returns true if a connection could be established and false otherwise.
@@ -203,66 +212,6 @@ CasparCGNETConnector
  Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
 	<param name="connection">the connection to use</param>
-</member><member name="M:CasparCGNETConnector.ICommand.execute(CasparCGNETConnector.CasparCGConnection@)">
-	<summary>
- Executes the command using the given connection and returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see>.
- Throws a <see cref="T:System.NotSupportedException">NotSupportedException</see> if the command is not compatible to the CasparCG Server version.
- </summary>
-	<param name="connection">the CasparCGConnection to execute the command on</param>
-	<returns>a CasparCGResponse if, and only if the command is compatible to the connected server version, else throws a NotSupportedException</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getResponse">
-	<summary>
- Returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see> of the last command execution or nothing.
- </summary>
-	<returns>the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see> or nothing</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getName">
-	<summary>
- Returns the name of this command
- </summary>
-	<returns>The name of this command</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getDescription">
-	<summary>
- Returns the Description of this command
- </summary>
-	<returns>the Description of this command</returns>
-	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.ICommand.getParameterNames">
-	<summary>
- Returns a list of all <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> names of this command
- </summary>
-	<returns>a list of paramter names</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getParameters">
-	<summary>
- Returns a list of all <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> of this command
- </summary>
-	<returns>a list of paramters</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getParameter(System.String)">
-	<summary>
- Returns the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> ot the given name or nothing if no parameter of this name exists.
- </summary>
-	<param name="parameterName">the all lowercase name of the parameter</param>
-	<returns>the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> if, and only if, it exists, else nothing</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
-	<summary>
- Returns whether or not this command is compatible to the CasparCG Server version of the given connection.
- </summary>
-	<param name="connection">the <see cref="T:CasparCGNETConnector.CasparCGConnection">connection</see></param>
-	<returns>true, if and only if the commmand is compatible</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getCommandString">
-	<summary>
- Returns the command as string
- </summary>
-	<returns>the command as string</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getRequiredVersion">
-	<summary>
- Returns the required version to run this command
- </summary>
-	<returns>the version to run this command as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getMaxAllowedVersion">
-	<summary>
- Returns the maximum version to run this command
- </summary>
-	<returns>the highest version to run this command as array of Integer</returns>
 </member><member name="M:CasparCGNETConnector.AbstractCommand.execute(CasparCGNETConnector.CasparCGConnection@)">
 	<summary>
  Executes the command using the given connection and returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see>.
@@ -309,6 +258,21 @@ CasparCGNETConnector
  </summary>
 	<param name="str"></param>
 	<returns></returns>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getCommandString">
+	<summary>
+ Returns the command as string
+ </summary>
+	<returns>the command as string</returns>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getRequiredVersion">
+	<summary>
+ Returns the required version to run this command
+ </summary>
+	<returns>the version to run this command as array of Integer</returns>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getMaxAllowedVersion">
+	<summary>
+ Returns the maximum version to run this command
+ </summary>
+	<returns>the highest version to run this command as array of Integer</returns>
 </member><member name="M:CasparCGNETConnector.ICommandParameter.getName">
 	<summary>
  Returns the name of this parameter

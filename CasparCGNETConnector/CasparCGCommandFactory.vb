@@ -102,15 +102,15 @@ Public Class CasparCGCommandFactory
     ''' <param name="command">The command</param>
     ''' <returns>an instance of the requested command or nothing if the requested command was not found</returns>
     ''' <remarks></remarks>
-    Public Shared Function getCommand(ByVal command As Command) As ICommand
+    Public Shared Function getCommand(ByVal command As Command) As AbstractCommand
         Return getCommand(command.ToString)
     End Function
 
-    Public Shared Function getCommand(ByVal command As String) As ICommand
+    Public Shared Function getCommand(ByVal command As String) As AbstractCommand
         If Not command.StartsWith("CasparCGNETConnector.") Then
             command = "CasparCGNETConnector." & command
         End If
-        Dim cmd As ICommand = getInstance(Type.GetType(command))
+        Dim cmd As AbstractCommand = getInstance(Type.GetType(command))
         Return cmd
     End Function
 

@@ -9,4 +9,3 @@ C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Release\CasparCGNETConnector.dll
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Release\CasparCGNETConnector.xml
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Release\CasparCGNETConnector.pdb
-C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Release\CasparCGNETConnector.vbprojResolveAssemblyReference.cache

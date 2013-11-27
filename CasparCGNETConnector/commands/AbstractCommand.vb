@@ -15,7 +15,6 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Public MustInherit Class AbstractCommand
-    Implements ICommand
 
     Private name As String
     Private desc As String
@@ -37,7 +36,7 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <param name="connection">the CasparCGConnection to execute the command on</param>
     ''' <returns>a CasparCGResponse if, and only if the command is compatible to the connected server version, else throws a NotSupportedException</returns>
-    Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse Implements ICommand.execute
+    Public Overridable Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse
         If Not IsNothing(connection) AndAlso connection.isConnected Then
             If Not connection.strictVersionControl OrElse isCompatible(connection) Then
                 response = connection.sendCommand(getCommandString)
@@ -55,7 +54,7 @@ Public MustInherit Class AbstractCommand
     ''' Returns the <see cref=" CasparCGResponse ">CasparCGResponse</see> of the last command execution or nothing.
     ''' </summary>
     ''' <returns>the <see cref=" CasparCGResponse ">CasparCGResponse</see> or nothing</returns>
-    Public Function getResponse() As CasparCGResponse Implements ICommand.getResponse
+    Public Function getResponse() As CasparCGResponse
         Return response
     End Function
 
@@ -63,7 +62,7 @@ Public MustInherit Class AbstractCommand
     ''' Returns the name of this command
     ''' </summary>
     ''' <returns>The name of this command</returns>
-    Public Function getName() As String Implements ICommand.getName
+    Public Function getName() As String
         Return name
     End Function
 
@@ -72,7 +71,7 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <returns>the Description of this command</returns>
     ''' <remarks></remarks>
-    Public Function getDescription() As String Implements ICommand.getDescription
+    Public Function getDescription() As String
         Return desc
     End Function
 
@@ -80,7 +79,7 @@ Public MustInherit Class AbstractCommand
     ''' Returns a list of all <seealso cref=" ICommandParameter ">parameter</seealso> names of this command
     ''' </summary>
     ''' <returns>a list of paramter names</returns>
-    Public Function getParameterNames() As List(Of String) Implements ICommand.getParameterNames
+    Public Function getParameterNames() As List(Of String)
         Return pNames
     End Function
 
@@ -89,7 +88,7 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <param name="parameterName">the all lowercase name of the parameter</param>
     ''' <returns>the <seealso cref=" ICommandParameter ">parameter</seealso> if, and only if, it exists, else nothing</returns>
-    Public Function getParameter(ByVal parameterName As String) As ICommandParameter Implements ICommand.getParameter
+    Public Function getParameter(ByVal parameterName As String) As ICommandParameter
         If pNames.Contains(parameterName.ToLower) Then
             Return parameter.Item(pNames.IndexOf(parameterName.ToLower))
         End If
@@ -101,7 +100,7 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the commmand is compatible</returns>
-    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommand.isCompatible
+    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
         ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
         Dim i As Integer = 0
@@ -160,7 +159,7 @@ Public MustInherit Class AbstractCommand
         End If
     End Sub
 
-    Public Function getParamters() As List(Of ICommandParameter) Implements ICommand.getParameters
+    Public Function getParameters() As List(Of ICommandParameter)
         Return parameter
     End Function
 
@@ -214,7 +213,7 @@ Public MustInherit Class AbstractCommand
         End If
     End Function
 
-    Public Function toXml() As MSXML2.DOMDocument Implements ICommand.toXml
+    Public Function toXml() As MSXML2.DOMDocument
         Dim configDoc As New MSXML2.DOMDocument
         Dim pnode As MSXML2.IXMLDOMNode
         Dim node As MSXML2.IXMLDOMNode
@@ -237,7 +236,7 @@ Public MustInherit Class AbstractCommand
         'pnode.appendChild(node)
 
         '' Add all parameter
-        For Each param In getParamters()
+        For Each param In getParameters()
             pnode.appendChild(param.toXml().firstChild)
         Next
         configDoc.appendChild(pnode)
@@ -248,9 +247,21 @@ Public MustInherit Class AbstractCommand
     ''
     '' Abstract part
     ''
-    Public MustOverride Function getCommandString() As String Implements ICommand.getCommandString
-    Public MustOverride Function getRequiredVersion() As Integer() Implements ICommand.getRequiredVersion
-    Public MustOverride Function getMaxAllowedVersion() As Integer() Implements ICommand.getMaxAllowedVersion
+    ''' <summary>
+    ''' Returns the command as string
+    ''' </summary>
+    ''' <returns>the command as string</returns>
+    Public MustOverride Function getCommandString() As String
+    ''' <summary>
+    ''' Returns the required version to run this command
+    ''' </summary>
+    ''' <returns>the version to run this command as array of Integer</returns>
+    Public MustOverride Function getRequiredVersion() As Integer()
+    ''' <summary>
+    ''' Returns the maximum version to run this command
+    ''' </summary>
+    ''' <returns>the highest version to run this command as array of Integer</returns>
+    Public MustOverride Function getMaxAllowedVersion() As Integer()
 
 End Class
 

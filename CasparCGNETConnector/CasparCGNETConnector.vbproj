@@ -90,7 +90,6 @@
     <Compile Include="commands\data\DataRemoveCommand.vb" />
     <Compile Include="commands\data\DataRetrieveCommand.vb" />
     <Compile Include="commands\data\DataStoreCommand.vb" />
-    <Compile Include="commands\ICommand.vb" />
     <Compile Include="commands\mixer\ChannelGridCommand.vb" />
     <Compile Include="commands\mixer\MixerFillCommand.vb" />
     <Compile Include="commands\mixer\MixerContrastCommand.vb" />

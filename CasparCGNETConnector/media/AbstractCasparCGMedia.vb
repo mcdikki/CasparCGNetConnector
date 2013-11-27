@@ -100,7 +100,7 @@ Public MustInherit Class AbstractCasparCGMedia
     Public Overridable Sub fillMediaInfo(ByRef connection As CasparCGConnection, Optional ByVal channel As Integer = 1)
         If connection.isConnected() Then
             Dim layer = connection.getFreeLayer(channel)
-            Dim cmd As ICommand = New LoadbgCommand(channel, layer, getFullName)
+            Dim cmd As AbstractCommand = New LoadbgCommand(channel, layer, getFullName)
             Dim clear = New ClearCommand(channel, layer)
             If cmd.execute(connection).isOK Then
                 Dim infoDoc As New MSXML2.DOMDocument
