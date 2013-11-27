@@ -30,7 +30,7 @@ This connector framework was written for [CasparsPlayoutClient][3] and offers th
   * built in [CasparCG Server][1] command classes 
     * with version control
     * easy runtime exploreation of commands and their paramters - perfect for UI building
-    * command and parameter discribtions
+    * command and parameter discriptions
   * ready to use media objects for OO usage
   * plaintext command sending
 
@@ -82,10 +82,10 @@ Just check out the code.
 Development
 -----------
 
-CasparCGNetConnector is still under development and not released yet.
-Please fell free to build it your self for testing.
+CasparCGNetConnector is still under development and has reached a alpha state.
+This means you can use it and I will provide comiled dlls, but the chances are given that the interface of the classes change over the releases. With the first beta release, interface changes will only occur with big version steps.
 Any contributions are welcome. 
-The first development phase was under high time pressure, so some parts of the code are not or only hardly dokumented so far.
+The first development phase was under high time pressure, so some parts of the code are not or only hardly documented so far. But it's getting better ;-)
 
 [1]: https://github.com/CasparCG/Server "CasparCG Server"
 [2]: http://www.gnu.org/licenses/gpl-3.0-standalone.html "Gnu General Public License Version 3"
