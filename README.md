@@ -90,4 +90,4 @@ The first development phase was under high time pressure, so some parts of the c
 [1]: https://github.com/CasparCG/Server "CasparCG Server"
 [2]: http://www.gnu.org/licenses/gpl-3.0-standalone.html "Gnu General Public License Version 3"
 [3]: https://github.com/mcdikki/CasparsPlayoutClient "CasparsPlayoutClient"
-[4]: wiki/home "CasparCGNetConnector Wiki"
+[4]: ../../wiki/home "CasparCGNetConnector Wiki"
