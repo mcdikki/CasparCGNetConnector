@@ -82,8 +82,8 @@ Just check out the code.
 Development
 -----------
 
-CasparCGNetConnector is still under development and has reached a alpha state.
-This means you can use it and I will provide comiled dlls, but the chances are given that the interface of the classes change over the releases. With the first beta release, interface changes will only occur with big version steps.
+CasparCGNetConnector is still under development and has reached an alpha state now.
+This means you can use it and I will provide compiled dlls, but the chances are given that the interface of the classes change over the releases. With the first beta release, interface changes will only occur with big version steps.
 Any contributions are welcome. 
 The first development phase was under high time pressure, so some parts of the code are not or only hardly documented so far. But it's getting better ;-)
 
