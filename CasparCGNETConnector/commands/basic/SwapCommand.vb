@@ -30,26 +30,26 @@ Public Class SwapCommand
 
 
     Private Sub Init(ByVal channelA As Integer, ByVal channelB As Integer, ByVal layerA As Integer, ByVal layerB As Integer)
-        If channelA > 0 Then DirectCast(getParameter("channelA"), CommandParameter(Of Integer)).setValue(channelA)
-        If layerA > -1 Then DirectCast(getParameter("layerA"), CommandParameter(Of Integer)).setValue(layerA)
-        If channelA > 0 Then DirectCast(getParameter("channelB"), CommandParameter(Of Integer)).setValue(channelB)
-        If layerA > -1 Then DirectCast(getParameter("layerB"), CommandParameter(Of Integer)).setValue(layerB)
+        If channelA > 0 Then DirectCast(getCommandParameter("channelA"), CommandParameter(Of Integer)).setValue(channelA)
+        If layerA > -1 Then DirectCast(getCommandParameter("layerA"), CommandParameter(Of Integer)).setValue(layerA)
+        If channelA > 0 Then DirectCast(getCommandParameter("channelB"), CommandParameter(Of Integer)).setValue(channelB)
+        If layerA > -1 Then DirectCast(getCommandParameter("layerB"), CommandParameter(Of Integer)).setValue(layerB)
     End Sub
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addParameter(New CommandParameter(Of Integer)("channelA", "The first channel", 1, False))
-        addParameter(New CommandParameter(Of Integer)("channelB", "The second channel", 1, False))
-        addParameter(New CommandParameter(Of Integer)("layerA", "The first layer", 0, True))
-        addParameter(New CommandParameter(Of Integer)("layerB", "The second layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Integer)("channelA", "The first channel", 1, False))
+        addCommandParameter(New CommandParameter(Of Integer)("channelB", "The second channel", 1, False))
+        addCommandParameter(New CommandParameter(Of Integer)("layerA", "The first layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Integer)("layerB", "The second layer", 0, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "SWAP "
-        If getParameter("layerA").isSet AndAlso getParameter("layerB").isSet Then
-            cmd = cmd & getDestination(getParameter("channelA"), getParameter("layerA")) & " " & getDestination(getParameter("channelB"), getParameter("layerB"))
+        If getCommandParameter("layerA").isSet AndAlso getCommandParameter("layerB").isSet Then
+            cmd = cmd & getDestination(getCommandParameter("channelA"), getCommandParameter("layerA")) & " " & getDestination(getCommandParameter("channelB"), getCommandParameter("layerB"))
         Else
-            cmd = cmd & DirectCast(getParameter("channelA"), CommandParameter(Of Integer)).getValue & " " & DirectCast(getParameter("channelB"), CommandParameter(Of Integer)).getValue
+            cmd = cmd & DirectCast(getCommandParameter("channelA"), CommandParameter(Of Integer)).getValue & " " & DirectCast(getCommandParameter("channelB"), CommandParameter(Of Integer)).getValue
         End If
 
         Return escape(cmd)

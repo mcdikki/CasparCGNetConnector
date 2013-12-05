@@ -25,17 +25,17 @@ Public Class DataStoreCommand
     Public Sub New(ByVal key As String, ByVal data As String)
         MyBase.New("DATA STORE", "Stores the given data string by the given key")
         InitParameter()
-        DirectCast(getParameter("key"), CommandParameter(Of String)).setValue(key)
-        DirectCast(getParameter("data"), CommandParameter(Of String)).setValue(data)
+        DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue(key)
+        DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of String)("key", "The key", "", False))
-        addParameter(New CommandParameter(Of String)("data", "The data string to store", "", False))
+        addCommandParameter(New CommandParameter(Of String)("key", "The key", "", False))
+        addCommandParameter(New CommandParameter(Of String)("data", "The data string to store", "", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return escape("DATA STORE '" & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue() & "' '" & DirectCast(getParameter("data"), CommandParameter(Of String)).getValue() & "'")
+        Return escape("DATA STORE '" & DirectCast(getCommandParameter("key"), CommandParameter(Of String)).getValue() & "' '" & DirectCast(getCommandParameter("data"), CommandParameter(Of String)).getValue() & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

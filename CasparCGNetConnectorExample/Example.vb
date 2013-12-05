@@ -160,15 +160,15 @@ Public Module Example
 
         '' List the parameters of the command
         Console.WriteLine("Paramters of " & command.getName)
-        For Each param In command.getParameters
+        For Each param In command.getCommandParameters
             Console.WriteLine(vbTab & param.getName & ":")
             Console.WriteLine(vbTab & vbTab & "type: " & param.getGenericType.ToString & vbNewLine & vbTab & vbTab & "is optional: " & param.isOptional)
         Next
 
         '' Lets assume we know the parameter and their types, then we can cast directly and set them
-        DirectCast(command.getParameter("channel"), CommandParameter(Of Integer)).setValue(1)
-        DirectCast(command.getParameter("layer"), CommandParameter(Of Integer)).setValue(1)
-        DirectCast(command.getParameter("only foreground"), CommandParameter(Of Boolean)).setValue(True)
+        DirectCast(command.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(1)
+        DirectCast(command.getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(1)
+        DirectCast(command.getCommandParameter("only foreground"), CommandParameter(Of Boolean)).setValue(True)
 
 
         '' The command is ready to be executed
@@ -197,7 +197,7 @@ Public Module Example
         For Each c In [Enum].GetValues(GetType(CasparCGCommandFactory.Command))
             Console.WriteLine("Found Command " & c.ToString)
             commands.Add(CasparCGCommandFactory.getCommand(c))
-            For Each param In commands.Last.getParameters
+            For Each param In commands.Last.getCommandParameters
                 Console.WriteLine(vbTab & param.getName & ":")
                 Console.WriteLine(vbTab & vbTab & "type: " & param.getGenericType.ToString & vbNewLine & vbTab & vbTab & "is optional: " & param.isOptional)
             Next
@@ -210,7 +210,7 @@ Public Module Example
 
         '' Now comes the dirty part.
         '' we need to dynamically cast the parameter object and its value object
-        For Each p In cmd.getParameters
+        For Each p In cmd.getCommandParameters
             Dim parameter = CTypeDynamic(p, p.getGenericParameterType)
             If Not parameter.isOptional Then
                 Dim value = CTypeDynamic(parameter.getDefault(), p.getGenericType)

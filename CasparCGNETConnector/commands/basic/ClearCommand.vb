@@ -30,18 +30,18 @@ Public Class ClearCommand
 
 
     Private Sub Init(Optional ByVal channel As Integer = -1, Optional ByVal layer As Integer = -1)
-        If channel > 0 Then DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        If channel > 0 Then DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
     End Sub
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, True))
-        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, True))
+        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CLEAR " & getDestination(getParameter("channel"), getParameter("layer"))
+        Dim cmd As String = "CLEAR " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
 
         Return escape(cmd)
     End Function

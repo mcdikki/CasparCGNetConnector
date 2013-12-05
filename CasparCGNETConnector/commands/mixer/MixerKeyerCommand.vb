@@ -25,20 +25,20 @@ Public Class MixerKeyerCommand
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal keyer As Boolean = False)
         MyBase.New("MIXER KEYER", "Replaces layer n+1's alpha channel with the alpha channel of layer n, and hides the RGB channels of layer n. If keyer equals 1 then the specified layer will not be rendered, instead it will be used as the key for the layer above. ")
         InitParameter()
-        DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        DirectCast(getParameter("keyer"), CommandParameter(Of Boolean)).setValue(keyer)
+        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        DirectCast(getCommandParameter("keyer"), CommandParameter(Of Boolean)).setValue(keyer)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addParameter(New CommandParameter(Of Boolean)("keyer", "Sets whether or not the keyer should be active", False, True))
+        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
+        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Boolean)("keyer", "Sets whether or not the keyer should be active", False, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getParameter("channel"), getParameter("layer")) & " KEYER"
-        If getParameter("keyer").isSet AndAlso DirectCast(getParameter("keyer"), CommandParameter(Of Boolean)).getValue() Then
+        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " KEYER"
+        If getCommandParameter("keyer").isSet AndAlso DirectCast(getCommandParameter("keyer"), CommandParameter(Of Boolean)).getValue() Then
             cmd = cmd & " 1"
         Else
             cmd = cmd & " 0"

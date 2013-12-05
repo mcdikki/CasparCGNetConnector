@@ -26,24 +26,24 @@ Public Class InfoTemplateCommand
         MyBase.New("INFO TEMPLATE", "Requests informations about a template")
         InitParameter()
 
-        DirectCast(getParameter("template"), CommandParameter(Of String)).setValue(template)
+        DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue(template)
     End Sub
 
     Public Sub New(ByVal template As CasparCGTemplate)
         MyBase.New("INFO TEMPLATE", "Requests informations about a template")
         InitParameter()
 
-        DirectCast(getParameter("template"), CommandParameter(Of String)).setValue(template.getFullName)
+        DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue(template.getFullName)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of String)("template", "The template", "", False))
+        addCommandParameter(New CommandParameter(Of String)("template", "The template", "", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "INFO TEMPLATE"
-        If getParameter("template").isSet Then
-            cmd = cmd & " '" & DirectCast(getParameter("template"), CommandParameter(Of String)).getValue & "'"
+        If getCommandParameter("template").isSet Then
+            cmd = cmd & " '" & DirectCast(getCommandParameter("template"), CommandParameter(Of String)).getValue & "'"
         End If
         Return escape(cmd)
     End Function

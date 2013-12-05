@@ -25,25 +25,57 @@ Public Class AddCommand
     Public Sub New(ByVal channel As Integer, ByVal parameter() As String)
         MyBase.New("ADD", "Adds a comsumer to a given channel")
         InitParameter()
-        DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        DirectCast(getParameter("paramter"), CommandParameter(Of String())).setValue(parameter)
+        setChannel(channel)
+        setParamter(parameter)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of String)("channel", "The channel", 1, False))
-        addParameter(New CommandParameter(Of String())("parameter", "The paramter list", {}, False))
+        addCommandParameter(New CommandParameter(Of String)("channel", "The channel", 1, False))
+        addCommandParameter(New CommandParameter(Of String())("parameter", "The paramter list", {}, False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "ADD " & getDestination(getParameter("channel"))
-        If getParameter("parameter").isSet AndAlso DirectCast(getParameter("parameter"), CommandParameter(Of String())).getValue.Length > 0 Then
-            For Each p In DirectCast(getParameter("parameter"), CommandParameter(Of String())).getValue
+        Dim cmd As String = "ADD " & getDestination(getCommandParameter("channel"))
+        If getCommandParameter("parameter").isSet AndAlso getParameter().Length > 0 Then
+            For Each p In getParameter()
                 cmd = cmd & " " & p
             Next
         Else
             Throw New ArgumentNullException("The ADD command needs at least one parameter to be defined. Empty parameter lists are not allowed.")
         End If
         Return cmd
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel="+ channel +". The parameter channel has to be greater than 0."); 
+        End If
+    End Sub
+
+    Public Sub setParamter(ByVal parameter As String())
+        If Not IsNothing(parameter) Then
+            DirectCast(getCommandParameter("parameter"), CommandParameter(Of String())).setValue(parameter)
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Function getParameter() As String()
+        Dim param As CommandParameter(Of String()) = getCommandParameter("parameter")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

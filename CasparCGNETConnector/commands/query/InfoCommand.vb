@@ -29,39 +29,39 @@ Public Class InfoCommand
     End Sub
 
     Private Sub Init(ByVal channel As Integer, ByVal layer As Integer, Optional ByVal onlyBackground As Boolean = False, Optional ByVal onlyForeground As Boolean = False, Optional ByVal delay As Boolean = False)
-        If channel > 0 Then DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        If channel > 0 Then DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
 
         If onlyBackground Then
-            DirectCast(getParameter("only background"), CommandParameter(Of Boolean)).setValue(onlyBackground)
+            DirectCast(getCommandParameter("only background"), CommandParameter(Of Boolean)).setValue(onlyBackground)
         End If
         If onlyForeground Then
-            DirectCast(getParameter("only foreground"), CommandParameter(Of Boolean)).setValue(onlyForeground)
+            DirectCast(getCommandParameter("only foreground"), CommandParameter(Of Boolean)).setValue(onlyForeground)
         End If
         If delay Then
-            DirectCast(getParameter("delay"), CommandParameter(Of Boolean)).setValue(delay)
+            DirectCast(getCommandParameter("delay"), CommandParameter(Of Boolean)).setValue(delay)
         End If
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, True))
-        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addParameter(New CommandParameter(Of Boolean)("only background", "Only show info of background", False, True))
-        addParameter(New CommandParameter(Of Boolean)("only foreground", "Only show info of foreground", False, True))
-        addParameter(New CommandParameter(Of Boolean)("delay", "shows the delay of a channel", False, True))
+        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, True))
+        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Boolean)("only background", "Only show info of background", False, True))
+        addCommandParameter(New CommandParameter(Of Boolean)("only foreground", "Only show info of foreground", False, True))
+        addCommandParameter(New CommandParameter(Of Boolean)("delay", "shows the delay of a channel", False, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "INFO"
-        If getParameter("channel").isSet Then
-            cmd = cmd & " " & getDestination(getParameter("channel"), getParameter("layer"))
-            If getParameter("layer").isSet Then
-                If getParameter("only background").isSet AndAlso DirectCast(getParameter("only background"), CommandParameter(Of Boolean)).getValue Then
+        If getCommandParameter("channel").isSet Then
+            cmd = cmd & " " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
+            If getCommandParameter("layer").isSet Then
+                If getCommandParameter("only background").isSet AndAlso DirectCast(getCommandParameter("only background"), CommandParameter(Of Boolean)).getValue Then
                     cmd = cmd & " B"
-                ElseIf getParameter("only foreground").isSet AndAlso DirectCast(getParameter("only foreground"), CommandParameter(Of Boolean)).getValue Then
+                ElseIf getCommandParameter("only foreground").isSet AndAlso DirectCast(getCommandParameter("only foreground"), CommandParameter(Of Boolean)).getValue Then
                     cmd = cmd & " F"
                 End If
-            ElseIf getParameter("delay").isSet AndAlso DirectCast(getParameter("delay"), CommandParameter(Of Boolean)).getValue Then
+            ElseIf getCommandParameter("delay").isSet AndAlso DirectCast(getCommandParameter("delay"), CommandParameter(Of Boolean)).getValue Then
                 cmd = cmd & " DELAY"
             End If
         End If

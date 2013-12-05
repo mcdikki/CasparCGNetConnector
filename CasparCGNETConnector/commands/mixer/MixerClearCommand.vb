@@ -25,17 +25,17 @@ Public Class MixerClearCommand
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
         MyBase.New("MIXER CLEAR", "Reset all transformations")
         InitParameter()
-        DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
+        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getParameter("channel"), getParameter("layer")) & " CLEAR"
+        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CLEAR"
 
         Return cmd
     End Function

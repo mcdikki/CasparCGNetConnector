@@ -79,7 +79,7 @@ Public MustInherit Class AbstractCommand
     ''' Returns a list of all <seealso cref=" ICommandParameter ">parameter</seealso> names of this command
     ''' </summary>
     ''' <returns>a list of paramter names</returns>
-    Public Function getParameterNames() As List(Of String)
+    Public Function getCommandParameterNames() As List(Of String)
         Return pNames
     End Function
 
@@ -88,7 +88,7 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <param name="parameterName">the all lowercase name of the parameter</param>
     ''' <returns>the <seealso cref=" ICommandParameter ">parameter</seealso> if, and only if, it exists, else nothing</returns>
-    Public Function getParameter(ByVal parameterName As String) As ICommandParameter
+    Public Function getCommandParameter(ByVal parameterName As String) As ICommandParameter
         If pNames.Contains(parameterName.ToLower) Then
             Return parameter.Item(pNames.IndexOf(parameterName.ToLower))
         End If
@@ -149,7 +149,7 @@ Public MustInherit Class AbstractCommand
         Return True
     End Function
 
-    Protected Sub setParameters(ByRef params As List(Of ICommandParameter))
+    Protected Sub setCommandParameters(ByRef params As List(Of ICommandParameter))
         If Not IsNothing(params) Then
             parameter = params
             pNames.Clear()
@@ -159,11 +159,11 @@ Public MustInherit Class AbstractCommand
         End If
     End Sub
 
-    Public Function getParameters() As List(Of ICommandParameter)
+    Public Function getCommandParameters() As List(Of ICommandParameter)
         Return parameter
     End Function
 
-    Protected Sub addParameter(ByRef param As ICommandParameter)
+    Protected Sub addCommandParameter(ByRef param As ICommandParameter)
         If Not IsNothing(param) And Not pNames.Contains(param.getName) Then
             parameter.Add(param)
             pNames.Add(param.getName.ToLower)
@@ -236,7 +236,7 @@ Public MustInherit Class AbstractCommand
         'pnode.appendChild(node)
 
         '' Add all parameter
-        For Each param In getParameters()
+        For Each param In getCommandParameters()
             pnode.appendChild(param.toXml().firstChild)
         Next
         configDoc.appendChild(pnode)

@@ -25,20 +25,20 @@ Public Class MixerStraightAlphaOutputCommand
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal active As Boolean = False)
         MyBase.New("MIXER STRAIGHT_ALPHA_OUTPUT", "If enabled, causes RGB values to be divided with the alpha for the given video channel before the image is sent to consumers. ")
         InitParameter()
-        DirectCast(getParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        DirectCast(getParameter("active"), CommandParameter(Of Boolean)).setValue(active)
+        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        DirectCast(getCommandParameter("active"), CommandParameter(Of Boolean)).setValue(active)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addParameter(New CommandParameter(Of Boolean)("active", "Sets whether or not straight alpha output should be active", False, True))
+        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
+        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New CommandParameter(Of Boolean)("active", "Sets whether or not straight alpha output should be active", False, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getParameter("channel"), getParameter("layer")) & " STRAIGHT_ALPHA_OUTPUT"
-        If getParameter("active").isSet AndAlso DirectCast(getParameter("active"), CommandParameter(Of Boolean)).getValue() Then
+        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " STRAIGHT_ALPHA_OUTPUT"
+        If getCommandParameter("active").isSet AndAlso DirectCast(getCommandParameter("active"), CommandParameter(Of Boolean)).getValue() Then
             cmd = cmd & " 1"
         Else
             cmd = cmd & " 0"

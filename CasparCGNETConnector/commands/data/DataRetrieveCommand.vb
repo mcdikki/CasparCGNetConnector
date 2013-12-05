@@ -25,15 +25,15 @@ Public Class DataRetrieveCommand
     Public Sub New(ByVal key As String)
         MyBase.New("DATA RETRIEVE", "Retrieves the data string stored by the given key")
         InitParameter()
-        DirectCast(getParameter("key"), CommandParameter(Of String)).setValue(key)
+        DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue(key)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of String)("key", "The key", "", False))
+        addCommandParameter(New CommandParameter(Of String)("key", "The key", "", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return escape("DATA RETRIEVE '" & DirectCast(getParameter("key"), CommandParameter(Of String)).getValue() & "'")
+        Return escape("DATA RETRIEVE '" & DirectCast(getCommandParameter("key"), CommandParameter(Of String)).getValue() & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

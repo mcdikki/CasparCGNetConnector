@@ -24,21 +24,21 @@ Public Class CinfCommand
     Public Sub New(ByVal media As String)
         MyBase.New("CINF", "Requests details of a media file on the server")
         InitParameter()
-        DirectCast(getParameter("media"), CommandParameter(Of String)).setValue(media)
+        DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media)
     End Sub
 
     Public Sub New(ByVal media As AbstractCasparCGMedia)
         MyBase.New("CINF", "Requests details of a media file on the server")
         InitParameter()
-        DirectCast(getParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
+        DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
     End Sub
 
     Private Sub InitParameter()
-        addParameter(New CommandParameter(Of String)("media", "The media file", "", False))
+        addCommandParameter(New CommandParameter(Of String)("media", "The media file", "", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return escape("CINF '" & DirectCast(getParameter("media"), CommandParameter(Of String)).getValue & "'")
+        Return escape("CINF '" & DirectCast(getCommandParameter("media"), CommandParameter(Of String)).getValue & "'")
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
