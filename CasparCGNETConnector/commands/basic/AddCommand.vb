@@ -50,7 +50,7 @@ Public Class AddCommand
         If channel > 0 Then
             DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         Else
-            Throw New ArgumentException("Illegal argument channel="+ channel +". The parameter channel has to be greater than 0."); 
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
         End If
     End Sub
 

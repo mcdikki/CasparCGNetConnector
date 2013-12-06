@@ -50,7 +50,7 @@ Public Class CallCommand
     End Sub
 
     Private Sub InitParameter()
-        '' Add all paramters here:
+        '' Add all parameters here:
         addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
         addCommandParameter(New CommandParameter(Of Boolean)("looping", "Loops the media", False, True))
@@ -63,23 +63,134 @@ Public Class CallCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "CALL " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
 
-        If getCommandParameter("looping").isSet AndAlso DirectCast(getCommandParameter("looping"), CommandParameter(Of Boolean)).getValue() Then
+        If getLooping() Then
             cmd = cmd & " LOOP"
         End If
         If getCommandParameter("transition").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("transition"), CommandParameter(Of CasparCGTransition)).getValue().toString
+            cmd = cmd & " " & getTransition.toString
         End If
         If getCommandParameter("seek").isSet Then
-            cmd = cmd & " SEEK " & DirectCast(getCommandParameter("seek"), CommandParameter(Of Integer)).getValue()
+            cmd = cmd & " SEEK " & getSeek()
         End If
         If getCommandParameter("length").isSet Then
-            cmd = cmd & " LENGTH " & DirectCast(getCommandParameter("length"), CommandParameter(Of Integer)).getValue()
+            cmd = cmd & " LENGTH " & getLength()
         End If
         If getCommandParameter("filter").isSet Then
-            cmd = cmd & " FILTER '" & DirectCast(getCommandParameter("filter"), CommandParameter(Of String)).getValue() & "'"
+            cmd = cmd & " FILTER '" & getFilter()
         End If
 
         Return escape(cmd)
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLayer(ByVal layer As Integer)
+        If layer < 0 Then
+            Throw New ArgumentException("Illegal argument layer=" + layer + ". The parameter layer has to be greater or equal than 0.")
+        Else
+            DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        End If
+    End Sub
+
+    Public Function getLayer() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("layer")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLooping(ByVal looping As Boolean)
+        DirectCast(getCommandParameter("looping"), CommandParameter(Of Boolean)).setValue(looping)
+    End Sub
+
+    Public Function getLooping() As Boolean
+        Dim param As CommandParameter(Of Boolean) = getCommandParameter("looping")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setTransition(ByRef transition As CasparCGTransition)
+        DirectCast(getCommandParameter("transition"), CommandParameter(Of CasparCGTransition)).setValue(transition)
+    End Sub
+
+    Public Function getTransition() As CasparCGTransition
+        Dim param As CommandParameter(Of CasparCGTransition) = getCommandParameter("transition")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setSeek(ByVal seek As Integer)
+        If seek >= 0 Then
+            DirectCast(getCommandParameter("seek"), CommandParameter(Of Integer)).setValue(seek)
+        Else
+            Throw New ArgumentException("Illegal argument. Seek must be positiv.")
+        End If
+    End Sub
+
+    Public Function getSeek() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("seek")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLength(ByVal length As Integer)
+        If length >= 0 Then
+            DirectCast(getCommandParameter("length"), CommandParameter(Of Integer)).setValue(length)
+        Else
+            Throw New ArgumentException("Illegal argument. Length must be positiv.")
+        End If
+    End Sub
+
+    Public Function getLength() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("length")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setFilter(ByVal filter As String)
+        If Not IsNothing(filter) Then
+            DirectCast(getCommandParameter("filter"), CommandParameter(Of String)).setValue(filter)
+        Else
+            DirectCast(getCommandParameter("filter"), CommandParameter(Of String)).setValue("")
+        End If
+    End Sub
+
+    Public Function getFilter() As String
+        Dim param As CommandParameter(Of String) = getCommandParameter("filter")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
