@@ -46,7 +46,7 @@ Public Class RouteCommand
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "ROUTE " & getDestination(getParameter("channel"), getParameter("layer"))
-        cmd = cmd & " ROUTE:\\" & getDestination(getParameter("src channel"), getParameter("src layer"))
+        cmd = cmd & " ROUTE://" & getDestination(getParameter("src channel"), getParameter("src layer"))
 
         Return escape(cmd)
     End Function

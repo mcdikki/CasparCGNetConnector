@@ -160,7 +160,7 @@ Public MustInherit Class AbstractCommand
         End If
     End Sub
 
-    Public Function getParamters() As List(Of ICommandParameter) Implements ICommand.getParameters
+    Public Function getParameters() As List(Of ICommandParameter) Implements ICommand.getParameters
         Return parameter
     End Function
 
@@ -237,7 +237,7 @@ Public MustInherit Class AbstractCommand
         'pnode.appendChild(node)
 
         '' Add all parameter
-        For Each param In getParamters()
+        For Each param In getParameters()
             pnode.appendChild(param.toXml().firstChild)
         Next
         configDoc.appendChild(pnode)
