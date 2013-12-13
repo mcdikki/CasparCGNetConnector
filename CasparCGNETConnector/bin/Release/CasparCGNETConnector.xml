@@ -45,6 +45,15 @@ CasparCGNETConnector
 	<param name="serverAddress">the server ip or hostname</param>
 	<param name="serverPort">the servers port</param>
 	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor(System.String)">
+	<summary>
+ Creates a new CasparCGConnection to the given serverAddress and the default port
+ </summary>
+	<param name="serverAddress">the server ip or hostname</param>
+</member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor">
+	<summary>
+ Creates a new CasparCGConnection to localhost and the default port
+ </summary>
 </member><member name="M:CasparCGNETConnector.CasparCGConnection.connect">
 	<summary>
  Connects to the given server and port and returns true if a connection could be established and false otherwise.
