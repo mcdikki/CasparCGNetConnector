@@ -37,7 +37,6 @@ Public Class SetCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "SET " & getDestination(getParameter("channel"))
         If getParameter("video mode").isSet Then
-            DirectCast(getParameter("parameter"), CommandParameter(Of String())).getValue()
             cmd = cmd & " " & DirectCast(getParameter("video mode"), CommandParameter(Of String)).getValue()
         End If
         Return cmd
