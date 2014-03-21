@@ -30,6 +30,7 @@ Public Class CasparCGCommandFactory
         LoadbgCommand
         RouteCommand
         PauseCommand
+        ResumeCommand
         CallCommand
         SwapCommand
         ClearCommand
