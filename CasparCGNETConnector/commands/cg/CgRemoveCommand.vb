@@ -24,6 +24,7 @@ Public Class CgRemoveCommand
 
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer)
         MyBase.New("CG REMOVE", "Removes a flashtemplate on a given flashlayer from a given channel / layer")
+        InitParameter()
         DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
         If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
         DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).setValue(flashlayer)
