@@ -235,12 +235,12 @@ CasparCGNETConnector
  </summary>
 	<returns>the Description of this command</returns>
 	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.getParameterNames">
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getCommandParameterNames">
 	<summary>
  Returns a list of all <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> names of this command
  </summary>
 	<returns>a list of paramter names</returns>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.getParameter(System.String)">
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getCommandParameter(System.String)">
 	<summary>
  Returns the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> ot the given name or nothing if no parameter of this name exists.
  </summary>

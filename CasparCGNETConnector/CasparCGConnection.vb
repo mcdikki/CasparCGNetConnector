@@ -232,10 +232,10 @@ Public Class CasparCGConnection
     Private Sub closed()
         timer.Stop()
         client.Close()
-        RaiseEvent disconnected(Me)
         ccgVersion = "0.0.0"
         channels = 0
-        logger.log("Logger.closed: Disconnected from server.")
+        logger.log("CasparCGConnection.closed: Disconnected from server.")
+        RaiseEvent disconnected(Me)
     End Sub
 
     Private Sub checkConnection() Handles timer.Elapsed
