@@ -25,11 +25,11 @@ Public Class MixerVolumeCommand
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal volume As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER VOLUME", "Changes the volume of the specified layer")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).setValue(volume)
-        DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(duration)
-        DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).setValue(tween)
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setVolume(volume)
+        setDuration(duration)
+        setTween(tween)
     End Sub
 
     Private Sub InitParameter()
@@ -50,6 +50,87 @@ Public Class MixerVolumeCommand
         End If
 
         Return cmd
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLayer(ByVal layer As Integer)
+        If layer < 0 Then
+            Throw New ArgumentException("Illegal argument layer=" + layer + ". The parameter layer has to be greater or equal than 0.")
+        Else
+            DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        End If
+    End Sub
+
+    Public Function getLayer() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("layer")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setVolume(ByVal volume As Single)
+        If IsNothing(volume) Then
+            DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).setValue(0.0)
+        Else
+            DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).setValue(volume)
+        End If
+    End Sub
+
+    Public Function getVolume() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("volume")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setDuration(ByVal duratrion As Integer)
+        If IsNothing(duratrion) Then
+            DirectCast(getCommandParameter("duratrion"), CommandParameter(Of Integer)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("duratrion"), CommandParameter(Of Integer)).setValue(duratrion)
+        End If
+    End Sub
+
+    Public Function getDuratrion() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("duratrion")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setTween(ByRef tween As CasparCGUtil.Tweens)
+        DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).setValue(tween)
+    End Sub
+
+    Public Function getTween() As CasparCGUtil.Tweens
+        Dim param As CommandParameter(Of CasparCGUtil.Tweens) = getCommandParameter("tween")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

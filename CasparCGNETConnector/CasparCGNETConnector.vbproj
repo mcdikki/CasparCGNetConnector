@@ -77,6 +77,7 @@
     <Compile Include="commands\basic\AddCommand.vb" />
     <Compile Include="commands\basic\ByeCommand.vb" />
     <Compile Include="commands\basic\CallCommand.vb" />
+    <Compile Include="commands\basic\ResumeCommand.vb" />
     <Compile Include="commands\basic\PlayCommand.vb" />
     <Compile Include="commands\cg\CgAddCommand.vb" />
     <Compile Include="commands\cg\CgRemoveCommand.vb" />

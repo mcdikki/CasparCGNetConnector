@@ -25,14 +25,14 @@ Public Class MixerFillCommand
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal x As Single, ByVal y As Single, ByVal xscale As Single, ByVal ysacle As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER FILL", "Scales the video stream on the specified layer. The concept is quite simple; it comes from the ancient DVE machines like ADO. Imagine that the screen has a size of 1x1 (not in pixel, but in an abstract measure). Then the coordinates of a full size picture is 0 0 1 1, which means left edge is at coordinate 0, top edge at coordinate 0, width full size => 1, heigh full size => 1. If you want to crop the picture on the left side (for wipe left to right) You set the left edge to full right => 1 and the width to 0. So this give you the start-coordinates of 1 0 0 1. End coordinates of any wipe are allways the full picture 0 0 1 1. With the FILL command it can make sense to have values between 1 and 0, if you want to do a smaller window. If, for instance you want to have a window of half the size of your screen, you set with and height to 0.5. If you want to center it you set left and top edge to 0.25 so you will get the arguments 0.25 0.25 0.5 0.5 ")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        DirectCast(getCommandParameter("x"), CommandParameter(Of Single)).setValue(x)
-        DirectCast(getCommandParameter("y"), CommandParameter(Of Single)).setValue(y)
-        DirectCast(getCommandParameter("xscale"), CommandParameter(Of Single)).setValue(xscale)
-        DirectCast(getCommandParameter("yscale"), CommandParameter(Of Single)).setValue(ysacle)
-        DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(duration)
-        DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).setValue(tween)
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setDuration(duration)
+        setTween(tween)
+        setX(x)
+        setY(y)
+        setXscale(xscale)
+        setYscale(ysacle)
     End Sub
 
     Private Sub InitParameter()
@@ -59,6 +59,138 @@ Public Class MixerFillCommand
         End If
 
         Return cmd
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLayer(ByVal layer As Integer)
+        If layer < 0 Then
+            Throw New ArgumentException("Illegal argument layer=" + layer + ". The parameter layer has to be greater or equal than 0.")
+        Else
+            DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        End If
+    End Sub
+
+    Public Function getLayer() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("layer")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setX(ByVal x As Single)
+        If IsNothing(x) Then
+            DirectCast(getCommandParameter("x"), CommandParameter(Of Single)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("x"), CommandParameter(Of Single)).setValue(x)
+        End If
+    End Sub
+
+    Public Function getX() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("x")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setY(ByVal y As Single)
+        If IsNothing(y) Then
+            DirectCast(getCommandParameter("y"), CommandParameter(Of Single)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("y"), CommandParameter(Of Single)).setValue(y)
+        End If
+    End Sub
+
+    Public Function getY() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("y")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setXscale(ByVal xscale As Single)
+        If IsNothing(xscale) Then
+            DirectCast(getCommandParameter("xscale"), CommandParameter(Of Single)).setValue(1)
+        Else
+            DirectCast(getCommandParameter("xscale"), CommandParameter(Of Single)).setValue(xscale)
+        End If
+    End Sub
+
+    Public Function getXscale() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("xscale")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setYscale(ByVal yscale As Single)
+        If IsNothing(yscale) Then
+            DirectCast(getCommandParameter("yscale"), CommandParameter(Of Single)).setValue(1)
+        Else
+            DirectCast(getCommandParameter("yscale"), CommandParameter(Of Single)).setValue(yscale)
+        End If
+    End Sub
+
+    Public Function getYscale() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("yscale")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setDuration(ByVal duratrion As Integer)
+        If IsNothing(duratrion) Then
+            DirectCast(getCommandParameter("duratrion"), CommandParameter(Of Integer)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("duratrion"), CommandParameter(Of Integer)).setValue(duratrion)
+        End If
+    End Sub
+
+    Public Function getDuratrion() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("duratrion")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setTween(ByRef tween As CasparCGUtil.Tweens)
+        DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).setValue(tween)
+    End Sub
+
+    Public Function getTween() As CasparCGUtil.Tweens
+        Dim param As CommandParameter(Of CasparCGUtil.Tweens) = getCommandParameter("tween")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

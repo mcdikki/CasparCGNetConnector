@@ -25,11 +25,11 @@ Public Class MixerChromaCommand
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal color As String = "", Optional ByVal threshold As Single = 0.0, Optional ByVal softness As Single = 0.0)
         MyBase.New("MIXER CHROMA", "Enables chroma keying on the specified video layer")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        If Not IsNothing(color) AndAlso color.Length > 0 Then DirectCast(getCommandParameter("color"), CommandParameter(Of String)).setValue(color)
-        DirectCast(getCommandParameter("threshold"), CommandParameter(Of Single)).setValue(threshold)
-        DirectCast(getCommandParameter("softness"), CommandParameter(Of Single)).setValue(softness)
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setColor(color)
+        setThreshold(threshold)
+        setSoftness(softness)
     End Sub
 
     Private Sub InitParameter()
@@ -52,6 +52,93 @@ Public Class MixerChromaCommand
         End If
 
         Return cmd
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLayer(ByVal layer As Integer)
+        If layer < 0 Then
+            Throw New ArgumentException("Illegal argument layer=" + layer + ". The parameter layer has to be greater or equal than 0.")
+        Else
+            DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        End If
+    End Sub
+
+    Public Function getLayer() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("layer")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setColor(ByVal color As String)
+        If IsNothing(color) Then
+            DirectCast(getCommandParameter("color"), CommandParameter(Of String)).setValue("none")
+        ElseIf color.ToLower.Equals("none") OrElse color.ToLower.Equals("green") OrElse color.ToLower.Equals("blue") Then
+            DirectCast(getCommandParameter("color"), CommandParameter(Of String)).setValue(color)
+        Else
+            Throw New ArgumentException("Illegal argument color=" & color & ". Color must be one of: none, green, blue")
+        End If
+    End Sub
+
+    Public Function getColor() As String
+        Dim param As CommandParameter(Of String) = getCommandParameter("color")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setSoftness(ByVal softness As Single)
+        If IsNothing(softness) Then
+            DirectCast(getCommandParameter("softness"), CommandParameter(Of Single)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("softness"), CommandParameter(Of Single)).setValue(softness)
+        End If
+    End Sub
+
+    Public Function getSoftness() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("softness")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setThreshold(ByVal threshold As Single)
+        If IsNothing(threshold) Then
+            DirectCast(getCommandParameter("threshold"), CommandParameter(Of Single)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("threshold"), CommandParameter(Of Single)).setValue(threshold)
+        End If
+    End Sub
+
+    Public Function getThreshold() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("threshold")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

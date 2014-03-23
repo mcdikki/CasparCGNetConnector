@@ -25,8 +25,8 @@ Public Class DataStoreCommand
     Public Sub New(ByVal key As String, ByVal data As String)
         MyBase.New("DATA STORE", "Stores the given data string by the given key")
         InitParameter()
-        DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue(key)
-        DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data)
+        setKey(key)
+        setData(data)
     End Sub
 
     Private Sub InitParameter()
@@ -36,6 +36,40 @@ Public Class DataStoreCommand
 
     Public Overrides Function getCommandString() As String
         Return escape("DATA STORE '" & DirectCast(getCommandParameter("key"), CommandParameter(Of String)).getValue() & "' '" & DirectCast(getCommandParameter("data"), CommandParameter(Of String)).getValue() & "'")
+    End Function
+
+    Public Sub setKey(ByVal key As String)
+        If IsNothing(key) Then
+            DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue("")
+        Else
+            DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue(key)
+        End If
+    End Sub
+
+    Public Function getKey() As String
+        Dim param As CommandParameter(Of String) = getCommandParameter("key")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setData(ByVal data As String)
+        If IsNothing(data) Then
+            DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue("")
+        Else
+            DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data)
+        End If
+    End Sub
+
+    Public Function getData() As String
+        Dim param As CommandParameter(Of String) = getCommandParameter("data")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

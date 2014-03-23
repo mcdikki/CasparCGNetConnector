@@ -24,8 +24,9 @@ Public Class CgClearCommand
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
         MyBase.New("CG CLEAR", "Clears all layers and any state that might be stored")
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
     End Sub
 
     Private Sub InitParameter()

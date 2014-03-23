@@ -14,34 +14,35 @@
 '' Thank you!
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Class CgRemoveCommand
+Public Class ResumeCommand
     Inherits AbstractCommand
 
     Public Sub New()
-        MyBase.New("CG REMOVE", "Removes a flashtemplate on a given flashlayer from a given channel / layer")
+        MyBase.New("RESUME", "Resumes a paused clip on the given channel or layer")
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal flashlayer As Integer)
-        MyBase.New("CG REMOVE", "Removes a flashtemplate on a given flashlayer from a given channel / layer")
+    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
+        MyBase.New("RESUME", "Resumes a paused clip on the given channel or layer")
         InitParameter()
-        setChannel(channel)
-        If layer > -1 Then setLayer(layer)
-        setFlashlayer(flashlayer)
+        Init(channel, layer)
+    End Sub
+
+    Private Sub Init(ByVal channel As Integer, ByVal layer As Integer)
+        If channel > 0 Then DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
     End Sub
 
     Private Sub InitParameter()
+        '' Add all paramters here:
         addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " REMOVE"
+        Dim cmd As String = "RESUME " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).getValue
-
-        Return cmd
+        Return escape(cmd)
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)
@@ -78,25 +79,8 @@ Public Class CgRemoveCommand
         End If
     End Function
 
-    Public Sub setFlashlayer(ByVal flashlayer As Integer)
-        If flashlayer < 0 Then
-            Throw New ArgumentException("Illegal argument flashlayer=" + flashlayer + ". The parameter flashlayer has to be greater or equal than 0.")
-        Else
-            DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).setValue(flashlayer)
-        End If
-    End Sub
-
-    Public Function getFlashlayer() As Integer
-        Dim param As CommandParameter(Of Integer) = getCommandParameter("flashlayer")
-        If Not IsNothing(param) And param.isSet Then
-            Return param.getValue
-        Else
-            Return param.getDefault
-        End If
-    End Function
-
     Public Overrides Function getRequiredVersion() As Integer()
-        Return {1}
+        Return {2, 0, 7}
     End Function
 
     Public Overrides Function getMaxAllowedVersion() As Integer()

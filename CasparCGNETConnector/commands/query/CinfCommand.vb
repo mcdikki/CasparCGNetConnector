@@ -24,13 +24,13 @@ Public Class CinfCommand
     Public Sub New(ByVal media As String)
         MyBase.New("CINF", "Requests details of a media file on the server")
         InitParameter()
-        DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media)
+        setMedia(media)
     End Sub
 
     Public Sub New(ByVal media As AbstractCasparCGMedia)
         MyBase.New("CINF", "Requests details of a media file on the server")
         InitParameter()
-        DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
+        setMedia(media)
     End Sub
 
     Private Sub InitParameter()
@@ -39,6 +39,31 @@ Public Class CinfCommand
 
     Public Overrides Function getCommandString() As String
         Return escape("CINF '" & DirectCast(getCommandParameter("media"), CommandParameter(Of String)).getValue & "'")
+    End Function
+
+    Public Sub setMedia(ByVal media As String)
+        If IsNothing(media) Then
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue("")
+        Else
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media)
+        End If
+    End Sub
+
+    Public Sub setMedia(ByVal media As AbstractCasparCGMedia)
+        If IsNothing(media) Then
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue("")
+        Else
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
+        End If
+    End Sub
+
+    Public Function getMedia() As String
+        Dim param As CommandParameter(Of String) = getCommandParameter("media")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

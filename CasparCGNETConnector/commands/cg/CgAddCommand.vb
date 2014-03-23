@@ -25,23 +25,23 @@ Public Class CgAddCommand
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As CasparCGTemplate, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = "")
         MyBase.New("CG ADD", "Adds a flashtemplate to a given channel / layer on a given flashlayer")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue(template.getFullName)
-        DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).setValue(flashlayer)
-        DirectCast(getCommandParameter("play on load"), CommandParameter(Of Boolean)).setValue(playOnLoad)
-        If Not IsNothing(data) AndAlso data.Length > 0 Then DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data)
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setFlashlayer(flashlayer)
+        setTemplate(template)
+        setPlayOnLoad(playOnLoad)
+        setData(data)
     End Sub
 
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As String, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = "")
         MyBase.New("CG ADD", "Adds a flashtemplate to a given channel / layer on a given flashlayer")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
-        DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue(template)
-        DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).setValue(flashlayer)
-        DirectCast(getCommandParameter("play on load"), CommandParameter(Of Boolean)).setValue(playOnLoad)
-        If Not IsNothing(data) AndAlso data.Length > 0 Then DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data)
+        setChannel(channel)
+        If layer < -1 Then setLayer(layer)
+        setFlashlayer(flashlayer)
+        setTemplate(template)
+        setPlayOnLoad(playOnLoad)
+        setData(data)
     End Sub
 
     Private Sub InitParameter()
@@ -165,6 +165,14 @@ Public Class CgAddCommand
             DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data)
         Else
             DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue("")
+        End If
+    End Sub
+
+    Public Sub setData(ByVal data As CasparCGTemplateData)
+        If IsNothing(data) Then
+            DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue("")
+        Else
+            DirectCast(getCommandParameter("data"), CommandParameter(Of String)).setValue(data.getDataString)
         End If
     End Sub
 

@@ -25,7 +25,7 @@ Public Class DataRemoveCommand
     Public Sub New(ByVal key As String)
         MyBase.New("DATA REMOVE", "Removes the data string stored by the given key")
         InitParameter()
-        DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue(key)
+        setKey(key)
     End Sub
 
     Private Sub InitParameter()
@@ -34,6 +34,23 @@ Public Class DataRemoveCommand
 
     Public Overrides Function getCommandString() As String
         Return escape("DATA REMOVE '" & DirectCast(getCommandParameter("key"), CommandParameter(Of String)).getValue() & "'")
+    End Function
+
+    Public Sub setKey(ByVal key As String)
+        If IsNothing(key) Then
+            DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue("")
+        Else
+            DirectCast(getCommandParameter("key"), CommandParameter(Of String)).setValue(key)
+        End If
+    End Sub
+
+    Public Function getKey() As String
+        Dim param As CommandParameter(Of String) = getCommandParameter("key")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()

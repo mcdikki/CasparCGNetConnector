@@ -25,8 +25,8 @@ Public Class MixerMastervolumeCommand
     Public Sub New(ByVal channel As Integer, ByVal volume As Single)
         MyBase.New("MIXER MASTERVOLUME", "Changes the volume of an entire channel. ")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).setValue(volume)
+        setChannel(channel)
+        setVolume(volume)
     End Sub
 
     Private Sub InitParameter()
@@ -38,6 +38,40 @@ Public Class MixerMastervolumeCommand
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel")) & " MASTERVOLUME " & DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).getValue()
 
         Return cmd
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setVolume(ByVal volume As Single)
+        If IsNothing(volume) Then
+            DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).setValue(1)
+        Else
+            DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).setValue(volume)
+        End If
+    End Sub
+
+    Public Function getVolume() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("volume")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
