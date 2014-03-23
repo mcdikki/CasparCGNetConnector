@@ -14,7 +14,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("A NET library for connection your app with CasparCG")> 
 <Assembly: AssemblyCompany("Sublan.tv")> 
 <Assembly: AssemblyProduct("CasparCGNETConnector")> 
-<Assembly: AssemblyCopyright("Copyright ©  2013")> 
+<Assembly: AssemblyCopyright("Copyright ©  2013 - 2014")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)> 
@@ -33,7 +33,7 @@ Imports System.Runtime.InteropServices
 ' übernehmen, indem Sie "*" eingeben:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.1.1.5")> 
+<Assembly: AssemblyVersion("0.1.1.6")> 
 <Assembly: AssemblyFileVersion("0.1.1.0")> 
 
 <Assembly: NeutralResourcesLanguageAttribute("en")> 
