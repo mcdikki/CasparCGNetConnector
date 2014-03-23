@@ -33,13 +33,13 @@ Public Class InfoCommand
         If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
 
         If onlyBackground Then
-            DirectCast(getCommandParameter("only background"), CommandParameter(Of Boolean)).setValue(onlyBackground)
+            setOnlyBackground(onlyBackground)
         End If
         If onlyForeground Then
-            DirectCast(getCommandParameter("only foreground"), CommandParameter(Of Boolean)).setValue(onlyForeground)
+            setOnlyForeground(onlyForeground)
         End If
         If delay Then
-            DirectCast(getCommandParameter("delay"), CommandParameter(Of Boolean)).setValue(delay)
+            setDelay(delay)
         End If
     End Sub
 
@@ -66,6 +66,79 @@ Public Class InfoCommand
             End If
         End If
         Return cmd
+    End Function
+
+    Public Sub setChannel(ByVal channel As Integer)
+        If channel > 0 Then
+            DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + channel + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+
+    Public Function getChannel() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("channel")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setLayer(ByVal layer As Integer)
+        If layer < 0 Then
+            Throw New ArgumentException("Illegal argument layer=" + layer + ". The parameter layer has to be greater or equal than 0.")
+        Else
+            DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        End If
+    End Sub
+
+    Public Function getLayer() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("layer")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setOnlyBackground(ByVal onlyBackground As Boolean)
+        DirectCast(getCommandParameter("only background"), CommandParameter(Of Boolean)).setValue(onlyBackground)
+    End Sub
+
+    Public Function getOnlyBackground() As Boolean
+        Dim param As CommandParameter(Of Boolean) = getCommandParameter("only background")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setOnlyForeground(ByVal onlyForeground As Boolean)
+        DirectCast(getCommandParameter("only foreground"), CommandParameter(Of Boolean)).setValue(onlyForeground)
+    End Sub
+
+    Public Function getOnlyForeground() As Boolean
+        Dim param As CommandParameter(Of Boolean) = getCommandParameter("only foreground")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setDelay(ByVal delay As Boolean)
+        DirectCast(getCommandParameter("delay"), CommandParameter(Of Boolean)).setValue(delay)
+    End Sub
+
+    Public Function getDelay() As Boolean
+        Dim param As CommandParameter(Of Boolean) = getCommandParameter("delay")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
