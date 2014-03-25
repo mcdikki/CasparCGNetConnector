@@ -241,12 +241,15 @@ Public Class CasparCGConnection
     Private Sub checkConnection() Handles timer.Elapsed
         timer.Stop()
         logger.debug("CasparCGConnection.checkConnection: Checking the connection...")
+        Dim locked = False
+
         If client.Connected AndAlso client.Client.Poll(checkInterval, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(checkInterval, SelectMode.SelectError) Then
             Dim blockingState As Boolean = client.Client.Blocking
             Try
                 Dim tmp(1) As Byte
                 client.Client.Blocking = False
                 If connectionLock.WaitOne(checkInterval / 2) Then
+                    locked = True
                     If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
                         Exit Sub
                     End If
@@ -260,7 +263,7 @@ Public Class CasparCGConnection
             Catch e As Exception
             Finally
                 Try
-                    connectionLock.Release()
+                    If locked Then connectionLock.Release()
                     client.Client.Blocking = blockingState
                     timer.Start()
                 Catch e As Exception
@@ -435,7 +438,6 @@ Public Class CasparCGConnection
 
                 timer.Stop()
                 logger.debug("CasparCGConnection.sendCommand: Waited " & timer.ElapsedMilliseconds & "ms for an answer and received " & input.Length & " Bytes to read.")
-                connectionLock.Release()
                 logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "'. The first 1024 bytes are: " & input.Substring(0, Math.Min(input.Length, 1024)))
                 Return New CasparCGResponse(input, cmd)
 
@@ -444,12 +446,12 @@ Public Class CasparCGConnection
                 logger.debug("CasparCGConnection.sendCommand: So far reveived from server:" & vbNewLine & input)
                 If disconnectOnTimeout Then
                     closed()
-                    connectionLock.Release()
                     Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
                 Else
-                    connectionLock.Release()
                     Return New CasparCGResponse("000 TIMEOUT", cmd)
                 End If
+            Finally
+                connectionLock.Release()
             End Try
         Else
             logger.err("CasparCGConnection.sendCommand: Not connected to server. Can't send command.")
