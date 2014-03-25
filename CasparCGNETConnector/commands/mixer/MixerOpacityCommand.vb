@@ -103,16 +103,16 @@ Public Class MixerOpacityCommand
         End If
     End Function
 
-    Public Sub setDuration(ByVal duratrion As Integer)
-        If IsNothing(duratrion) Then
-            DirectCast(getCommandParameter("duratrion"), CommandParameter(Of Integer)).setValue(0)
+    Public Sub setDuration(ByVal duration As Integer)
+        If IsNothing(duration) Then
+            DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(0)
         Else
-            DirectCast(getCommandParameter("duratrion"), CommandParameter(Of Integer)).setValue(duratrion)
+            DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(duration)
         End If
     End Sub
 
     Public Function getDuratrion() As Integer
-        Dim param As CommandParameter(Of Integer) = getCommandParameter("duratrion")
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("duration")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else

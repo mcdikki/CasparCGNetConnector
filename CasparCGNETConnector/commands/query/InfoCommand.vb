@@ -53,9 +53,9 @@ Public Class InfoCommand
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "INFO"
-        If getCommandParameter("channel").isSet Then
+        If getCommandParameter("channel").isSet AndAlso getChannel() > 0 Then
             cmd = cmd & " " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
-            If getCommandParameter("layer").isSet Then
+            If getCommandParameter("layer").isSet AndAlso getLayer() > -1 Then
                 If getCommandParameter("only background").isSet AndAlso DirectCast(getCommandParameter("only background"), CommandParameter(Of Boolean)).getValue Then
                     cmd = cmd & " B"
                 ElseIf getCommandParameter("only foreground").isSet AndAlso DirectCast(getCommandParameter("only foreground"), CommandParameter(Of Boolean)).getValue Then

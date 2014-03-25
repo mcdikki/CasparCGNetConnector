@@ -89,6 +89,17 @@ Public Module Example
 
     Private Sub test()
         ' Quick tests for debugging
+        Dim clear As New ClearCommand(1)
+        Dim cmd As New InfoCommand(2)
+        Dim play As New PlayCommand(2, 1, "amb", True)
+
+        clear.execute(connection)
+        play.execute(connection)
+        play.setLayer(4)
+        play.setMedia("go1080p25")
+        play.execute(connection)
+
+        Console.WriteLine(cmd.execute(connection).getServerMessage)
     End Sub
 
     Public Sub connect()
@@ -169,6 +180,13 @@ Public Module Example
         DirectCast(command.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(1)
         DirectCast(command.getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(1)
         DirectCast(command.getCommandParameter("only foreground"), CommandParameter(Of Boolean)).setValue(True)
+
+        '' If we have used a specific type of command instead of the general AbstractCommand
+        '' we can use the named getter/setter methods for the parameters
+        Dim info As InfoCommand = command
+        info.setChannel(1)
+        info.setLayer(1)
+        info.setOnlyForeground(True)
 
 
         '' The command is ready to be executed
@@ -327,7 +345,7 @@ Public Module Example
         '' this could be done with media.toString() too,
         '' but I wanted to show the members of media
         Console.WriteLine("Media name: " & media.getName)
-        Console.WriteLine("Media type: " & [Enum].GetName(GetType(AbstractCasparCGMedia.MediaType), media.getMediaType))
+        Console.WriteLine("Media type: " & media.getMediaType.ToString)
         Console.WriteLine("Media full name (with path): " & media.getFullName)
         Console.WriteLine("Media path: " & media.getPath)
         Console.WriteLine("Media has thumbnail: " & (media.getBase64Thumb.Length > 0).ToString)
