@@ -97,6 +97,10 @@ Public Class CasparCGTemplate
         Return data
     End Function
 
+    Public Function getDataString() As String
+        Return data.getDataString
+    End Function
+
     Public Function getComponents() As IEnumerable(Of CasparCGTemplateComponent)
         Return components.Values
     End Function

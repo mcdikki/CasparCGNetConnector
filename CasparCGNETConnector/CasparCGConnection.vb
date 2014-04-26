@@ -433,6 +433,8 @@ Public Class CasparCGConnection
                             Throw New TimeoutException("The remote host took to long for an answer. Timeout after " & timeout & "ms.")
                         End If
                         If Not timeouttimer.IsRunning Then timeouttimer.Restart()
+                        ' Wait a short time to keep the app from generating to much cpu load
+                        Thread.Sleep(1)
                     End If
                 Loop
 

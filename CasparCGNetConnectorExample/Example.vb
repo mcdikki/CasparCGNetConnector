@@ -24,7 +24,7 @@ Imports CasparCGNETConnector
 Public Module Example
 
     Private WithEvents connection As CasparCGConnection
-
+    Private WithEvents timer As New Timers.Timer(10)
 
     Public Sub Main()
         connection = New CasparCGConnection("localhost", 5250)
@@ -89,17 +89,20 @@ Public Module Example
 
     Private Sub test()
         ' Quick tests for debugging
-        Dim clear As New ClearCommand(1)
-        Dim cmd As New InfoCommand(2)
-        Dim play As New PlayCommand(2, 1, "amb", True)
 
-        clear.execute(connection)
-        play.execute(connection)
-        play.setLayer(4)
-        play.setMedia("go1080p25")
-        play.execute(connection)
+        If timer.Enabled Then
+            timer.Stop()
+        Else
+            Dim cmd As New InfoCommand(1)
+            AddHandler timer.Elapsed, Sub()
+                                          cmd.execute(connection)
+                                      End Sub
+            'connection.strictVersionControl = False
+            timer.Start()
+        End If
 
-        Console.WriteLine(cmd.execute(connection).getServerMessage)
+
+
     End Sub
 
     Public Sub connect()
