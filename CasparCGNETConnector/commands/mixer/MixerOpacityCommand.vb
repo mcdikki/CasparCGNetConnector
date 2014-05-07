@@ -18,12 +18,12 @@ Public Class MixerOpacityCommand
     Inherits AbstractCommand
 
     Public Sub New()
-        MyBase.New("MIXER VIDEO OPACITY", "Changes the opacity of the specified layer. The value is a float between 0 and 1")
+        MyBase.New("MIXER OPACITY", "Changes the opacity of the specified layer. The value is a float between 0 and 1")
         InitParameter()
     End Sub
 
     Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal opacity As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
-        MyBase.New("MIXER VIDEO OPACITY", "Changes the opacity of the specified layer. The value is a float between 0 and 1")
+        MyBase.New("MIXER OPACITY", "Changes the opacity of the specified layer. The value is a float between 0 and 1")
         InitParameter()
         setChannel(channel)
         If layer > -1 Then setLayer(layer)
@@ -41,7 +41,7 @@ Public Class MixerOpacityCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " VIDEO OPACITY"
+        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " OPACITY"
 
         cmd = cmd & " " & DirectCast(getCommandParameter("opacity"), CommandParameter(Of Single)).getValue
 
