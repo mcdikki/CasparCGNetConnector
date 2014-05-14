@@ -19,6 +19,16 @@
 
 <Serializable()> _
 Public MustInherit Class AbstractCasparCGMedia
+    Public Property isFilled As Boolean
+        Get
+            Return _isFilled
+        End Get
+        Private Set(value As Boolean)
+            _isFilled = value
+        End Set
+    End Property
+    Private _isFilled As Boolean = False
+
     Private name As String
     Private path As String
     Private Infos As Dictionary(Of String, String)
@@ -111,6 +121,7 @@ Public MustInherit Class AbstractCasparCGMedia
                     Else
                         parseXML(infoDoc.selectSingleNode("producer").selectSingleNode("destination").selectSingleNode("producer").xml)
                     End If
+                    isFilled = True
                     RaiseEvent mediaFilled(Me)
                 Else
                     logger.err("CasparCGMedia.fillMediaInfo: Error loading xml data received from server for " & toString() & ". Error: " & infoDoc.parseError.reason)
