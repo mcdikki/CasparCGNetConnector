@@ -322,6 +322,7 @@ Public Module Example
         If cmd.isCompatible(connection) Then
             Console.WriteLine("Thumbs are supported by the server.")
             cmd.execute(connection)
+            media.Base64Thumbnail = cmd.getResponse.getData
         Else
             Console.WriteLine("Sorry bro, no thumbs on that server :-(")
         End If

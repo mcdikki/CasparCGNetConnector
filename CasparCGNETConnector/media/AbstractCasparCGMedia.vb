@@ -82,7 +82,7 @@ Public MustInherit Class AbstractCasparCGMedia
         Get
             Return _thumbB64
         End Get
-        Protected Friend Set(value As String)
+        Set(value As String)
             _thumbB64 = CasparCGUtil.repairBase64(value)
             NotifyPropertyChanged()
         End Set
