@@ -22,7 +22,7 @@ Public Class CgAddCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As CasparCGTemplate, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = "")
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As ICasparCGMedia, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = "")
         MyBase.New("CG ADD", "Adds a flashtemplate to a given channel / layer on a given flashlayer")
         InitParameter()
         setChannel(channel)
@@ -113,7 +113,7 @@ Public Class CgAddCommand
         End If
     End Sub
 
-    Public Sub setTemplate(ByVal template As CasparCGTemplate)
+    Public Sub setTemplate(ByVal template As ICasparCGMedia)
         If IsNothing(template) Then
             DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue("")
         Else
