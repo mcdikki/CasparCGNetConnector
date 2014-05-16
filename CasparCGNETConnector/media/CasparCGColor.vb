@@ -26,15 +26,17 @@ Public Class CasparCGColor
         MyBase.New(name, xml)
     End Sub
 
-    Public Overrides Function clone() As AbstractCasparCGMedia
-        Dim media As New CasparCGColor(getFullName)
-        For Each info As String In getInfos.Keys
-            media.addInfo(info, getInfo(info))
+    Public Overrides Function clone() As ICasparCGMedia
+        Dim media As New CasparCGColor(FullName)
+        For Each info In Infos
+            media.addInfo(info.Key, info.Value)
         Next
         Return media
     End Function
 
-    Public Overrides Function getMediaType() As AbstractCasparCGMedia.MediaType
-        Return MediaType.COLOR
-    End Function
+    Public Overrides ReadOnly Property MediaType As ICasparCGMedia.MediaTypes
+        Get
+            Return ICasparCGMedia.MediaTypes.COLOR
+        End Get
+    End Property
 End Class

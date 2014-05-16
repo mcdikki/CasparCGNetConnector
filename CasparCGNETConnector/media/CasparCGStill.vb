@@ -26,16 +26,18 @@ Public Class CasparCGStill
         MyBase.New(name, xml)
     End Sub
 
-    Public Overrides Function clone() As AbstractCasparCGMedia
-        Dim media As New CasparCGStill(getFullName)
-        For Each info As String In getInfos.Keys
-            media.addInfo(info, getInfo(info))
+    Public Overrides Function clone() As ICasparCGMedia
+        Dim media As New CasparCGStill(FullName)
+        media.Base64Thumbnail = Base64Thumbnail
+        For Each info In Infos
+            media.addInfo(info.Key, info.Value)
         Next
-        media.setBase64Thumb(getBase64Thumb())
         Return media
     End Function
 
-    Public Overrides Function getMediaType() As AbstractCasparCGMedia.MediaType
-        Return MediaType.STILL
-    End Function
+    Public Overrides ReadOnly Property MediaType As ICasparCGMedia.MediaTypes
+        Get
+            Return ICasparCGMedia.MediaTypes.STILL
+        End Get
+    End Property
 End Class

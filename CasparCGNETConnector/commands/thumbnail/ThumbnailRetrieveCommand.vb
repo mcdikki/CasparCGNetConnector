@@ -27,7 +27,7 @@ Public Class ThumbnailRetrieveCommand
         setMedia(media)
     End Sub
 
-    Public Sub New(ByVal media As AbstractCasparCGMedia)
+    Public Sub New(ByVal media As ICasparCGMedia)
         MyBase.New("THUMBNAIL RETRIEVE", "Requests the base64 encoded thumbnail for a specific media file")
         InitParameter()
         setMedia(media)
@@ -50,11 +50,11 @@ Public Class ThumbnailRetrieveCommand
         End If
     End Sub
 
-    Public Sub setMedia(ByVal media As AbstractCasparCGMedia)
+    Public Sub setMedia(ByVal media As ICasparCGMedia)
         If IsNothing(media) Then
             DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue("")
         Else
-            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.FullName)
         End If
     End Sub
 

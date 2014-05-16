@@ -117,7 +117,7 @@ Public Class CgAddCommand
         If IsNothing(template) Then
             DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue("")
         Else
-            DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue(template.getFullName)
+            DirectCast(getCommandParameter("template"), CommandParameter(Of String)).setValue(template.FullName)
         End If
     End Sub
 

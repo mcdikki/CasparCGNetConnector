@@ -53,7 +53,7 @@ Public Class CinfCommand
         If IsNothing(media) Then
             DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue("")
         Else
-            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.FullName)
         End If
     End Sub
 

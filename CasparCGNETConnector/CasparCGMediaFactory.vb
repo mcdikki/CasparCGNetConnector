@@ -18,23 +18,24 @@
 Public Class CasparCGMediaFactory
 
     Public Shared Function createMedia(ByVal xml As String, Optional fillFromName As Boolean = False, Optional ByRef connection As CasparCGConnection = Nothing) As AbstractCasparCGMedia
-        Dim configDoc As New MSXML2.DOMDocument
+        Dim configDoc As New Xml.XmlDocument
         Dim media As AbstractCasparCGMedia
-        If configDoc.loadXML(xml) AndAlso configDoc.hasChildNodes AndAlso configDoc.firstChild.nodeName.Equals("media") Then
+        configDoc.LoadXml(xml)
+        If configDoc.HasChildNodes AndAlso configDoc.FirstChild.Name.Equals("media") Then
             'name und Typ bestimmen:
             Try
-                Dim pnode As MSXML2.IXMLDOMNode = configDoc.firstChild
-                Dim name = pnode.selectSingleNode("name").nodeTypedValue
-                Select Case pnode.selectSingleNode("type").nodeTypedValue
-                    Case AbstractCasparCGMedia.MediaType.AUDIO
+                Dim pnode As Xml.XmlNode = configDoc.FirstChild
+                Dim name = pnode.SelectSingleNode("name").FirstChild.Value
+                Select Case pnode.SelectSingleNode("type").FirstChild.Value
+                    Case ICasparCGMedia.MediaTypes.AUDIO
                         media = New CasparCGAudio(name)
-                    Case AbstractCasparCGMedia.MediaType.COLOR
+                    Case ICasparCGMedia.MediaTypes.COLOR
                         media = New CasparCGColor(name)
-                    Case AbstractCasparCGMedia.MediaType.MOVIE
+                    Case ICasparCGMedia.MediaTypes.MOVIE
                         media = New CasparCGMovie(name)
-                    Case AbstractCasparCGMedia.MediaType.STILL
+                    Case ICasparCGMedia.MediaTypes.STILL
                         media = New CasparCGStill(name)
-                    Case AbstractCasparCGMedia.MediaType.TEMPLATE
+                    Case ICasparCGMedia.MediaTypes.TEMPLATE
                         media = New CasparCGTemplate(name)
                     Case Else
                         Return Nothing
@@ -44,10 +45,10 @@ Public Class CasparCGMediaFactory
                     media.fillMediaInfo(connection)
                     media.fillThumbnail(connection)
                 ElseIf Not IsNothing(pnode.selectSingleNode("infos")) Then
-                    media.parseXML(pnode.selectSingleNode("infos").xml)
-                    media.setBase64Thumb(pnode.selectSingleNode("thumb").nodeTypedValue)
+                    media.parseXML(pnode.SelectSingleNode("infos").OuterXml)
+                    media.Base64Thumbnail = pnode.SelectSingleNode("thumb").InnerText
                 ElseIf Not IsNothing(pnode.selectSingleNode("template")) Then
-                    media.parseXML(pnode.selectSingleNode("template").xml)
+                    media.parseXML(pnode.SelectSingleNode("template").OuterXml)
                 End If
 
                 Return media

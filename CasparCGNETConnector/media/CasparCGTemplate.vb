@@ -34,10 +34,10 @@ Public Class CasparCGTemplate
         parseXML(xml)
     End Sub
 
-    Public Overrides Function clone() As AbstractCasparCGMedia
-        Dim media As New CasparCGTemplate(getFullName)
-        For Each info As String In getInfos.Keys
-            media.addInfo(info, getInfo(info))
+    Public Overrides Function clone() As ICasparCGMedia
+        Dim media As New CasparCGTemplate(FullName)
+        For Each info In Infos
+            media.addInfo(info.Key, info.Value)
         Next
         For Each comp As CasparCGTemplateComponent In components.Values
             media.addComponent(comp)
@@ -46,29 +46,31 @@ Public Class CasparCGTemplate
         Return media
     End Function
 
-    Public Overrides Function getMediaType() As AbstractCasparCGMedia.MediaType
-        Return MediaType.TEMPLATE
-    End Function
+    Public Overrides ReadOnly Property MediaType As ICasparCGMedia.MediaTypes
+        Get
+            Return ICasparCGMedia.MediaTypes.STILL
+        End Get
+    End Property
 
-    Public Overrides Sub parseXML(ByVal xml As String)
-        Dim configDoc As New MSXML2.DOMDocument
-        configDoc.loadXML(xml)
-        If configDoc.hasChildNodes Then
+    Protected Friend Overrides Sub parseXML(ByVal xml As String)
+        Dim configDoc As New Xml.XmlDocument
+        configDoc.LoadXml(xml)
+        If configDoc.HasChildNodes Then
             '' Attribute verarbeiten
-            For Each attrib As MSXML2.IXMLDOMNode In configDoc.selectSingleNode("template").attributes
-                setInfo(attrib.nodeName, attrib.nodeTypedValue)
+            For Each attrib As Xml.XmlAttribute In configDoc.SelectSingleNode("template").Attributes
+                setInfo(attrib.Name, attrib.Value)
             Next
 
             '' Components verarbeiten
-            For Each comp As MSXML2.IXMLDOMNode In configDoc.getElementsByTagName("component")
+            For Each comp As MSXML2.IXMLDOMNode In configDoc.GetElementsByTagName("component")
                 addComponent(New CasparCGTemplateComponent(comp.xml))
             Next
 
             '' Instances
-            For Each instance As MSXML2.IXMLDOMNode In configDoc.getElementsByTagName("instance")
-                If Not IsDBNull(instance.attributes.getNamedItem("type")) AndAlso Not IsDBNull(instance.attributes.getNamedItem("name")) AndAlso containsComponent(instance.attributes.getNamedItem("type").nodeTypedValue) Then
-                    Dim c As CasparCGTemplateComponent = getComponent(instance.attributes.getNamedItem("type").nodeTypedValue)
-                    Dim i As New CasparCGTemplateInstance(instance.attributes.getNamedItem("name").nodeTypedValue, c)
+            For Each instance As Xml.XmlNode In configDoc.GetElementsByTagName("instance")
+                If Not IsDBNull(instance.Attributes.GetNamedItem("type")) AndAlso Not IsDBNull(instance.Attributes.GetNamedItem("name")) AndAlso containsComponent(instance.Attributes.GetNamedItem("type").FirstChild.Value) Then
+                    Dim c As CasparCGTemplateComponent = getComponent(instance.Attributes.GetNamedItem("type").FirstChild.Value)
+                    Dim i As New CasparCGTemplateInstance(instance.Attributes.GetNamedItem("name").FirstChild.Value, c)
                     data.addInstance(i)
                 End If
             Next
@@ -131,15 +133,15 @@ Public Class CasparCGTemplate
         Return out
     End Function
 
-    Public Overrides Function toXml() As MSXML2.DOMDocument
-        Dim domDoc As MSXML2.DOMDocument = MyBase.toXml
-        Dim pnode As MSXML2.IXMLDOMNode = domDoc.firstChild
+    Public Overrides Function toXml() As Xml.XmlDocument
+        Dim domDoc As Xml.XmlDocument = MyBase.toXml
+        Dim pnode As Xml.XmlNode = domDoc.FirstChild
         Dim node As MSXML2.IXMLDOMElement = domDoc.createElement("template")
         pnode.removeChild(pnode.selectSingleNode("infos"))
 
         ' Add attributes to template tag
-        For Each info As String In getInfos.Keys
-            node.setAttribute(info, getInfo(info))
+        For Each info In Infos
+            node.setAttribute(info.Key, info.Value)
         Next
 
         ' add components
@@ -209,13 +211,13 @@ Public Class CasparCGTemplateData
         Return instances.ContainsKey(instanceName)
     End Function
 
-    Public Function toXML() As MSXML2.DOMDocument
-        Dim domDoc As New MSXML2.DOMDocument
+    Public Function toXML() As Xml.XmlDocument
+        Dim domDoc As New Xml.XmlDocument
         domDoc.appendChild(domDoc.createElement("templateData"))
 
         For Each instance As CasparCGTemplateInstance In instances.Values
             domDoc.firstChild.appendChild(instance.toXML.firstChild)
-        Next 
+        Next
 
         Return domDoc
     End Function
@@ -237,10 +239,10 @@ Public Class CasparCGTemplateComponent
     End Sub
 
     Private Sub parseXML(ByVal xml As String)
-        Dim configDoc As New MSXML2.DOMDocument
+        Dim configDoc As New Xml.XmlDocument
         configDoc.loadXML(xml)
         If configDoc.hasChildNodes Then
-            name = configDoc.firstChild.attributes.getNamedItem("name").nodeTypedValue
+            name = configDoc.FirstChild.Attributes.GetNamedItem("name").FirstChild.Value
             For Each prop As MSXML2.IXMLDOMNode In configDoc.getElementsByTagName("property")
                 addProperty(New CasparCGTemplateComponentProperty(prop.xml))
             Next
@@ -301,26 +303,25 @@ Public Class CasparCGTemplateComponentProperty
     End Sub
 
     Public Sub New(ByVal xml As String)
-        Dim configDoc As New MSXML2.DOMDocument
+        Dim configDoc As New Xml.XmlDocument
         configDoc.loadXML(xml)
         If configDoc.hasChildNodes Then
             If Not IsNothing(configDoc.selectSingleNode("property")) AndAlso Not IsDBNull(configDoc.selectSingleNode("property")) Then
-                propertyName = configDoc.selectSingleNode("property").attributes.getNamedItem("name").nodeTypedValue
-                propertyType = configDoc.selectSingleNode("property").attributes.getNamedItem("type").nodeTypedValue
-                propertyInfo = configDoc.selectSingleNode("property").attributes.getNamedItem("info").nodeTypedValue
+                propertyName = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("name").FirstChild.Value
+                propertyType = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("type").FirstChild.Value
+                propertyInfo = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("info").FirstChild.Value
             End If
         End If
     End Sub
 
-    Public Function toXML() As MSXML2.DOMDocument
-        Dim domDoc As New MSXML2.DOMDocument
-        Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("property")
+    Public Function toXML() As Xml.XmlDocument
+        Dim domDoc As New Xml.XmlDocument
+        Dim pnode As Xml.XmlElement = domDoc.CreateElement("property")
         pnode.setAttribute("name", propertyName)
         pnode.setAttribute("type", propertyType)
         pnode.setAttribute("info", propertyInfo)
         domDoc.appendChild(pnode)
         Return domDoc
-        'Return "<property name='" & propertyName & "' type='" & propertyType & "' info='" & propertyInfo & "'/>"
     End Function
 
 End Class
@@ -370,33 +371,13 @@ Public Class CasparCGTemplateInstance
         Return name
     End Function
 
-    Public Function toXML() As MSXML2.DOMDocument
-        Dim domDoc As New MSXML2.DOMDocument
-        Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("instance")
+    Public Function toXML() As Xml.XmlDocument
+        Dim domDoc As New Xml.XmlDocument
+        Dim pnode As Xml.XmlElement = domDoc.CreateElement("instance")
         pnode.setAttribute("name", getName)
         pnode.setAttribute("type", getComponent.getName)
         domDoc.appendChild(pnode)
 
         Return domDoc
     End Function
-
-    'Public Function toXML() As MSXML2.DOMDocument
-    '    Dim domDoc As New MSXML2.DOMDocument
-    '    Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("componentData")
-    '    pnode.setAttribute("id", getName)
-
-    '    Dim node As MSXML2.IXMLDOMElement
-    '    'Dim xml As String = "<componentData id='" & getName() & "'>"
-    '    For Each prop As CasparCGTemplateComponentProperty In values.Keys
-    '        node = domDoc.createElement("data")
-    '        node.setAttribute("id", prop.propertyName)
-    '        node.setAttribute("value", values.Item(prop))
-    '        pnode.appendChild(node)
-    '        'xml = xml & "<data id='" & prop.propertyName & "' value='" & values.Item(prop) & "'>"
-    '    Next
-    '    domDoc.appendChild(pnode)
-
-    '    Return domDoc
-    '    'Return xml & "</componentData>"
-    'End Function
 End Class

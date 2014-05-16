@@ -22,10 +22,10 @@ Public Class PlayCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal media As AbstractCasparCGMedia, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal media As ICasparCGMedia, Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
         MyBase.New("PLAY", "Starts playing a media")
         InitParameter()
-        Init(channel, layer, media.getFullName, looping, seek, length, transition, filter)
+        Init(channel, layer, media.FullName, looping, seek, length, transition, filter)
     End Sub
 
     Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1, Optional ByVal media As String = "", Optional ByVal looping As Boolean = False, Optional ByVal seek As Long = 0, Optional ByVal length As Long = 0, Optional ByVal transition As CasparCGTransition = Nothing, Optional ByVal filter As String = "")
@@ -137,9 +137,9 @@ Public Class PlayCommand
         End If
     End Sub
 
-    Public Sub setMedia(ByVal media As AbstractCasparCGMedia)
+    Public Sub setMedia(ByVal media As ICasparCGMedia)
         If Not IsNothing(media) Then
-            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.getFullName)
+            DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue(media.FullName)
         Else
             DirectCast(getCommandParameter("media"), CommandParameter(Of String)).setValue("")
         End If

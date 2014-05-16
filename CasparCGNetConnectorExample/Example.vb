@@ -25,6 +25,7 @@ Public Module Example
 
     Private WithEvents connection As CasparCGConnection
     Private WithEvents timer As New Timers.Timer(10)
+    Private media As ICasparCGMedia
 
     Public Sub Main()
         connection = New CasparCGConnection("localhost", 5250)
@@ -93,15 +94,12 @@ Public Module Example
         If timer.Enabled Then
             timer.Stop()
         Else
-            Dim cmd As New InfoCommand(1)
-            AddHandler timer.Elapsed, Sub()
-                                          cmd.execute(connection)
-                                      End Sub
-            'connection.strictVersionControl = False
+            media = New CasparCGMovie("Amb")
+            media.setInfo("frame-number", 0)
+            AddHandler timer.Elapsed, Sub() media.setInfo("frame-number", Integer.Parse(media.getInfo("frame-number")) + 1)
+            AddHandler media.InfoChanged, Sub(ByRef sender As ICasparCGMedia, info As KeyValuePair(Of String, String)) Console.WriteLine("Info changed: " & vbTab & info.Key & ": " & info.Value)
             timer.Start()
         End If
-
-
 
     End Sub
 
@@ -308,7 +306,7 @@ Public Module Example
 
         '' Define new media with name amb
         Console.WriteLine("Creating media..")
-        Dim media As AbstractCasparCGMedia = New CasparCGMovie("amb")
+        Dim media As ICasparCGMedia = New CasparCGMovie("amb")
 
         '' Fill the informations on channel 1 - the layer will automatically be choosen to be the first free layer.
         Console.WriteLine("Filling media...")
@@ -324,7 +322,6 @@ Public Module Example
         If cmd.isCompatible(connection) Then
             Console.WriteLine("Thumbs are supported by the server.")
             cmd.execute(connection)
-            media.setBase64Thumb(cmd.getResponse.getData)
         Else
             Console.WriteLine("Sorry bro, no thumbs on that server :-(")
         End If
@@ -347,14 +344,14 @@ Public Module Example
         '' show everything we know about the media
         '' this could be done with media.toString() too,
         '' but I wanted to show the members of media
-        Console.WriteLine("Media name: " & media.getName)
-        Console.WriteLine("Media type: " & media.getMediaType.ToString)
-        Console.WriteLine("Media full name (with path): " & media.getFullName)
-        Console.WriteLine("Media path: " & media.getPath)
-        Console.WriteLine("Media has thumbnail: " & (media.getBase64Thumb.Length > 0).ToString)
+        Console.WriteLine("Media name: " & media.Name)
+        Console.WriteLine("Media type: " & media.MediaType.ToString)
+        Console.WriteLine("Media full name (with path): " & media.FullName)
+        Console.WriteLine("Media path: " & media.Path)
+        Console.WriteLine("Media has thumbnail: " & (media.Base64Thumbnail.Length > 0).ToString)
         Console.WriteLine("Metadata of media:")
-        For Each info As String In media.getInfos.Keys
-            Console.WriteLine(vbTab & info & ": " & media.getInfo(info))
+        For Each info In media.Infos
+            Console.WriteLine(vbTab & info.Key & ": " & info.Value)
         Next
 
     End Sub

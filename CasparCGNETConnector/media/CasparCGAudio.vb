@@ -26,16 +26,18 @@ Public Class CasparCGAudio
         MyBase.New(name, xml)
     End Sub
 
-    Public Overrides Function clone() As AbstractCasparCGMedia
-        Dim media As New CasparCGAudio(getFullName)
-        For Each info As String In getInfos.Keys
-            media.addInfo(info, getInfo(info))
+    Public Overrides Function clone() As ICasparCGMedia
+        Dim media As New CasparCGAudio(FullName)
+        For Each info In Infos
+            media.addInfo(info.Key, info.Value)
         Next
         Return media
     End Function
 
-    Public Overrides Function getMediaType() As AbstractCasparCGMedia.MediaType
-        Return MediaType.AUDIO
-    End Function
+    Public Overrides ReadOnly Property MediaType As ICasparCGMedia.MediaTypes
+        Get
+            Return ICasparCGMedia.MediaTypes.AUDIO
+        End Get
+    End Property
 
 End Class
