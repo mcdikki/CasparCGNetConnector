@@ -263,10 +263,10 @@ Public MustInherit Class AbstractCasparCGMedia
 
         '' Add all mediaInformation found by INFO
         node = configDoc.CreateElement("infos")
-        Dim inode As MSXML2.IXMLDOMNode
+        Dim inode As Xml.XmlNode
         For Each info In Infos
             inode = configDoc.CreateElement(info.Key)
-            inode.nodeTypedValue = getInfo(info.Value)
+            inode.InnerText = getInfo(info.Value)
             node.AppendChild(inode)
         Next
         pnode.AppendChild(node)

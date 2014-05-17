@@ -518,21 +518,17 @@ Public Class CasparCGConnection
     Public Function isLayerFree(ByVal layer As Integer, ByVal channel As Integer, Optional ByVal onlyForeground As Boolean = False, Optional ByVal onlyBackground As Boolean = False) As Boolean
         If isConnected() Then
             Dim info As New InfoCommand(channel, layer, onlyBackground, onlyForeground)
-            Dim doc As New MSXML2.DOMDocument()
-            If info.execute(Me).isOK AndAlso doc.loadXML(info.getResponse.getXMLData) Then
-                For Each type As MSXML2.IXMLDOMNode In doc.getElementsByTagName("type")
-                    If Not type.nodeTypedValue.Equals("empty-producer") Then
+            Dim doc As New Xml.XmlDocument()
+            If info.execute(Me).isOK Then
+                doc.LoadXml(info.getResponse.getXMLData)
+                For Each type As Xml.XmlNode In doc.GetElementsByTagName("type")
+                    If Not type.InnerText.Equals("empty-producer") Then
                         Return False
                     End If
                 Next
                 Return True
             Else
-                If Not IsNothing(doc.parseError) Then
-                    logger.warn("ServerController.isLayerFree: Error checking layer." & vbNewLine & doc.parseError.reason & vbNewLine & doc.parseError.line & ":" & doc.parseError.linepos & vbNewLine & doc.parseError.srcText)
-                    logger.warn("Server command and response was: " & info.getResponse.getCommand & vbNewLine & info.getResponse.getServerMessage)
-                Else
-                    logger.warn("ServerController.isLayerFree: Could not check layer. Server response was incorrect.")
-                End If
+                logger.warn("ServerController.isLayerFree: Could not check layer. Server response was incorrect.")
             End If
         End If
         Return False

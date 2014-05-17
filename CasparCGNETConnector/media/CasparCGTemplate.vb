@@ -62,8 +62,8 @@ Public Class CasparCGTemplate
             Next
 
             '' Components verarbeiten
-            For Each comp As MSXML2.IXMLDOMNode In configDoc.GetElementsByTagName("component")
-                addComponent(New CasparCGTemplateComponent(comp.xml))
+            For Each comp As Xml.XmlNode In configDoc.GetElementsByTagName("component")
+                addComponent(New CasparCGTemplateComponent(comp.OuterXml))
             Next
 
             '' Instances
@@ -136,7 +136,7 @@ Public Class CasparCGTemplate
     Public Overrides Function toXml() As Xml.XmlDocument
         Dim domDoc As Xml.XmlDocument = MyBase.toXml
         Dim pnode As Xml.XmlNode = domDoc.FirstChild
-        Dim node As MSXML2.IXMLDOMElement = domDoc.createElement("template")
+        Dim node As Xml.XmlElement = domDoc.createElement("template")
         pnode.removeChild(pnode.selectSingleNode("infos"))
 
         ' Add attributes to template tag
@@ -243,8 +243,8 @@ Public Class CasparCGTemplateComponent
         configDoc.loadXML(xml)
         If configDoc.hasChildNodes Then
             name = configDoc.FirstChild.Attributes.GetNamedItem("name").FirstChild.Value
-            For Each prop As MSXML2.IXMLDOMNode In configDoc.getElementsByTagName("property")
-                addProperty(New CasparCGTemplateComponentProperty(prop.xml))
+            For Each prop As Xml.XmlNode In configDoc.getElementsByTagName("property")
+                addProperty(New CasparCGTemplateComponentProperty(prop.OuterXml))
             Next
         End If
     End Sub
@@ -275,9 +275,9 @@ Public Class CasparCGTemplateComponent
         Return properties.ContainsKey(name)
     End Function
 
-    Public Function toXML() As MSXML2.DOMDocument
-        Dim domDoc As New MSXML2.DOMDocument
-        Dim pnode As MSXML2.IXMLDOMElement = domDoc.createElement("component")
+    Public Function toXML() As Xml.XmlDocument
+        Dim domDoc As New Xml.XmlDocument
+        Dim pnode As Xml.XmlElement = domDoc.createElement("component")
         pnode.setAttribute("name", name)
 
         For Each prop As CasparCGTemplateComponentProperty In properties.Values
