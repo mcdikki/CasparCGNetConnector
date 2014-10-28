@@ -14,7 +14,7 @@
 '' Thank you!
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Imports CasparCGNETConnector    
+Imports CasparCGNETConnector
 
 ''' <summary>
 ''' This is an example of how to use the CasparCGNetConnector

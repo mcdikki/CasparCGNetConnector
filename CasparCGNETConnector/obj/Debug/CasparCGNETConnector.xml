@@ -200,6 +200,34 @@ CasparCGNETConnector
 	<summary>
  This class holds util functions and Enumns for CasparCGNetConnector 
  </summary>
+</member><member name="E:CasparCGNETConnector.ICasparCGMedia.MediaFilled">
+	<summary>
+ Notifies that the medias metadata (infos) has been filled.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.ICasparCGMedia.ThumbnailFilled">
+	<summary>
+ Notifies that the thumbnail of the media has been filled.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.ICasparCGMedia.InfoChanged">
+	<summary>
+ Notifies that an info of this media has been changed.
+ </summary>
+	<param name="sender"></param>
+	<param name="info"></param>
+</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillMediaInfo(CasparCGNETConnector.CasparCGConnection@,System.Int32)">
+	<summary>
+ Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
+ </summary>
+	<param name="connection">The connection on which the info should be requested</param>
+	<param name="channel">The channel to load the media on</param>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillThumbnail(CasparCGNETConnector.CasparCGConnection@)">
+	<summary>
+ Retrieves a thumbnail (if present and support) using the given serverconnection.
+ </summary>
+	<param name="connection">the connection to use</param>
 </member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillMediaInfo(CasparCGNETConnector.CasparCGConnection@,System.Int32)">
 	<summary>
  Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this

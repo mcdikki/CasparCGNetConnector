@@ -111,7 +111,7 @@ Public Class CasparCGCommandFactory
         If Not command.StartsWith("CasparCGNETConnector.") Then
             command = "CasparCGNETConnector." & command
         End If
-        Dim cmd As AbstractCommand = getInstance(Type.GetType(command))
+        Dim cmd As AbstractCommand = CType(getInstance(Type.GetType(command)), AbstractCommand)
         Return cmd
     End Function
 

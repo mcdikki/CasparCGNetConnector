@@ -2,8 +2,6 @@ C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\bin\Debug\CasparCGNETConnector.pdb
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\bin\Debug\CasparCGNETConnector.xml
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\bin\Debug\logger.dll
-C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Debug\Interop.MSXML2.dll
-C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Debug\CasparCGNETConnector.vbproj.ResolveComReference.cache
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Debug\CasparCGNETConnector.Resources.resources
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Debug\CasparCGNETConnector.vbproj.GenerateResource.Cache
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNETConnector\obj\Debug\CasparCGNETConnector.dll

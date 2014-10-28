@@ -52,7 +52,7 @@ Public Class CasparCGTemplate
         End Get
     End Property
 
-    Protected Friend Overrides Sub parseXML(ByVal xml As String)
+    Public Overrides Sub parseXML(ByVal xml As String)
         Dim configDoc As New Xml.XmlDocument
         configDoc.LoadXml(xml)
         If configDoc.HasChildNodes Then
@@ -147,14 +147,14 @@ Public Class CasparCGTemplate
         ' add components
         Dim cnode = domDoc.createElement("components")
         For Each comp In getComponents()
-            cnode.appendChild(comp.toXML.firstChild)
+            cnode.AppendChild(domDoc.ImportNode(comp.toXML.FirstChild, False))
         Next
         node.appendChild(cnode)
 
         ' add instances
         Dim inode = domDoc.createElement("instances")
         For Each inst In data.getInstances
-            inode.appendChild(inst.toXML.firstChild)
+            inode.AppendChild(domDoc.ImportNode(inst.toXML.FirstChild, False))
         Next
         node.appendChild(inode)
 
@@ -216,7 +216,7 @@ Public Class CasparCGTemplateData
         domDoc.appendChild(domDoc.createElement("templateData"))
 
         For Each instance As CasparCGTemplateInstance In instances.Values
-            domDoc.firstChild.appendChild(instance.toXML.firstChild)
+            domDoc.FirstChild.AppendChild(domDoc.ImportNode(instance.toXML.FirstChild, False))
         Next
 
         Return domDoc
@@ -281,7 +281,7 @@ Public Class CasparCGTemplateComponent
         pnode.setAttribute("name", name)
 
         For Each prop As CasparCGTemplateComponentProperty In properties.Values
-            pnode.appendChild(prop.toXML.firstChild)
+            pnode.AppendChild(domDoc.ImportNode(prop.toXML.FirstChild, False))
         Next
         domDoc.appendChild(pnode)
 

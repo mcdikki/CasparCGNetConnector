@@ -146,7 +146,7 @@ Public MustInherit Class AbstractCasparCGMedia
         End If
     End Function
 
-    Protected Friend Overridable Sub parseXML(ByVal xml As String) Implements ICasparCGMedia.parseXML
+    Public Overridable Sub parseXML(ByVal xml As String) Implements ICasparCGMedia.parseXML
         Dim configDoc As New Xml.XmlDocument
         configDoc.LoadXml(xml)
         If configDoc.HasChildNodes Then
@@ -214,20 +214,20 @@ Public MustInherit Class AbstractCasparCGMedia
     End Function
 
     Public Function containsInfo(ByVal info As String) As Boolean Implements ICasparCGMedia.containsInfo
-        Return _Infos.ContainsKey(info)
+        Return Infos.ContainsKey(info)
     End Function
 
     Public Sub setInfo(ByVal info As String, ByVal value As String) Implements ICasparCGMedia.setInfo
-        If _Infos.ContainsKey(info) Then
-            _Infos.Item(info) = value
-            RaiseEvent InfoChanged(Me, New KeyValuePair(Of String, String)(info, value))
+        If Infos.ContainsKey(info) Then
+            Infos.Item(info) = value
+            'RaiseEvent InfoChanged(Me, New KeyValuePair(Of String, String)(info, value))
         Else
-            _Infos.Add(info, value)
+            Infos.Add(info, value)
         End If
     End Sub
 
     Public Sub addInfo(ByVal info As String, ByVal value As String) Implements ICasparCGMedia.addInfo
-        _Infos.Add(info, value)
+        Infos.Add(info, value)
         RaiseEvent InfoChanged(Me, New KeyValuePair(Of String, String)(info, value))
     End Sub
 
@@ -266,7 +266,7 @@ Public MustInherit Class AbstractCasparCGMedia
         Dim inode As Xml.XmlNode
         For Each info In Infos
             inode = configDoc.CreateElement(info.Key)
-            inode.InnerText = getInfo(info.Value)
+            inode.InnerText = info.Value
             node.AppendChild(inode)
         Next
         pnode.AppendChild(node)

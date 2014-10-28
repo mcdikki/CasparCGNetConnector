@@ -26,7 +26,7 @@ Public Class CasparCGConnection
     Private serveraddress As String = "localhost"
     Private serverport As Integer = 5250 ' std. acmp2 port
     Private client As TcpClient
-    Private connectionAttemp = 0
+    Private connectionAttemp As Integer = 0
     Private _checkInterval As Integer = 500
     Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
@@ -248,7 +248,7 @@ Public Class CasparCGConnection
             Try
                 Dim tmp(1) As Byte
                 client.Client.Blocking = False
-                If connectionLock.WaitOne(checkInterval / 2) Then
+                If connectionLock.WaitOne(Convert.ToInt32(checkInterval / 2)) Then
                     locked = True
                     If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
                         Exit Sub
@@ -335,7 +335,7 @@ Public Class CasparCGConnection
     ''' <remarks></remarks>
     Public Function getVersionPart(part As Integer, Optional Version As String = "") As Integer
         If Version = "" Then Version = getVersion()
-        Dim v() = Version.Split(".")
+        Dim v() = Version.Split(".".ToCharArray()(0))
         If part > -1 AndAlso v.Length >= part Then
             Dim r As Integer
             If Integer.TryParse(v(part), r) Then
