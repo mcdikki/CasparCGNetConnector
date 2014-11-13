@@ -25,7 +25,7 @@ Friend Class ByeCommand
         Return "BYE"
     End Function
 
-    Public Overrides Function execute(ByRef connection As CasparCGConnection) As CasparCGResponse
+    Public Overrides Function execute(ByRef connection As ICasparCGConnection) As CasparCGResponse
         ' Bye disconnects from the server and does not reply, so no response
         ' will be returned. This gives the need to send it via sendAsync and fake a response
         connection.sendAsyncCommand(getCommandString)

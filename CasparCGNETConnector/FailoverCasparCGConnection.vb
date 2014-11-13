@@ -19,20 +19,24 @@ Imports System.Net.Sockets
 Imports System.Threading
 
 
-Public Class CasparCGConnection
+''' <summary>
+''' This FailoverCasparCGConnection bundles two separte CasparCGConnections and always send commands to both.
+''' There is a master and a slave connection. While commands are send to both, only the result of the master is routed to the caller.
+''' If the master fails, the slave will over take over control.
+''' In any case of failure, master or slave, an event will be rissen.
+''' </summary>
+''' <remarks></remarks>
+Public Class FailoverCasparCGConnection
     Implements ICasparCGConnection
 
     Private connectionLock As Semaphore
-    Private serveraddress As String = "localhost"
-    Private serverport As Integer = 5250 ' std. acmp2 port
-    Private client As TcpClient
-    Private connectionAttemp As Integer = 0
     Private _checkInterval As Integer = 500
-    Private buffersize As Integer = 1024 * 256
     Private tryConnect As Boolean = False
     Private ccgVersion As String = "-1.-1.-1"
     Private channels As Integer = 0
-    Private WithEvents timer As New Timers.Timer(_checkInterval)
+
+    Private master As ICasparCGConnection = Nothing
+    Private slave As ICasparCGConnection = Nothing
 
     ''' <summary>
     ''' Reads or sets the number of retires to perform if a connection can't be established
@@ -65,220 +69,133 @@ Public Class CasparCGConnection
         End Get
         Set(value As Integer)
             _checkInterval = value
-            timer.Interval = _checkInterval
+            If Not master Is Nothing Then
+                master.checkInterval = checkInterval
+            ElseIf Not slave Is Nothing Then
+                slave.checkInterval = checkInterval
+            End If
         End Set
     End Property
 
+
+#Region "enums"
+    Public Enum connectionTypes
+        master
+        slave
+        both
+    End Enum
+#End Region
+
+
+#Region "Events"
     ''' <summary>
     ''' Fires if this connection has been disconnected.
     ''' </summary>
     ''' <param name="sender"></param>
     Public Event disconnected(ByRef sender As Object) Implements ICasparCGConnection.disconnected
+
     ''' <summary>
     ''' Fires if this connection has been connected to the remote host.
     ''' </summary>
     ''' <param name="sender"></param>
     Public Event connected(ByRef sender As Object) Implements ICasparCGConnection.connected
 
+    ''' <summary>
+    ''' Fires if an error accures in one of the connections
+    ''' </summary>
+    ''' <param name="sender">The FailoverCasparCGConnection which is the source of this event</param>
+    ''' <param name="args">Additionl information about what happend</param>
+    Public Event connectionFailed(ByRef sender As Object, ByVal args As FailoverConnectionFailedEventArgs)
+#End Region
+
 
     ''' <summary>
     ''' Creates a new CasparCGConnection to the given serverAddress and serverPort
     ''' </summary>
-    ''' <param name="serverAddress">the server ip or hostname</param>
-    ''' <param name="serverPort">the servers port</param>
-    ''' <remarks></remarks>
-    Public Sub New(ByVal serverAddress As String, ByVal serverPort As Integer)
+    ''' <param name="masterServerAddress">the server ip or hostname of the master server</param>
+    ''' <param name="masterServerPort">the master servers port</param>
+    ''' <param name="slaveServerAddress">the server ip or hostname of the slave server</param>
+    ''' <param name="slaveServerPort">the slave servers port</param>
+    Public Sub New(ByVal masterServerAddress As String, ByVal masterServerPort As Integer, ByVal slaveServerAddress As String, ByVal slaveServerPort As Integer)
         connectionLock = New Semaphore(1, 1)
-        Me.serveraddress = serverAddress
-        Me.serverport = serverPort
-        client = New TcpClient()
-        client.SendBufferSize = buffersize
-        client.ReceiveBufferSize = buffersize
-        client.ReceiveTimeout = timeout
-        client.SendTimeout = timeout
-        client.NoDelay = True
+        master = New CasparCGConnection(masterServerAddress, masterServerPort)
+        slave = New CasparCGConnection(slaveServerAddress, slaveServerPort)
     End Sub
 
     ''' <summary>
     ''' Creates a new CasparCGConnection to the given serverAddress and the default port
     ''' </summary>
-    ''' <param name="serverAddress">the server ip or hostname</param>
-    Public Sub New(ByVal serverAddress As String)
-        connectionLock = New Semaphore(1, 1)
-        Me.serveraddress = serverAddress
-        client = New TcpClient()
-        client.SendBufferSize = buffersize
-        client.ReceiveBufferSize = buffersize
-        client.ReceiveTimeout = timeout
-        client.SendTimeout = timeout
-        client.NoDelay = True
+    ''' <param name="masterServerAddress">the server ip or hostname of the master server</param>
+    ''' <param name="slaveServerAddress">the server ip or hostname of the slave server</param>
+    Public Sub New(ByVal masterServerAddress As String, ByVal slaveServerAddress As String)
+        Me.New(masterServerAddress, 5250, slaveServerAddress, 5250)
     End Sub
 
     ''' <summary>
     ''' Creates a new CasparCGConnection to localhost and the default port
     ''' </summary>
-    Public Sub New()
+    Public Sub New(ByRef masterConnection As ICasparCGConnection, ByRef slaveConnection As ICasparCGConnection)
         connectionLock = New Semaphore(1, 1)
-        client = New TcpClient()
-        client.SendBufferSize = buffersize
-        client.ReceiveBufferSize = buffersize
-        client.ReceiveTimeout = timeout
-        client.SendTimeout = timeout
-        client.NoDelay = True
+        master = masterConnection
+        slave = slaveConnection
     End Sub
 
     ''' <summary>
     ''' Connects to the given server and port and returns true if a connection could be established and false otherwise.
     ''' </summary>
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
-    ''' <remarks></remarks>
     Public Function connect() As Boolean Implements ICasparCGConnection.connect
 
-        '' TODO: Check if a semaphor is needed so that multi connection attempts at the same time are not possible.
-
         If Not isConnected() Then
-            'If connectionLock.WaitOne Then
-
-            Dim sw As New Stopwatch
-            Try
-                'client.Close()
-                client = New TcpClient()
-                client.SendBufferSize = buffersize
-                client.ReceiveBufferSize = buffersize
-                client.ReceiveTimeout = timeout
-                client.SendTimeout = timeout
-                client.NoDelay = True
-                client.Connect(serveraddress, serverport)
-                sw.Start()
-                While sw.ElapsedMilliseconds < 2
-                End While
-                sw.Reset()
-                If client.Connected Then
-                    timer.Start()
-                    connectionAttemp = 0
-                    logger.log("CasparCGConnection.connect: Connected to " & serveraddress & ":" & serverport.ToString)
-                    ccgVersion = readServerVersion()
-                    channels = readServerChannels()
-                    RaiseEvent connected(Me)
-                End If
-            Catch e As Exception
-                logger.warn(e.Message)
-                If connectionAttemp < reconnectTries Then
-                    connectionAttemp = connectionAttemp + 1
-                    logger.warn("CasparCGConnection.connect: Try to reconnect " & connectionAttemp & "/" & reconnectTries)
-                    Dim i As Integer = 0
-                    sw.Start()
-                    While sw.ElapsedMilliseconds < reconnectTimeout
-                    End While
-                    Return connect()
-                Else
-                    logger.err("CasparCGConnection.connect: Could not connect to " & serveraddress & ":" & serverport.ToString)
-                    Return False
-                End If
-            Finally
-                'connectionLock.Release()
-            End Try
-        Else
-            logger.log("CasparCGConnection.connect: Already connected to " & serveraddress & ":" & serverport.ToString)
+            If Not master Is Nothing AndAlso Not master.isConnected Then
+                master.connect()
+            End If
+            If Not slave Is Nothing AndAlso Not slave.isConnected Then
+                slave.connect()
+            End If
+        ElseIf Not master Is Nothing AndAlso Not slave Is Nothing Then
+            logger.log("FailoverCasparCGConnection.connect: Already connected to " & master.getServerAddress & ":" & master.getServerPort.ToString & " / " & slave.getServerAddress & ":" & slave.getServerPort.ToString)
             'connectionLock.Release()
+        Else
+            If master Is Nothing Then
+                logger.warn("FailoverCasparCGConnection.connect: Warning: master connection not set!")
+            Else
+                logger.warn("FailoverCasparCGConnection.connect: Warning: slave connection not set!")
+            End If
         End If
-        ' End If
         Return isConnected()
     End Function
 
     ''' <summary>
-    ''' Connects to the given server and port and returns true if a connection could be established and false otherwise.
-    ''' </summary>
-    ''' <param name="serverAddress">the server ip or hostname</param>
-    ''' <param name="serverPort">the servers port</param>
-    ''' <returns>true, if and only if the connection is established, false otherwise</returns>
-    ''' <remarks></remarks>
-    Public Function connect(ByVal serverAddress As String, ByVal serverPort As Integer) As Boolean
-        Me.serveraddress = serverAddress
-        Me.serverport = serverPort
-        Return connect()
-    End Function
-
-    ''' <summary>
-    ''' Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not Already connected.
+    ''' Return whether or not the FailoverCasparCGConnection is connect to the server which means one of master or client is connected. If tryConnect is given and true, it will try to establish a connection if not Already connected.
     ''' </summary>
     ''' <param name="tryConnect"></param>
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
-    ''' <remarks></remarks>
     Public Function isConnected(Optional ByVal tryConnect As Boolean = False) As Boolean Implements ICasparCGConnection.isConnected
-        If client.Connected Then 'AndAlso client.Client.Poll(20, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(20, SelectMode.SelectError) Then
-            Return True
-        Else
-            If tryConnect Then
-                Return connect()
-            Else
-                Return False
-            End If
-        End If
+        Return (Not master Is Nothing AndAlso master.isConnected(tryConnect)) Or (Not slave Is Nothing AndAlso slave.isConnected(tryConnect))
     End Function
 
     ''' <summary>
     ''' Disconnects and closes the connection to the CasparCG Server
     ''' </summary>
-    ''' <remarks></remarks>
     Public Sub close() Implements ICasparCGConnection.close
-        If isConnected() Then
-            Dim bye As New ByeCommand()
-            bye.execute(Me)
-        End If
+        If Not master Is Nothing Then master.close()
+        If Not slave Is Nothing Then slave.close()
         closed()
     End Sub
 
     Private Sub closed()
-        timer.Stop()
-        client.Close()
         ccgVersion = "0.0.0"
         channels = 0
-        logger.log("CasparCGConnection.closed: Disconnected from server.")
+        logger.log("FailoverCasparCGConnection.closed: Disconnected from server.")
         RaiseEvent disconnected(Me)
     End Sub
 
-    Private Sub checkConnection() Handles timer.Elapsed
-        timer.Stop()
-        logger.debug("CasparCGConnection.checkConnection: Checking the connection...")
-        Dim locked = False
-
-        If client.Connected AndAlso client.Client.Poll(checkInterval, SelectMode.SelectWrite) AndAlso Not client.Client.Poll(checkInterval, SelectMode.SelectError) Then
-            Dim blockingState As Boolean = client.Client.Blocking
-            Try
-                Dim tmp(1) As Byte
-                client.Client.Blocking = False
-                If connectionLock.WaitOne(Convert.ToInt32(checkInterval / 2)) Then
-                    locked = True
-                    If Not client.Client.Receive(tmp, 0, SocketFlags.Peek) = 0 Then
-                        Exit Sub
-                    End If
-                Else
-                    Exit Sub
-                End If
-            Catch e As SocketException
-                If e.NativeErrorCode.Equals(10035) Then
-                    Exit Sub
-                End If
-            Catch e As Exception
-            Finally
-                Try
-                    If locked Then connectionLock.Release()
-                    client.Client.Blocking = blockingState
-                    timer.Start()
-                Catch e As Exception
-                End Try
-            End Try
-        End If
-        logger.warn("CasparCGConnection.checkConnection: Detected a broken connection.")
-        If disconnectOnTimeout Then close()
-    End Sub
 
     ''' <summary>
     ''' Returns whether or not the connected CasparCG Server supports OSC
     ''' </summary>
     ''' <returns>true, if and only if a connection is established and the sever supports OSC</returns>
-    ''' <remarks></remarks>
     Public Function isOSCSupported() As Boolean Implements ICasparCGConnection.isOSCSupported
         If My.Computer.Info.OSFullName.Contains("Windows XP") Then
             logger.log("CasparCGConnection.isOSCSupported: Dected Windows XP. OSC is not supported on WinXP.")
@@ -300,26 +217,19 @@ Public Class CasparCGConnection
         End If
     End Function
 
-    Private Function readServerVersion() As String
-        If isConnected() Then
-            Dim cmd As New VersionServerCommand()
-            Dim tmpStrict As Boolean = strictVersionControl()
-            strictVersionControl = False
-            If cmd.execute(Me).isOK Then
-                Return cmd.getResponse.getData
-            End If
-            strictVersionControl = tmpStrict
-        End If
-        Return "-1.-1.-1"
-    End Function
 
     ''' <summary>
     ''' Returns the version string of the connected CasparCG Server
     ''' </summary>
     ''' <returns>The version of the connected server or 0.0.0 if not connected</returns>
-    ''' <remarks></remarks>
     Public Function getVersion() As String Implements ICasparCGConnection.getVersion
-        Return ccgVersion
+        If Not master Is Nothing Then
+            Return master.getVersion
+        ElseIf Not slave Is Nothing Then
+            Return slave.getVersion
+        Else
+            Return ccgVersion
+        End If
     End Function
 
     ''' <summary>
@@ -332,7 +242,6 @@ Public Class CasparCGConnection
     ''' <param name="part">The part of the version starting by 0</param>
     ''' <param name="Version">Optional version string to get the part form. If not set, the version of the connected server will be parsed</param>
     ''' <returns>The numberical part of the version or -1 if the part is not pressent or not numerical</returns>
-    ''' <remarks></remarks>
     Public Function getVersionPart(part As Integer, Optional Version As String = "") As Integer Implements ICasparCGConnection.getVersionPart
         If Version = "" Then Version = getVersion()
         Dim v() = Version.Split(".".ToCharArray()(0))
@@ -363,7 +272,6 @@ Public Class CasparCGConnection
     ''' Returns the number of channels on the connected CasparCG Server
     ''' </summary>
     ''' <returns>The number of channels</returns>
-    ''' <remarks></remarks>
     Public Function getServerChannels() As Integer Implements ICasparCGConnection.getServerChannels
         Return channels
     End Function
@@ -373,19 +281,10 @@ Public Class CasparCGConnection
     ''' Sends a command to the casparCG server and returns imediatly after sending no matter if the command was accepted or not.
     ''' </summary>
     ''' <param name="cmd"></param>
-    ''' <remarks></remarks>
     Public Sub sendAsyncCommand(ByVal cmd As String) Implements ICasparCGConnection.sendAsyncCommand
         If isConnected(tryConnect) Then
             connectionLock.WaitOne(timeout)
-            logger.debug("CasparCGConnection.sendAsyncCommand: Send command: " & cmd)
-            Dim buffer() As Byte = System.Text.Encoding.UTF8.GetBytes(cmd & vbCrLf)
-            Try
-                client.GetStream.Write(buffer, 0, buffer.Length)
-                logger.debug("CasparCGConnection.sendAsyncCommand: Command sent")
-            Catch e As Exception
-                logger.err("CasparCGConnection.sendAsyncCommand: Error sending the command: " & cmd)
-                logger.err("CasparCGConnection.sendAsyncCommand: Error was: " & e.Message)
-            End Try
+            '' TODO
             connectionLock.Release()
         Else : logger.err("CasparCGConnection.sendAsyncCommand: Not connected to server. Can't send command.")
         End If
@@ -399,64 +298,10 @@ Public Class CasparCGConnection
     ''' <param name="cmd"></param>
     Public Function sendCommand(ByVal cmd As String) As CasparCGResponse Implements ICasparCGConnection.sendCommand
         If isConnected(tryConnect) Then
-            connectionLock.WaitOne()
-            Dim buffer() As Byte
-
-            ' flush old buffers in case we had some asyncSends
-            If client.Available > 0 Then
-                ReDim buffer(client.Available)
-                client.GetStream.Read(buffer, 0, client.Available)
-            End If
-
-            ' send cmd
-            logger.debug("CasparCGConnection.sendCommand: Send command: " & cmd)
-
-            buffer = System.Text.Encoding.UTF8.GetBytes(cmd & vbCrLf)
-            client.GetStream.Write(buffer, 0, buffer.Length)
-            Dim timer, timeouttimer As New Stopwatch
-            timer.Start()
-
-            ' Waiting for the response:
-            Dim input As String = ""
-            Dim size As Integer = 0
-            Try
-                '                                                                                                                                                                                                                                                                                                         '' Version BUGFIX    201 THUMBNAIL RETRIEVE OK
-                Do Until (input.Trim().Length > 3) AndAlso (((input.Trim().Substring(0, 3) = "201" OrElse input.Trim().Substring(0, 3) = "200") AndAlso (input.EndsWith(vbLf & vbCrLf) OrElse input.EndsWith(vbCrLf & " " & vbCrLf))) OrElse (input.Trim().Substring(0, 3) <> "201" AndAlso input.Trim().Substring(0, 3) <> "200" AndAlso input.EndsWith(vbCrLf)) OrElse (input.Trim().Length > 16 AndAlso input.Trim().Substring(0, 14) = "201 VERSION OK" AndAlso input.EndsWith(vbCrLf)) OrElse (input.Trim().Length > 27 AndAlso input.Trim().Substring(0, 25) = "201 THUMBNAIL RETRIEVE OK" AndAlso input.EndsWith(vbCrLf)))
-                    If client.Available > 0 Then
-                        timeouttimer.Stop()
-                        size = client.Available
-                        ReDim buffer(size)
-                        client.GetStream.Read(buffer, 0, size)
-                        input = input & System.Text.Encoding.UTF8.GetString(buffer, 0, size)
-                    Else
-                        If timeouttimer.ElapsedMilliseconds > timeout Then
-                            Throw New TimeoutException("The remote host took to long for an answer. Timeout after " & timeout & "ms.")
-                        End If
-                        If Not timeouttimer.IsRunning Then timeouttimer.Restart()
-                        ' Wait a short time to keep the app from generating to much cpu load
-                        Thread.Sleep(1)
-                    End If
-                Loop
-
-                timer.Stop()
-                logger.debug("CasparCGConnection.sendCommand: Waited " & timer.ElapsedMilliseconds & "ms for an answer and received " & input.Length & " Bytes to read.")
-                logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "'. The first 1024 bytes are: " & input.Substring(0, Math.Min(input.Length, 1024)))
-                Return New CasparCGResponse(input, cmd)
-
-            Catch e As Exception
-                logger.err("CasparCGConnection.sendCommand: Error: " & e.Message)
-                logger.debug("CasparCGConnection.sendCommand: So far reveived from server:" & vbNewLine & input)
-                If disconnectOnTimeout Then
-                    closed()
-                    Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
-                Else
-                    Return New CasparCGResponse("000 TIMEOUT", cmd)
-                End If
-            Finally
-                connectionLock.Release()
-            End Try
+            ''TODO
         Else
-            logger.err("CasparCGConnection.sendCommand: Not connected to server. Can't send command.")
+            logger.err("FailoverCasparCGConnection.sendCommand: Not connected to server. Can't send command.")
+            RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(Me, connectionTypes.both, FailoverConnectionFailedEventArgs.reasons.NOT_CONNECTED))
             Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
         End If
     End Function
@@ -467,7 +312,13 @@ Public Class CasparCGConnection
     ''' <returns>The IP or DNS address of this connection</returns>
     ''' <remarks></remarks>
     Public Function getServerAddress() As String Implements ICasparCGConnection.getServerAddress
-        Return serveraddress
+        If Not master Is Nothing Then
+            Return master.getServerAddress
+        ElseIf Not slave Is Nothing Then
+            Return slave.getServerAddress
+        Else
+            Return "UNKNOWN_ADDRESS"
+        End If
     End Function
 
     ''' <summary>
@@ -476,7 +327,13 @@ Public Class CasparCGConnection
     ''' <returns>The TCP port nummber of this connection</returns>
     ''' <remarks></remarks>
     Public Function getServerPort() As Integer Implements ICasparCGConnection.getServerPort
-        Return serverport
+        If Not master Is Nothing Then
+            Return master.getServerPort
+        ElseIf Not slave Is Nothing Then
+            Return slave.getServerPort
+        Else
+            Return 0
+        End If
     End Function
 
     ''' <summary>
@@ -486,10 +343,12 @@ Public Class CasparCGConnection
     ''' <returns>True if this connection is not connected and the address could be set, False otherwise. </returns>
     ''' <remarks></remarks>
     Public Function setServerAddress(ByVal serverAddress As String) As Boolean Implements ICasparCGConnection.setServerAddress
-        If Not isConnected() Then
-            Me.serveraddress = serverAddress
-            Return True
-        Else : Return False
+        If Not master Is Nothing AndAlso Not master.isConnected Then
+            Return master.setServerAddress(serverAddress)
+        ElseIf Not slave Is Nothing AndAlso slave.isConnected Then
+            Return slave.setServerAddress(serverAddress)
+        Else
+            Return False
         End If
     End Function
 
@@ -500,10 +359,12 @@ Public Class CasparCGConnection
     ''' <returns>True if this connection is not connected and the port could be set, False otherwise. </returns>
     ''' <remarks></remarks>
     Public Function setServerPort(ByVal serverPort As Integer) As Boolean Implements ICasparCGConnection.setServerPort
-        If Not isConnected() Then
-            Me.serverport = serverPort
-            Return True
-        Else : Return False
+        If Not master Is Nothing AndAlso Not master.isConnected Then
+            Return master.setServerPort(serverPort)
+        ElseIf Not slave Is Nothing AndAlso slave.isConnected Then
+            Return slave.setServerPort(serverPort)
+        Else
+            Return False
         End If
     End Function
 
@@ -556,8 +417,9 @@ Public Class CasparCGConnection
         If Not Me.disposedValue Then
             If disposing Then
                 ' TODO: Verwalteten Zustand löschen (verwaltete Objekte).
-                close()
-                client = Nothing
+                If Not master Is Nothing Then master.Dispose()
+                If Not slave Is Nothing Then slave.Dispose()
+
                 connectionLock.Dispose()
                 connectionLock = Nothing
             End If
@@ -573,4 +435,44 @@ Public Class CasparCGConnection
     End Sub
 #End Region
 
+End Class
+
+Public Class FailoverConnectionFailedEventArgs
+    Public Property connection As ICasparCGConnection
+    Public Property connectionType As FailoverCasparCGConnection.connectionTypes
+    Public Property reason As reasons = reasons.UNKNOWN
+
+    Public Enum reasons
+        UNKNOWN = -1
+
+        NOT_CONNECTED = 0
+
+        DISCONNECTED = 1
+        MASTER_DISCONNECTED = 11
+        SLAVE_DISCONNECTED = 12
+
+        COMMAND_NOT_SUPPORTED = 2
+        MASTER_COMMAND_NOT_SUPPORTED = 21
+        SLAVE_COMMAND_NOT_SUPPORTED = 22
+
+        TIMEOUT = 3
+        MASTER_TIMEOUT = 31
+        SLAVE_TIMEOUT = 32
+
+        RESPONSE_CODE_NOT_EQUAL = 4
+        RESPONSE_DATA_NOT_EQUAL = 5
+
+        UNKNOWN_EXCEPTION = 9
+        MASTER_UNKNOWN_EXCEPTION = 91
+        SLAVE_UNKNOWN_EXCEPTION = 92
+    End Enum
+
+    Public Sub New()
+    End Sub
+
+    Public Sub New(ByRef connection As ICasparCGConnection, ByVal connectionType As FailoverCasparCGConnection.connectionTypes, ByVal reason As reasons)
+        Me.connection = connection
+        Me.connectionType = connectionType
+        Me.reason = reason
+    End Sub
 End Class
