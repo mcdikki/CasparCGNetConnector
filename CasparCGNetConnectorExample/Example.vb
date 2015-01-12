@@ -90,16 +90,19 @@ Public Module Example
 
     Private Sub test()
         ' Quick tests for debugging
+        Console.Write("Name des Templates: ")
+        Dim name = Console.ReadLine()
+        Console.WriteLine()
+        Dim template As New CasparCGTemplate(name)
 
-        If timer.Enabled Then
-            timer.Stop()
-        Else
-            media = New CasparCGMovie("Amb")
-            media.setInfo("frame-number", 0)
-            AddHandler timer.Elapsed, Sub() media.setInfo("frame-number", Integer.Parse(media.getInfo("frame-number")) + 1)
-            AddHandler media.InfoChanged, Sub(ByRef sender As ICasparCGMedia, info As KeyValuePair(Of String, String)) Console.WriteLine("Info changed: " & vbTab & info.Key & ": " & info.Value)
-            timer.Start()
-        End If
+        template.fillMediaInfo(connection)
+
+        For Each i In template.getData.getInstances 
+        Next
+
+        Console.WriteLine("TEXT: " & vbNewLine & template.toString)
+
+        Console.WriteLine("Data XML: " & vbNewLine & template.getData.toXML.OuterXml)
 
     End Sub
 

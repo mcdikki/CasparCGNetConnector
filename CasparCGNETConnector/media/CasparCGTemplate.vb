@@ -48,7 +48,7 @@ Public Class CasparCGTemplate
 
     Public Overrides ReadOnly Property MediaType As ICasparCGMedia.MediaTypes
         Get
-            Return ICasparCGMedia.MediaTypes.STILL
+            Return ICasparCGMedia.MediaTypes.TEMPLATE
         End Get
     End Property
 

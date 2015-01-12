@@ -38,6 +38,11 @@ Public Class FailoverCasparCGConnection
     Private master As ICasparCGConnection = Nothing
     Private slave As ICasparCGConnection = Nothing
 
+    Private masterTask As Task
+    Private slaveTask As Task
+
+    Public Property failoverMode As failoverModes
+
     ''' <summary>
     ''' Reads or sets the number of retires to perform if a connection can't be established
     ''' </summary>
@@ -79,10 +84,23 @@ Public Class FailoverCasparCGConnection
 
 
 #Region "enums"
-    Public Enum connectionTypes
+    Public Enum connectionRoles
         master
         slave
         both
+    End Enum
+
+    ''' <summary>
+    ''' The mode controls the way the connection is handled.
+    '''     master_slave: one connection is the main one. The command succeeds if it succeeds on the master. Errors on the slave will be reported but no execption will be thrown. The connection only waits for the response of the master. If the master fails, the slave takes the master role and a error event will be raised, but no exception will be thrown.
+    '''     masrer_master: both connections are equal. Commands are successfull if they are on both. Any error will be forwarded to the user just as it would be a normal connection.
+    '''     slidingMaster: if one connection succeeds, the command succeeds. The first response will be reported. So the master is changing to the fastest all the time. Errors are reported and exceptions are thrown if both connections does fail.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Enum failoverModes
+        master_slave
+        master_master
+        slidingMaster
     End Enum
 #End Region
 
@@ -299,9 +317,29 @@ Public Class FailoverCasparCGConnection
     Public Function sendCommand(ByVal cmd As String) As CasparCGResponse Implements ICasparCGConnection.sendCommand
         If isConnected(tryConnect) Then
             ''TODO
+            Dim masterResponse As CasparCGResponse
+            Dim slaveResponse As CasparCGResponse
+
+            Try
+                masterTask = Task.Factory.StartNew(New Action(Sub() masterResponse = master.sendCommand(cmd)))
+                slaveTask = Task.Factory.StartNew(New Action(Sub() slaveResponse = slave.sendCommand(cmd)))
+
+                Select Case failoverMode
+                    Case failoverModes.master_slave
+                        masterTask.Wait()
+
+                    Case failoverModes.master_master
+
+                    Case failoverModes.slidingMaster
+
+                End Select
+
+            Catch ex As Exception
+
+            End Try
         Else
             logger.err("FailoverCasparCGConnection.sendCommand: Not connected to server. Can't send command.")
-            RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(Me, connectionTypes.both, FailoverConnectionFailedEventArgs.reasons.NOT_CONNECTED))
+            RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(Me, connectionRoles.both, FailoverConnectionFailedEventArgs.reasons.NOT_CONNECTED))
             Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
         End If
     End Function
@@ -439,7 +477,7 @@ End Class
 
 Public Class FailoverConnectionFailedEventArgs
     Public Property connection As ICasparCGConnection
-    Public Property connectionType As FailoverCasparCGConnection.connectionTypes
+    Public Property connectionRole As FailoverCasparCGConnection.connectionRoles
     Public Property reason As reasons = reasons.UNKNOWN
 
     Public Enum reasons
@@ -467,12 +505,9 @@ Public Class FailoverConnectionFailedEventArgs
         SLAVE_UNKNOWN_EXCEPTION = 92
     End Enum
 
-    Public Sub New()
-    End Sub
-
-    Public Sub New(ByRef connection As ICasparCGConnection, ByVal connectionType As FailoverCasparCGConnection.connectionTypes, ByVal reason As reasons)
+    Public Sub New(ByRef connection As ICasparCGConnection, ByVal connectionRole As FailoverCasparCGConnection.connectionRoles, ByVal reason As reasons)
         Me.connection = connection
-        Me.connectionType = connectionType
+        Me.connectionRole = connectionRole
         Me.reason = reason
     End Sub
 End Class
