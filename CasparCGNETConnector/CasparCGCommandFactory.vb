@@ -58,6 +58,8 @@ Public Class CasparCGCommandFactory
         InfoPathsCommand
         InfoServerCommand
         InfoSystemCommand
+        InfoThreadsCommand
+        InfoQueuesCommand
         VersionServerCommand
         VersionFlashCommand
         VersionTemplatehostCommand
@@ -84,6 +86,9 @@ Public Class CasparCGCommandFactory
         MixerKeyerCommand
         MixerFillCommand
         MixerClipCommand
+        MixerAnachorCommand
+        MixerRotationCommand
+        MixerPerspectiveCommand
         MixerChromaCommand
         MixerContrastCommand
         MixerOpacityCommand
