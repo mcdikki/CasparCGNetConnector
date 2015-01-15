@@ -35,7 +35,7 @@ Public Class CgUpdateCommand
         MyBase.New("CG Update", "Sends new data to the template on specified layer")
         InitParameter()
         setChannel(channel)
-        If layer < -1 Then setLayer(layer)
+        If layer > -1 Then setLayer(layer)
         setFlashlayer(flashlayer)
         setData(data)
     End Sub

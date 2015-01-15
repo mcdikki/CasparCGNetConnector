@@ -126,8 +126,8 @@ Public Class CasparCGTemplate
         out = out & vbNewLine & "Instances and their properties:"
         For Each instance In data.getInstances
             For Each prop In instance.getComponent.getProperties
-                out = out & vbNewLine & vbTab & "Property Name: '" & prop.propertyName & "' Type: '" & prop.propertyType & "' Desc: '" & prop.propertyInfo & "'"
-                out = out & vbNewLine & vbTab & instance.getName & " = " & instance.getData(prop)
+                out = out & vbNewLine & vbTab & "Property Name: '" & prop.Name & "' Type: '" & prop.Type & "' Desc: '" & prop.Info & "'"
+                out = out & vbNewLine & vbTab & instance.getName '& " = " & instance.getData(prop)
             Next
         Next
         Return out
@@ -211,19 +211,19 @@ Public Class CasparCGTemplateData
         Return instances.ContainsKey(instanceName)
     End Function
 
-    Public Function toXML() As Xml.XmlDocument
+    Public Function toDataXML() As Xml.XmlDocument
         Dim domDoc As New Xml.XmlDocument
-        domDoc.appendChild(domDoc.createElement("templateData"))
+        domDoc.AppendChild(domDoc.CreateElement("templateData"))
 
         For Each instance As CasparCGTemplateInstance In instances.Values
-            domDoc.FirstChild.AppendChild(domDoc.ImportNode(instance.toXML.FirstChild, False))
+            domDoc.FirstChild.AppendChild(domDoc.ImportNode(instance.toDataXML.FirstChild, True))
         Next
 
         Return domDoc
     End Function
 
     Public Function getDataString() As String
-        Return ""
+        Return toDataXML.OuterXml
     End Function
 
 End Class
@@ -250,8 +250,8 @@ Public Class CasparCGTemplateComponent
     End Sub
 
     Public Sub addProperty(ByRef componentProperty As CasparCGTemplateComponentProperty)
-        If Not properties.ContainsKey(componentProperty.propertyName) AndAlso Not properties.ContainsValue(componentProperty) Then
-            properties.Add(componentProperty.propertyName, componentProperty)
+        If Not properties.ContainsKey(componentProperty.Name) AndAlso Not properties.ContainsValue(componentProperty) Then
+            properties.Add(componentProperty.Name, componentProperty)
         End If
     End Sub
 
@@ -292,14 +292,16 @@ End Class
 
 Public Class CasparCGTemplateComponentProperty
 
-    Public Property propertyName As String = ""
-    Public Property propertyType As String = "none"
-    Public Property propertyInfo As String = "This property is not initialized"
+    Public Property Name As String = ""
+    Public Property Type As String = "none"
+    Public Property Info As String = "This property is not initialized"
+    Public Property Value As String = ""
 
-    Public Sub New(ByVal name As String, ByVal type As String, ByVal info As String)
-        propertyName = name
-        propertyType = type
-        propertyInfo = info
+    Public Sub New(ByVal name As String, ByVal type As String, ByVal info As String, Optional ByVal value As String = "")
+        Me.Name = name
+        Me.Type = type
+        Me.Info = info
+        Me.Value = value
     End Sub
 
     Public Sub New(ByVal xml As String)
@@ -307,9 +309,9 @@ Public Class CasparCGTemplateComponentProperty
         configDoc.loadXML(xml)
         If configDoc.hasChildNodes Then
             If Not IsNothing(configDoc.selectSingleNode("property")) AndAlso Not IsDBNull(configDoc.selectSingleNode("property")) Then
-                propertyName = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("name").FirstChild.Value
-                propertyType = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("type").FirstChild.Value
-                propertyInfo = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("info").FirstChild.Value
+                Name = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("name").FirstChild.Value
+                Type = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("type").FirstChild.Value
+                Info = configDoc.SelectSingleNode("property").Attributes.GetNamedItem("info").FirstChild.Value
             End If
         End If
     End Sub
@@ -317,58 +319,93 @@ Public Class CasparCGTemplateComponentProperty
     Public Function toXML() As Xml.XmlDocument
         Dim domDoc As New Xml.XmlDocument
         Dim pnode As Xml.XmlElement = domDoc.CreateElement("property")
-        pnode.setAttribute("name", propertyName)
-        pnode.setAttribute("type", propertyType)
-        pnode.setAttribute("info", propertyInfo)
+        pnode.SetAttribute("name", Name)
+        pnode.SetAttribute("type", Type)
+        pnode.SetAttribute("info", Info)
         domDoc.appendChild(pnode)
+        Return domDoc
+    End Function
+
+    Public Function toDataXML() As Xml.XmlDocument
+        Dim domDoc As New Xml.XmlDocument
+        Dim pnode As Xml.XmlElement = domDoc.CreateElement("data")
+        pnode.SetAttribute("id", Name)
+        pnode.SetAttribute("value", Value)
+        domDoc.AppendChild(pnode)
         Return domDoc
     End Function
 
 End Class
 
+
+
 Public Class CasparCGTemplateInstance
     '' Ist eine Instance einer CasparCG Componente in einem Template und beinhaltet den namen, die Componente und die Daten
     Private name As String
     Private component As CasparCGTemplateComponent
-    Private values As Dictionary(Of CasparCGTemplateComponentProperty, String)
+    Private properties As Dictionary(Of String, CasparCGTemplateComponentProperty)
 
-    Public Sub New(ByVal name As String, ByRef component As CasparCGTemplateComponent)
+    Public Sub New(ByVal name As String, ByVal component As CasparCGTemplateComponent)
         Me.name = name
         Me.component = component
-        values = New Dictionary(Of CasparCGTemplateComponentProperty, String)
-        For Each prop As CasparCGTemplateComponentProperty In component.getProperties
-            values.Add(prop, "")
+        Me.properties = New Dictionary(Of String, CasparCGTemplateComponentProperty)
+        For Each p In component.getProperties
+            properties.Add(p.Name, New CasparCGTemplateComponentProperty(p.toXML.FirstChild.OuterXml))
         Next
     End Sub
 
     Public Function clone() As CasparCGTemplateInstance
         Dim instance As New CasparCGTemplateInstance(name, component)
-        For Each value In values.Keys
-            instance.setData(value, getData(value))
-        Next
         Return instance
-    End Function
-
-    Public Sub setData(ByRef componentProperty As CasparCGTemplateComponentProperty, ByVal value As String)
-        If values.ContainsKey(componentProperty) Then
-            values.Item(componentProperty) = value
-        End If
-    End Sub
-
-    Public Function getData(ByRef componentProperty As CasparCGTemplateComponentProperty) As String
-        If values.ContainsKey(componentProperty) Then
-            Return values.Item(componentProperty)
-        Else
-            Return ""
-        End If
     End Function
 
     Public Function getComponent() As CasparCGTemplateComponent
         Return component
     End Function
 
+    Public Function getProperties() As IEnumerable(Of CasparCGTemplateComponentProperty)
+        Return properties.Values
+    End Function
+
+    Public Function getProperty(ByVal propertyName As String) As CasparCGTemplateComponentProperty
+        If properties.ContainsKey(propertyName) Then
+            Return properties.Item(propertyName)
+        Else
+            Return Nothing
+        End If
+    End Function
+
+    ''' <summary>
+    ''' Sets the given property to the given value and returns true.
+    ''' If no such property exists in this instance, nothing will be set false returned.
+    ''' </summary>
+    ''' <param name="propertyName"></param>
+    ''' <param name="value"></param>
+    ''' <returns>true if, and only if, the property exists
+    ''' false otherwise</returns>
+    Public Function setValue(ByVal propertyName As String, ByVal value As String) As Boolean
+        If properties.ContainsKey(propertyName) Then
+            properties.Item(propertyName).Value = value
+            Return True
+        End If
+        Return False
+    End Function
+
     Public Function getName() As String
         Return name
+    End Function
+
+    Public Function toDataXML() As Xml.XmlDocument
+        Dim domDoc As New Xml.XmlDocument
+        Dim pnode As Xml.XmlElement = domDoc.CreateElement("componentData")
+        pnode.SetAttribute("id", getName)
+
+        For Each prop In getProperties()
+            pnode.AppendChild(domDoc.ImportNode(prop.toDataXML.FirstChild, True))
+        Next
+        domDoc.AppendChild(pnode)
+
+        Return domDoc
     End Function
 
     Public Function toXML() As Xml.XmlDocument

@@ -692,6 +692,15 @@ CasparCGNETConnector
 	<param name="channel"></param>
 	<returns></returns>
 	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.CasparCGTemplateInstance.setValue(System.String,System.String)">
+	<summary>
+ Sets the given property to the given value and returns true.
+ If no such property exists in this instance, nothing will be set false returned.
+ </summary>
+	<param name="propertyName"></param>
+	<param name="value"></param>
+	<returns>true if, and only if, the property exists
+ false otherwise</returns>
 </member>
 </members>
 </doc>

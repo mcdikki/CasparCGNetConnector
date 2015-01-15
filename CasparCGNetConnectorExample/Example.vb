@@ -96,13 +96,32 @@ Public Module Example
         Dim template As New CasparCGTemplate(name)
 
         template.fillMediaInfo(connection)
-
-        For Each i In template.getData.getInstances 
-        Next
-
+        Dim cmd As AbstractCommand = New CgAddCommand(1, 1, template, 1, True)
+        cmd.execute(connection)
         Console.WriteLine("TEXT: " & vbNewLine & template.toString)
+        Console.WriteLine("Data XML: " & vbNewLine & template.getData.getDataString)
 
-        Console.WriteLine("Data XML: " & vbNewLine & template.getData.toXML.OuterXml)
+        Dim i As String = ""
+        Do
+            Console.WriteLine("Type an instance name if you want to change the data or just press ENTER to leave: ")
+            i = Console.ReadLine()
+            If i.Length > 0 Then
+                If template.getData.contains(i) Then
+                    For Each p In template.getData.getInstance(i).getProperties
+                        Console.WriteLine("Type the new value for " & i & "." & p.Name & "(" & p.Type & "): ")
+                        'p.Value = Console.ReadLine
+                        template.getData.getInstance(i).setValue("text", Console.ReadLine)
+                    Next
+                    cmd = New CgUpdateCommand(1, 1, 1, template.getData)
+                    Console.WriteLine("Command: " & cmd.getCommandString)
+                    cmd.execute(connection)
+                    cmd = New CgNextCommand(1, 1, 1)
+                    cmd.execute(connection)
+                Else
+                    Console.WriteLine("No such instance found.")
+                End If
+            End If
+        Loop While i.Length > 0
 
     End Sub
 
