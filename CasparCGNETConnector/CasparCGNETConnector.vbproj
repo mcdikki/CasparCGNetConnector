@@ -99,6 +99,9 @@
     <Compile Include="commands\data\DataRetrieveCommand.vb" />
     <Compile Include="commands\data\DataStoreCommand.vb" />
     <Compile Include="commands\mixer\ChannelGridCommand.vb" />
+    <Compile Include="commands\mixer\MixerPerspectiveCommand.vb" />
+    <Compile Include="commands\mixer\MixerRotationCommand.vb" />
+    <Compile Include="commands\mixer\MixerAnchorCommand.vb" />
     <Compile Include="commands\mixer\MixerFillCommand.vb" />
     <Compile Include="commands\mixer\MixerContrastCommand.vb" />
     <Compile Include="commands\mixer\MixerLevelsCommand.vb" />
@@ -133,6 +136,8 @@
     <Compile Include="commands\basic\SetCommand.vb" />
     <Compile Include="commands\basic\StopCommand.vb" />
     <Compile Include="commands\basic\SwapCommand.vb" />
+    <Compile Include="commands\query\InfoQueuesCommand.vb" />
+    <Compile Include="commands\query\InfoThreadsCommand.vb" />
     <Compile Include="commands\thumbnail\ThumbnailGenerateAllCommand.vb" />
     <Compile Include="commands\thumbnail\ThumbnailGenerateCommand.vb" />
     <Compile Include="commands\thumbnail\ThumbnailListCommand.vb" />

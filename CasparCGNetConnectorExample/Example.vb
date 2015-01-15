@@ -38,6 +38,7 @@ Public Module Example
         Console.WriteLine(vbTab & "3. Test_Plaintext_Command")
         Console.WriteLine(vbTab & "4. Test_CasparCGMedia_Classes")
         Console.WriteLine(vbTab & "5. Test_ConnectionBreakdown")
+        Console.WriteLine(vbTab & "S. Show supported command list of the lib")
         Console.WriteLine(vbTab & "C. Connect to casparCG")
         Console.WriteLine(vbTab & "Q. Quit program")
         Dim i As String = Console.ReadKey().KeyChar
@@ -69,6 +70,11 @@ Public Module Example
                     Console.WriteLine("=== Start Test_ConnectionBreakdown: ===")
                     Console.WriteLine("=======================================")
                     Test_ConnectionBreakdown()
+                Case "S"
+                    Console.WriteLine("===========================")
+                    Console.WriteLine("=== Supported Commands: ===")
+                    Console.WriteLine("===========================")
+                    showCommandList()
                 Case "T"
                     test()
                 Case "C"
@@ -81,6 +87,7 @@ Public Module Example
             Console.WriteLine(vbTab & "3. Test_Plaintext_Command")
             Console.WriteLine(vbTab & "4. Test_CasparCGMedia_Classes")
             Console.WriteLine(vbTab & "5. Test_ConnectionBreakdown")
+            Console.WriteLine(vbTab & "S. Show supported command list of the lib")
             Console.WriteLine(vbTab & "C. Connect to casparCG")
             Console.WriteLine(vbTab & "Q. Quit program")
             i = Console.ReadKey().KeyChar
@@ -123,6 +130,10 @@ Public Module Example
             End If
         Loop While i.Length > 0
 
+    End Sub
+
+    Private Sub showCommandList()
+        Console.WriteLine(CasparCGCommandFactory.getCommandInfoList) 
     End Sub
 
     Public Sub connect()

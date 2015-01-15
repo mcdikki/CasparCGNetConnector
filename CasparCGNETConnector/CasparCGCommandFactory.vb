@@ -86,7 +86,7 @@ Public Class CasparCGCommandFactory
         MixerKeyerCommand
         MixerFillCommand
         MixerClipCommand
-        MixerAnachorCommand
+        MixerAnchorCommand
         MixerRotationCommand
         MixerPerspectiveCommand
         MixerChromaCommand
@@ -121,7 +121,10 @@ Public Class CasparCGCommandFactory
     End Function
 
     Private Shared Function getInstance(ByVal t As System.Type) As Object
-        Return t.GetConstructor(New System.Type() {}).Invoke(New Object() {})
+        If Not IsNothing(t) Then
+            Return t.GetConstructor(New System.Type() {}).Invoke(New Object() {})
+        End If
+        Return Nothing
     End Function
 
     ''' <summary>
@@ -138,6 +141,22 @@ Public Class CasparCGCommandFactory
         str = str.Replace("'", "\'")
         str = str.Replace("""", "\""")
         Return str
+    End Function
+
+    Public Shared Function getCommandInfoList() As String
+        Dim list As String = "Command Name (valid since version | number of parameters)" & vbNewLine & vbTab & "Describtion" & vbNewLine & vbNewLine & vbTab & "*Parameter..." & vbNewLine & vbNewLine
+        Dim cmd As AbstractCommand
+
+        For Each commandName In [Enum].GetNames(GetType(Command))
+            cmd = getCommand(commandName)
+            list = list & commandName & " (" & AbstractCommand.getVersionString(cmd.getRequiredVersion) & " | " & cmd.getCommandParameters.Count & ")" & vbNewLine & vbTab & cmd.getDescription & vbNewLine
+            For Each p In cmd.getCommandParameters
+                list = list & vbTab & "*" & p.getName & ": " & p.getDescription & vbNewLine
+            Next
+            list = list & vbNewLine
+        Next
+
+        Return list
     End Function
 
 End Class
