@@ -106,7 +106,7 @@ Public Module Example
             Console.WriteLine("Type an instance name if you want to change the data or just press ENTER to leave: ")
             i = Console.ReadLine()
             If i.Length > 0 Then
-                If template.getData.contains(i) Then
+                If template.getData.containsInstance(i) Then
                     For Each p In template.getData.getInstance(i).getProperties
                         Console.WriteLine("Type the new value for " & i & "." & p.Name & "(" & p.Type & "): ")
                         'p.Value = Console.ReadLine

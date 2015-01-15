@@ -190,7 +190,7 @@ Public Class CasparCGTemplateData
     End Function
 
     Public Sub addInstance(ByRef instance As CasparCGTemplateInstance)
-        If Not IsNothing(instance) AndAlso Not contains(instance.getName) Then
+        If Not IsNothing(instance) AndAlso Not containsInstance(instance.getName) Then
             instances.Add(instance.getName, instance)
         End If
     End Sub
@@ -207,7 +207,7 @@ Public Class CasparCGTemplateData
         Return instances.Values
     End Function
 
-    Public Function contains(ByVal instanceName As String) As Boolean
+    Public Function containsInstance(ByVal instanceName As String) As Boolean
         Return instances.ContainsKey(instanceName)
     End Function
 
