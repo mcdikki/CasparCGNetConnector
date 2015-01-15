@@ -22,7 +22,7 @@ Public Class MixerPerspectiveCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal topLeftX As Single, ByVal topLeftY As Single, ByVal topRightX As Single, ByVal topRightY As Single, ByVal bottomRightX As Single, ByVal bottomRightY As Single, ByVal bottomLeftX As Single, ByVal bottomLeftY As Single)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal topLeftX As Single, ByVal topLeftY As Single, ByVal topRightX As Single, ByVal topRightY As Single, ByVal bottomRightX As Single, ByVal bottomRightY As Single, ByVal bottomLeftX As Single, ByVal bottomLeftY As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER PERSPECTIVE", "Returns or modifies the corners of the perspective transformation for a layer.")
         InitParameter()
         setChannel(channel)
@@ -35,32 +35,51 @@ Public Class MixerPerspectiveCommand
         setBottomLeftY(bottomLeftY)
         setBottomRightX(bottomRightX)
         setBottomRightY(bottomRightY)
+        setDuration(duration)
+        setTween(tween)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer)
+        MyBase.New("MIXER PERSPECTIVE", "Returns or modifies the corners of the perspective transformation for a layer.")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
     End Sub
 
     Private Sub InitParameter()
         addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of Single)("topLeftX", "The x pos. of the top left edge.", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("topLeftY", "The y pos. of the top left edge.", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("topRightX", "The x pos. of the top right edge.", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("topRightY", "The y pos. of the top right edge.", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("bottomRightX", "The x pos. of the bottom right edge.", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("bottomRightY", "The y pos. of the bottom right edge.", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("bottomLeftX", "The x pos. of the bottom left edge.", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("bottomLeftY", "The y pos. of the bottom left edge.", 1, False))
+        addCommandParameter(New CommandParameter(Of Single)("topLeftX", "The x pos. of the top left edge.", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("topLeftY", "The y pos. of the top left edge.", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("topRightX", "The x pos. of the top right edge.", 1, True))
+        addCommandParameter(New CommandParameter(Of Single)("topRightY", "The y pos. of the top right edge.", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("bottomRightX", "The x pos. of the bottom right edge.", 1, True))
+        addCommandParameter(New CommandParameter(Of Single)("bottomRightY", "The y pos. of the bottom right edge.", 1, True))
+        addCommandParameter(New CommandParameter(Of Single)("bottomLeftX", "The x pos. of the bottom left edge.", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("bottomLeftY", "The y pos. of the bottom left edge.", 1, True))
+        addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
+        addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " PERSPECTIVE"
 
-        cmd = cmd & " " & getTopLeftX()
-        cmd = cmd & " " & getTopLeftY()
-        cmd = cmd & " " & getTopRightX()
-        cmd = cmd & " " & getTopRightY()
-        cmd = cmd & " " & getBottomRightX()
-        cmd = cmd & " " & getBottomRightY()
-        cmd = cmd & " " & getBottomLeftX()
-        cmd = cmd & " " & getBottomLeftY()
+        ' To make live easier, if the first value of the command is set,
+        ' assume that everything is set. If not, the default value is ok ;-)
+        If getCommandParameter("topLeftX").isSet Then
+            cmd = cmd & " " & getTopLeftX()
+            cmd = cmd & " " & getTopLeftY()
+            cmd = cmd & " " & getTopRightX()
+            cmd = cmd & " " & getTopRightY()
+            cmd = cmd & " " & getBottomRightX()
+            cmd = cmd & " " & getBottomRightY()
+            cmd = cmd & " " & getBottomLeftX()
+            cmd = cmd & " " & getBottomLeftY()
+        End If
+
+        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+        End If
 
         Return cmd
     End Function
@@ -230,6 +249,36 @@ Public Class MixerPerspectiveCommand
 
     Public Function getBottomRightY() As Single
         Dim param As CommandParameter(Of Single) = getCommandParameter("bottomRightY")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setDuration(ByVal duration As Integer)
+        If IsNothing(duration) Then
+            DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(duration)
+        End If
+    End Sub
+
+    Public Function getDuratrion() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("duration")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setTween(ByRef tween As CasparCGUtil.Tweens)
+        DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).setValue(tween)
+    End Sub
+
+    Public Function getTween() As CasparCGUtil.Tweens
+        Dim param As CommandParameter(Of CasparCGUtil.Tweens) = getCommandParameter("tween")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else

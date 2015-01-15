@@ -22,24 +22,32 @@ Public Class MixerRotationCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal angle As Integer)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal angle As Integer, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER ROTATION", "Returns or modifies the angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.")
         InitParameter()
         setChannel(channel)
         If layer > -1 Then setLayer(layer)
         setAngle(angle)
+        setDuration(duration)
+        setTween(tween)
     End Sub
 
     Private Sub InitParameter()
         addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of Integer)("angle", "The angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.", 0, False))
+        addCommandParameter(New CommandParameter(Of Integer)("angle", "The angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.", 0, True))
+        addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
+        addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " ROTATION"
 
-        cmd = cmd & " " & getAngle()
+        If getCommandParameter("angle").isSet Then cmd = cmd & " " & getAngle()
+
+        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+        End If
 
         Return cmd
     End Function
@@ -88,6 +96,36 @@ Public Class MixerRotationCommand
 
     Public Function getAngle() As Integer
         Dim param As CommandParameter(Of Integer) = getCommandParameter("angle")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setDuration(ByVal duration As Integer)
+        If IsNothing(duration) Then
+            DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(0)
+        Else
+            DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).setValue(duration)
+        End If
+    End Sub
+
+    Public Function getDuratrion() As Integer
+        Dim param As CommandParameter(Of Integer) = getCommandParameter("duration")
+        If Not IsNothing(param) And param.isSet Then
+            Return param.getValue
+        Else
+            Return param.getDefault
+        End If
+    End Function
+
+    Public Sub setTween(ByRef tween As CasparCGUtil.Tweens)
+        DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).setValue(tween)
+    End Sub
+
+    Public Function getTween() As CasparCGUtil.Tweens
+        Dim param As CommandParameter(Of CasparCGUtil.Tweens) = getCommandParameter("tween")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else
