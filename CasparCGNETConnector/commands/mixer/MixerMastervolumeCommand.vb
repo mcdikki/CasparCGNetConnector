@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -29,13 +31,21 @@ Public Class MixerMastervolumeCommand
         setVolume(volume)
     End Sub
 
+    Public Sub New(ByVal channel As Integer)
+        MyBase.New("MIXER MASTERVOLUME", "Changes the volume of an entire channel. ")
+        InitParameter()
+        setChannel(channel)
+    End Sub
+
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
+        addCommandParameter(New ChannelParameter)
         addCommandParameter(New CommandParameter(Of Single)("volume", "The volume to set the channel to between", 1, False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel")) & " MASTERVOLUME " & DirectCast(getCommandParameter("volume"), CommandParameter(Of Single)).getValue()
+        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel")) & " MASTERVOLUME"
+
+        If getCommandParameter("volume").isSet Then cmd = cmd & " " & getVolume().ToString(CultureInfo.GetCultureInfo("en-US"))
 
         Return cmd
     End Function

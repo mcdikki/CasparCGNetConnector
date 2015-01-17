@@ -1,0 +1,15 @@
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\NUnitTests.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\NUnitTests.pdb
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\NUnitTests.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\CasparCGNETConnector.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\nunit.framework.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\logger.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\CasparCGNETConnector.pdb
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\CasparCGNETConnector.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\nunit.framework.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\obj\Release\NUnitTests.vbprojResolveAssemblyReference.cache
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\obj\Release\NUnitTests.Resources.resources
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\obj\Release\NUnitTests.vbproj.GenerateResource.Cache
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\obj\Release\NUnitTests.dll
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\obj\Release\NUnitTests.xml
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\obj\Release\NUnitTests.pdb

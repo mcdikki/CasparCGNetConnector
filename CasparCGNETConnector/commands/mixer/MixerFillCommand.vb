@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -22,22 +24,40 @@ Public Class MixerFillCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal x As Single, ByVal y As Single, ByVal xscale As Single, ByVal ysacle As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal x As Single, ByVal y As Single, ByVal xscale As Single, ByVal ysacle As Single)
         MyBase.New("MIXER FILL", "Scales the video stream on the specified layer. The concept is quite simple; it comes from the ancient DVE machines like ADO. Imagine that the screen has a size of 1x1 (not in pixel, but in an abstract measure). Then the coordinates of a full size picture is 0 0 1 1, which means left edge is at coordinate 0, top edge at coordinate 0, width full size => 1, heigh full size => 1. If you want to crop the picture on the left side (for wipe left to right) You set the left edge to full right => 1 and the width to 0. So this give you the start-coordinates of 1 0 0 1. End coordinates of any wipe are allways the full picture 0 0 1 1. With the FILL command it can make sense to have values between 1 and 0, if you want to do a smaller window. If, for instance you want to have a window of half the size of your screen, you set with and height to 0.5. If you want to center it you set left and top edge to 0.25 so you will get the arguments 0.25 0.25 0.5 0.5 ")
         InitParameter()
         setChannel(channel)
         If layer > -1 Then setLayer(layer)
-        setDuration(duration)
-        setTween(tween)
         setX(x)
         setY(y)
         setXscale(xscale)
         setYscale(ysacle)
     End Sub
 
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal x As Single, ByVal y As Single, ByVal xscale As Single, ByVal ysacle As Single, ByVal duration As Integer, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+        MyBase.New("MIXER FILL", "Scales the video stream on the specified layer. The concept is quite simple; it comes from the ancient DVE machines like ADO. Imagine that the screen has a size of 1x1 (not in pixel, but in an abstract measure). Then the coordinates of a full size picture is 0 0 1 1, which means left edge is at coordinate 0, top edge at coordinate 0, width full size => 1, heigh full size => 1. If you want to crop the picture on the left side (for wipe left to right) You set the left edge to full right => 1 and the width to 0. So this give you the start-coordinates of 1 0 0 1. End coordinates of any wipe are allways the full picture 0 0 1 1. With the FILL command it can make sense to have values between 1 and 0, if you want to do a smaller window. If, for instance you want to have a window of half the size of your screen, you set with and height to 0.5. If you want to center it you set left and top edge to 0.25 so you will get the arguments 0.25 0.25 0.5 0.5 ")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setX(x)
+        setY(y)
+        setXscale(xscale)
+        setYscale(ysacle)
+        setDuration(duration)
+        setTween(tween)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer)
+        MyBase.New("MIXER FILL", "Scales the video stream on the specified layer. The concept is quite simple; it comes from the ancient DVE machines like ADO. Imagine that the screen has a size of 1x1 (not in pixel, but in an abstract measure). Then the coordinates of a full size picture is 0 0 1 1, which means left edge is at coordinate 0, top edge at coordinate 0, width full size => 1, heigh full size => 1. If you want to crop the picture on the left side (for wipe left to right) You set the left edge to full right => 1 and the width to 0. So this give you the start-coordinates of 1 0 0 1. End coordinates of any wipe are allways the full picture 0 0 1 1. With the FILL command it can make sense to have values between 1 and 0, if you want to do a smaller window. If, for instance you want to have a window of half the size of your screen, you set with and height to 0.5. If you want to center it you set left and top edge to 0.25 so you will get the arguments 0.25 0.25 0.5 0.5 ")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Single)("x", " The left edge of the new fillSize, 0 = left edge of monitor, 0.5 = middle of monitor, 1.0 = right edge of monitor. Higher and lower values allowed. ", 0, False))
         addCommandParameter(New CommandParameter(Of Single)("y", "The top edge of the new fillSize, 0 = top edge of monitor, 0.5 = middle of monitor, 1.0 = bottom edge of monitor. Higher and lower values allowed.", 0, False))
         addCommandParameter(New CommandParameter(Of Single)("xscale", "The size of the new fillSize, 1 = 1x the screen size, 0.5 = half the screen size. Higher and lower values allowed. ", 1, False))
@@ -49,13 +69,15 @@ Public Class MixerFillCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " FILL"
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("x"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("y"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("xscale"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("yscale"), CommandParameter(Of Single)).getValue
+        If getCommandParameter("x").isSet OrElse getCommandParameter("y").isSet OrElse getCommandParameter("xscale").isSet OrElse getCommandParameter("yscale").isSet Then
+            cmd = cmd & " " & getX().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getY().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getXscale().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getYscale().ToString(CultureInfo.GetCultureInfo("en-US"))
 
-        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+                cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            End If
         End If
 
         Return cmd

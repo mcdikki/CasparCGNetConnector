@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -22,7 +24,19 @@ Public Class MixerLevelsCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal minInput As Single, ByVal maxInput As Single, ByVal gamma As Single, ByVal minOutput As Single, ByVal maxOutput As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal minInput As Single, ByVal maxInput As Single, ByVal gamma As Single, ByVal minOutput As Single, ByVal maxOutput As Single)
+        MyBase.New("MIXER LEVELS", "Documentation missing. Sorry :-(")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setMinInput(minInput)
+        setMaxInput(maxInput)
+        setGamma(gamma)
+        setMinOutput(minOutput)
+        setMaxOutput(maxOutput)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal minInput As Single, ByVal maxInput As Single, ByVal gamma As Single, ByVal minOutput As Single, ByVal maxOutput As Single, ByVal duration As Integer, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER LEVELS", "Documentation missing. Sorry :-(")
         InitParameter()
         setChannel(channel)
@@ -36,14 +50,21 @@ Public Class MixerLevelsCommand
         setTween(tween)
     End Sub
 
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer)
+        MyBase.New("MIXER LEVELS", "Documentation missing. Sorry :-(")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of Single)("min input", "Documentation missing. Sorry :-(", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("max input", "Documentation missing. Sorry :-(", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("gamma", "Documentation missing. Sorry :-(", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("min output", "Documentation missing. Sorry :-(", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("man output", "Documentation missing. Sorry :-(", 1, False))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
+        addCommandParameter(New CommandParameter(Of Single)("minInput", "Documentation missing. Sorry :-(", 0, False))
+        addCommandParameter(New CommandParameter(Of Single)("maxInput", "Documentation missing. Sorry :-(", 1, False))
+        addCommandParameter(New CommandParameter(Of Single)("gamma", "Documentation missing. Sorry :-(", 1, False))
+        addCommandParameter(New CommandParameter(Of Single)("minOutput", "Documentation missing. Sorry :-(", 0, False))
+        addCommandParameter(New CommandParameter(Of Single)("maxOutput", "Documentation missing. Sorry :-(", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
@@ -51,16 +72,18 @@ Public Class MixerLevelsCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " LEVELS"
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("min input"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("max input"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("gamma"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("min output"), CommandParameter(Of Single)).getValue
-        cmd = cmd & " " & DirectCast(getCommandParameter("max output"), CommandParameter(Of Single)).getValue
+        If getCommandParameter("minInput").isSet OrElse getCommandParameter("maxInput").isSet OrElse getCommandParameter("gamma").isSet _
+        OrElse getCommandParameter("minOutput").isSet OrElse getCommandParameter("maxOutput").isSet Then
+            cmd = cmd & " " & getMinInput.ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getMaxInput.ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getGamma.ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getMinOutput.ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getMaxOutput.ToString(CultureInfo.GetCultureInfo("en-US"))
 
-        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+                cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            End If
         End If
-
         Return cmd
     End Function
 
@@ -100,14 +123,14 @@ Public Class MixerLevelsCommand
 
     Public Sub setMinInput(ByVal minInput As Single)
         If IsNothing(minInput) Then
-            DirectCast(getCommandParameter("min input"), CommandParameter(Of Single)).setValue(0)
+            DirectCast(getCommandParameter("minInput"), CommandParameter(Of Single)).setValue(0)
         Else
-            DirectCast(getCommandParameter("min input"), CommandParameter(Of Single)).setValue(minInput)
+            DirectCast(getCommandParameter("minInput"), CommandParameter(Of Single)).setValue(minInput)
         End If
     End Sub
 
     Public Function getMinInput() As Single
-        Dim param As CommandParameter(Of Single) = getCommandParameter("min input")
+        Dim param As CommandParameter(Of Single) = getCommandParameter("minInput")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else
@@ -117,14 +140,14 @@ Public Class MixerLevelsCommand
 
     Public Sub setMaxInput(ByVal maxInput As Single)
         If IsNothing(maxInput) Then
-            DirectCast(getCommandParameter("max input"), CommandParameter(Of Single)).setValue(1)
+            DirectCast(getCommandParameter("maxInput"), CommandParameter(Of Single)).setValue(1)
         Else
-            DirectCast(getCommandParameter("max input"), CommandParameter(Of Single)).setValue(maxInput)
+            DirectCast(getCommandParameter("maxInput"), CommandParameter(Of Single)).setValue(maxInput)
         End If
     End Sub
 
     Public Function getMaxInput() As Single
-        Dim param As CommandParameter(Of Single) = getCommandParameter("max input")
+        Dim param As CommandParameter(Of Single) = getCommandParameter("maxInput")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else
@@ -134,14 +157,14 @@ Public Class MixerLevelsCommand
 
     Public Sub setMinOutput(ByVal minOutput As Single)
         If IsNothing(minOutput) Then
-            DirectCast(getCommandParameter("min output"), CommandParameter(Of Single)).setValue(0)
+            DirectCast(getCommandParameter("minOutput"), CommandParameter(Of Single)).setValue(0)
         Else
-            DirectCast(getCommandParameter("min output"), CommandParameter(Of Single)).setValue(minOutput)
+            DirectCast(getCommandParameter("minOutput"), CommandParameter(Of Single)).setValue(minOutput)
         End If
     End Sub
 
     Public Function getMinOutput() As Single
-        Dim param As CommandParameter(Of Single) = getCommandParameter("min output")
+        Dim param As CommandParameter(Of Single) = getCommandParameter("minOutput")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else
@@ -151,14 +174,14 @@ Public Class MixerLevelsCommand
 
     Public Sub setMaxOutput(ByVal maxOutput As Single)
         If IsNothing(maxOutput) Then
-            DirectCast(getCommandParameter("max output"), CommandParameter(Of Single)).setValue(1)
+            DirectCast(getCommandParameter("maxOutput"), CommandParameter(Of Single)).setValue(1)
         Else
-            DirectCast(getCommandParameter("max output"), CommandParameter(Of Single)).setValue(maxOutput)
+            DirectCast(getCommandParameter("maxOutput"), CommandParameter(Of Single)).setValue(maxOutput)
         End If
     End Sub
 
-    Public Function getMaxOutnput() As Single
-        Dim param As CommandParameter(Of Single) = getCommandParameter("max output")
+    Public Function getMaxOutput() As Single
+        Dim param As CommandParameter(Of Single) = getCommandParameter("maxOutput")
         If Not IsNothing(param) And param.isSet Then
             Return param.getValue
         Else

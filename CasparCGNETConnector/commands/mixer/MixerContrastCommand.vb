@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -22,7 +24,15 @@ Public Class MixerContrastCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal contrast As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal contrast As Single)
+        MyBase.New("MIXER CONTRAST", "Changes the contrast of the specified layer. The value is a float between 0 and 1")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setContrast(contrast)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal contrast As Single, ByVal duration As Integer, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER CONTRAST", "Changes the contrast of the specified layer. The value is a float between 0 and 1")
         InitParameter()
         setChannel(channel)
@@ -32,9 +42,16 @@ Public Class MixerContrastCommand
         setTween(tween)
     End Sub
 
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer)
+        MyBase.New("MIXER CONTRAST", "Changes the contrast of the specified layer. The value is a float between 0 and 1")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Single)("contrast", "The contrast value of the layer", 0.0, False))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
@@ -43,10 +60,12 @@ Public Class MixerContrastCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CONTRAST"
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("contrast"), CommandParameter(Of Single)).getValue
+        If getCommandParameter("contrast").isSet Then
+            cmd = cmd & " " & getContrast.ToString(CultureInfo.GetCultureInfo("en-US"))
 
-        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+                cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            End If
         End If
 
         Return cmd

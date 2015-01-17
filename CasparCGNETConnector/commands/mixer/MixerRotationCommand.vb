@@ -22,7 +22,22 @@ Public Class MixerRotationCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal angle As Integer, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer)
+        MyBase.New("MIXER ROTATION", "Returns or modifies the angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal angle As Integer)
+        MyBase.New("MIXER ROTATION", "Returns or modifies the angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setAngle(angle)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal angle As Integer, ByVal duration As Integer, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER ROTATION", "Returns or modifies the angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.")
         InitParameter()
         setChannel(channel)
@@ -33,8 +48,8 @@ Public Class MixerRotationCommand
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Integer)("angle", "The angle of which a layer is rotated by (clockwise degrees) around the point specified by ANCHOR.", 0, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
@@ -43,12 +58,13 @@ Public Class MixerRotationCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " ROTATION"
 
-        If getCommandParameter("angle").isSet Then cmd = cmd & " " & getAngle()
+        If getCommandParameter("angle").isSet Then
+            cmd = cmd & " " & getAngle()
 
-        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+                cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            End If
         End If
-
         Return cmd
     End Function
 

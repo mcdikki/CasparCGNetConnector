@@ -389,7 +389,7 @@ Public Class CommandParameter(Of t)
     ''' Sets the value of this parameter
     ''' </summary>
     ''' <param name="value">the value to set this parameter to</param>
-    Public Sub setValue(ByRef value As t)
+    Public Overridable Sub setValue(ByRef value As t)
         _isSet = True
         Me.value = value
     End Sub
@@ -504,4 +504,46 @@ Public Class CommandParameter(Of t)
         Return configDoc
     End Function
 
+End Class
+
+Public Class ChannelParameter
+    Inherits CommandParameter(Of Integer)
+    Implements ICommandParameter
+
+    Sub New()
+        MyBase.New("channel", "The channel", 1, False, {1})
+    End Sub
+
+    Sub New(ByVal isOptional As Boolean)
+        MyBase.New("channel", "The channel", 1, isOptional, {1})
+    End Sub
+
+    Public Overrides Sub setValue(ByRef value As Integer)
+        If value > 0 Then
+            MyBase.setValue(value)
+        Else
+            Throw New ArgumentException("Illegal argument channel=" + value + ". The parameter channel has to be greater than 0.")
+        End If
+    End Sub
+End Class
+
+Public Class LayerParameter
+    Inherits CommandParameter(Of Integer)
+    Implements ICommandParameter
+
+    Sub New()
+        MyBase.New("layer", "The layer", 0, True, {1})
+    End Sub
+
+    Sub New(ByVal isOptional As Boolean)
+        MyBase.New("layer", "The layer", 0, isOptional, {1})
+    End Sub
+
+    Public Overrides Sub setValue(ByRef value As Integer)
+        If value > -1 Then
+            MyBase.setValue(value)
+        Else
+            Throw New ArgumentException("Illegal argument layer=" + value + ". The parameter layer has to be possitiv.")
+        End If
+    End Sub
 End Class

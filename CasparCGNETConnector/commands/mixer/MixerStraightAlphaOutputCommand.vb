@@ -30,18 +30,27 @@ Public Class MixerStraightAlphaOutputCommand
         setActive(active)
     End Sub
 
+    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
+        MyBase.New("MIXER STRAIGHT_ALPHA_OUTPUT", "If enabled, causes RGB values to be divided with the alpha for the given video channel before the image is sent to consumers. ")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of Boolean)("active", "Sets whether or not straight alpha output should be active", False, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
+        addCommandParameter(New CommandParameter(Of Boolean)("active", "Sets whether or not straight alpha output should be active", False, False))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " STRAIGHT_ALPHA_OUTPUT"
-        If getCommandParameter("active").isSet AndAlso DirectCast(getCommandParameter("active"), CommandParameter(Of Boolean)).getValue() Then
-            cmd = cmd & " 1"
-        Else
-            cmd = cmd & " 0"
+        If getCommandParameter("active").isSet Then
+            If getActive() Then
+                cmd = cmd & " 1"
+            Else
+                cmd = cmd & " 0"
+            End If
         End If
         Return cmd
     End Function
@@ -94,7 +103,7 @@ Public Class MixerStraightAlphaOutputCommand
     End Function
 
     Public Overrides Function getRequiredVersion() As Integer()
-        Return {1}
+        Return {2}
     End Function
 
     Public Overrides Function getMaxAllowedVersion() As Integer()

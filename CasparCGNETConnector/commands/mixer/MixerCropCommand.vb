@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -22,7 +24,18 @@ Public Class MixerCropCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal left As Single, ByVal top As Single, ByVal right As Single, ByVal bottom As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal left As Single, ByVal top As Single, ByVal right As Single, ByVal bottom As Single)
+        MyBase.New("MIXER CROP", "Returns or modifies the edges for the cropping for a layer.")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setLeft(left)
+        setTop(top)
+        setRight(right)
+        setBottom(bottom)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal left As Single, ByVal top As Single, ByVal right As Single, ByVal bottom As Single, ByVal duration As Integer, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         MyBase.New("MIXER CROP", "Returns or modifies the edges for the cropping for a layer.")
         InitParameter()
         setChannel(channel)
@@ -43,8 +56,8 @@ Public Class MixerCropCommand
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Single)("left", "The left edges pos.", 0, True))
         addCommandParameter(New CommandParameter(Of Single)("top", "The top edges pos.", 0, True))
         addCommandParameter(New CommandParameter(Of Single)("right", "The right edges pos.", 1, True))
@@ -56,19 +69,16 @@ Public Class MixerCropCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CROP"
 
-        ' To make live easier, if the first value of the command is set,
-        ' assume that everything is set. If not, the default value is ok ;-)
-        If getCommandParameter("left").isSet Then
-            cmd = cmd & " " & getLeft()
-            cmd = cmd & " " & getTop()
-            cmd = cmd & " " & getRight()
-            cmd = cmd & " " & getBottom()
-        End If
+        If getCommandParameter("left").isSet OrElse getCommandParameter("top").isSet OrElse getCommandParameter("right").isSet OrElse getCommandParameter("bottom").isSet Then
+            cmd = cmd & " " & getLeft().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getTop().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getRight().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getBottom().ToString(CultureInfo.GetCultureInfo("en-US"))
 
-        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+                cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            End If
         End If
-
         Return cmd
     End Function
 

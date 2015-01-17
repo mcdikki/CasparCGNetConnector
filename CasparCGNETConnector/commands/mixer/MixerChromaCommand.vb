@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -32,6 +34,13 @@ Public Class MixerChromaCommand
         setSoftness(softness)
     End Sub
 
+    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
+        MyBase.New("MIXER CHROMA", "Enables chroma keying on the specified video layer")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
     Private Sub InitParameter()
         addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
@@ -43,12 +52,12 @@ Public Class MixerChromaCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CHROMA"
 
-        If getCommandParameter("color").isSet AndAlso (DirectCast(getCommandParameter("color"), CommandParameter(Of String)).getValue = "blue" OrElse DirectCast(getCommandParameter("color"), CommandParameter(Of String)).getValue = "green") Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("color"), CommandParameter(Of String)).getValue & " " _
-                & DirectCast(getCommandParameter("threshold"), CommandParameter(Of Single)).getValue _
-                & DirectCast(getCommandParameter("softness"), CommandParameter(Of Single)).getValue
-        Else
-            cmd = cmd & " none"
+        If getCommandParameter("color").isSet Then
+            If (getColor().ToLower.Equals("blue") OrElse getColor().ToLower.Equals("green")) Then
+                cmd = cmd & " " & getColor() & " " & getThreshold().ToString(CultureInfo.GetCultureInfo("en-US")) & " " & getSoftness().ToString(CultureInfo.GetCultureInfo("en-US"))
+            ElseIf getColor.ToLower.Equals("none") Then
+                cmd = cmd & " none"
+            End If
         End If
 
         Return cmd

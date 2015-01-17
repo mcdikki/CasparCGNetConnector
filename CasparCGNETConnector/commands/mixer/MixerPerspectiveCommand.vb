@@ -1,4 +1,6 @@
-﻿'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+﻿Imports System.Globalization
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Author: Christopher Diekkamp
 '' Email: christopher@development.diekkamp.de
 '' GitHub: https://github.com/mcdikki
@@ -22,7 +24,7 @@ Public Class MixerPerspectiveCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal topLeftX As Single, ByVal topLeftY As Single, ByVal topRightX As Single, ByVal topRightY As Single, ByVal bottomRightX As Single, ByVal bottomRightY As Single, ByVal bottomLeftX As Single, ByVal bottomLeftY As Single, Optional ByVal duration As Integer = 0, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal topLeftX As Single, ByVal topLeftY As Single, ByVal topRightX As Single, ByVal topRightY As Single, ByVal bottomRightX As Single, ByVal bottomRightY As Single, ByVal bottomLeftX As Single, ByVal bottomLeftY As Single)
         MyBase.New("MIXER PERSPECTIVE", "Returns or modifies the corners of the perspective transformation for a layer.")
         InitParameter()
         setChannel(channel)
@@ -31,10 +33,25 @@ Public Class MixerPerspectiveCommand
         setTopLeftY(topLeftY)
         setTopRightX(topRightX)
         setTopRightY(topRightY)
-        setBottomLeftX(bottomLeftX)
-        setBottomLeftY(bottomLeftY)
         setBottomRightX(bottomRightX)
         setBottomRightY(bottomRightY)
+        setBottomLeftX(bottomLeftX)
+        setBottomLeftY(bottomLeftY)
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal topLeftX As Single, ByVal topLeftY As Single, ByVal topRightX As Single, ByVal topRightY As Single, ByVal bottomRightX As Single, ByVal bottomRightY As Single, ByVal bottomLeftX As Single, ByVal bottomLeftY As Single, ByVal duration As Integer, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
+        MyBase.New("MIXER PERSPECTIVE", "Returns or modifies the corners of the perspective transformation for a layer.")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setTopLeftX(topLeftX)
+        setTopLeftY(topLeftY)
+        setTopRightX(topRightX)
+        setTopRightY(topRightY)
+        setBottomRightX(bottomRightX)
+        setBottomRightY(bottomRightY)
+        setBottomLeftX(bottomLeftX)
+        setBottomLeftY(bottomLeftY)
         setDuration(duration)
         setTween(tween)
     End Sub
@@ -47,8 +64,8 @@ Public Class MixerPerspectiveCommand
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Single)("topLeftX", "The x pos. of the top left corner.", 0, True))
         addCommandParameter(New CommandParameter(Of Single)("topLeftY", "The y pos. of the top left corner.", 0, True))
         addCommandParameter(New CommandParameter(Of Single)("topRightX", "The x pos. of the top right corner.", 1, True))
@@ -67,18 +84,18 @@ Public Class MixerPerspectiveCommand
         ' To make live easier, if the first value of the command is set,
         ' assume that everything is set. If not, the default value is ok ;-)
         If getCommandParameter("topLeftX").isSet Then
-            cmd = cmd & " " & getTopLeftX()
-            cmd = cmd & " " & getTopLeftY()
-            cmd = cmd & " " & getTopRightX()
-            cmd = cmd & " " & getTopRightY()
-            cmd = cmd & " " & getBottomRightX()
-            cmd = cmd & " " & getBottomRightY()
-            cmd = cmd & " " & getBottomLeftX()
-            cmd = cmd & " " & getBottomLeftY()
-        End If
+            cmd = cmd & " " & getTopLeftX().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getTopLeftY().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getTopRightX().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getTopRightY().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getBottomRightX().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getBottomRightY().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getBottomLeftX().ToString(CultureInfo.GetCultureInfo("en-US"))
+            cmd = cmd & " " & getBottomLeftY().ToString(CultureInfo.GetCultureInfo("en-US"))
 
-        If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
-            cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
+                cmd = cmd & " " & DirectCast(getCommandParameter("duration"), CommandParameter(Of Integer)).getValue & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), DirectCast(getCommandParameter("tween"), CommandParameter(Of CasparCGUtil.Tweens)).getValue)
+            End If
         End If
 
         Return cmd
@@ -243,7 +260,7 @@ Public Class MixerPerspectiveCommand
         If IsNothing(y) Then
             DirectCast(getCommandParameter("bottomRightY"), CommandParameter(Of Single)).setValue(1)
         Else
-            DirectCast(getCommandParameter("topRightY"), CommandParameter(Of Single)).setValue(y)
+            DirectCast(getCommandParameter("bottomRightY"), CommandParameter(Of Single)).setValue(y)
         End If
     End Sub
 

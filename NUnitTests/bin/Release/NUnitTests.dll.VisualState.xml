@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1005]C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\NUnitTests.dll</TopNode>
+  <SelectedNode>[0-1000]NUnitTests.CommandTests</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1005]C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\NUnitTests.dll" Expanded="true" />
+    <Node UniqueName="[0-1006]NUnitTests" Expanded="true" />
+    <Node UniqueName="[0-1000]NUnitTests.CommandTests" Expanded="true" />
+  </Nodes>
+</VisualState>

@@ -5,6 +5,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CasparCGNETConnector", "Cas
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CasparCGNetConnectorExample", "..\CasparCGNetConnectorExample\CasparCGNetConnectorExample.vbproj", "{0F149EE9-22D2-49CE-B9D7-9722437693AC}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NUnitTests", "..\NUnitTests\NUnitTests.vbproj", "{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{0F149EE9-22D2-49CE-B9D7-9722437693AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F149EE9-22D2-49CE-B9D7-9722437693AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F149EE9-22D2-49CE-B9D7-9722437693AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

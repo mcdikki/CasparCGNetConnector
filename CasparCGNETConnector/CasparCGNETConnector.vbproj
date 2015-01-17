@@ -56,18 +56,14 @@
       <HintPath>..\lib\logger.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
-    <Import Include="System.Data" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Linq" />
     <Import Include="System.Xml.Linq" />
@@ -99,6 +95,8 @@
     <Compile Include="commands\data\DataRetrieveCommand.vb" />
     <Compile Include="commands\data\DataStoreCommand.vb" />
     <Compile Include="commands\mixer\ChannelGridCommand.vb" />
+    <Compile Include="commands\mixer\MixerGridCommand.vb" />
+    <Compile Include="commands\mixer\MixerCropCommand.vb" />
     <Compile Include="commands\mixer\MixerPerspectiveCommand.vb" />
     <Compile Include="commands\mixer\MixerRotationCommand.vb" />
     <Compile Include="commands\mixer\MixerAnchorCommand.vb" />

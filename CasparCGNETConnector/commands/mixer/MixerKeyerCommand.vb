@@ -30,20 +30,28 @@ Public Class MixerKeyerCommand
         setKeyer(keyer)
     End Sub
 
+    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
+        MyBase.New("MIXER KEYER", "Replaces layer n+1's alpha channel with the alpha channel of layer n, and hides the RGB channels of layer n. If keyer equals 1 then the specified layer will not be rendered, instead it will be used as the key for the layer above. ")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+    End Sub
+
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Boolean)("keyer", "Sets whether or not the keyer should be active", False, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " KEYER"
-        If getCommandParameter("keyer").isSet AndAlso DirectCast(getCommandParameter("keyer"), CommandParameter(Of Boolean)).getValue() Then
-            cmd = cmd & " 1"
-        Else
-            cmd = cmd & " 0"
+        If getCommandParameter("keyer").isSet Then
+            If DirectCast(getCommandParameter("keyer"), CommandParameter(Of Boolean)).getValue() Then
+                cmd = cmd & " 1"
+            Else
+                cmd = cmd & " 0"
+            End If
         End If
-
         Return cmd
     End Function
 

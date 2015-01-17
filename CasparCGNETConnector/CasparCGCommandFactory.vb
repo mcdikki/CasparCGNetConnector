@@ -81,24 +81,26 @@ Public Class CasparCGCommandFactory
         CgInvokeCommand
 
         'Mixer cmd
-        MixerClearCommand
-        MixerBlendCommand
-        MixerKeyerCommand
-        MixerFillCommand
-        MixerClipCommand
-        MixerAnchorCommand
-        MixerRotationCommand
-        MixerPerspectiveCommand
-        MixerChromaCommand
-        MixerContrastCommand
-        MixerOpacityCommand
-        MixerBrightnessCommand
-        MixerSaturationCommand
-        MixerLevelsCommand
-        MixerVolumeCommand
-        MixerMastervolumeCommand
-        MixerStraightAlphaOutputCommand
         ChannelGridCommand
+        MixerAnchorCommand
+        MixerBlendCommand
+        MixerBrightnessCommand
+        MixerChromaCommand
+        MixerClearCommand
+        MixerClipCommand
+        MixerContrastCommand
+        MixerCropCommand
+        MixerFillCommand
+        MixerGridCommand
+        MixerKeyerCommand
+        MixerLevelsCommand
+        MixerMastervolumeCommand
+        MixerOpacityCommand
+        MixerPerspectiveCommand
+        MixerRotationCommand
+        MixerSaturationCommand
+        MixerStraightAlphaOutputCommand
+        MixerVolumeCommand
 
     End Enum
 

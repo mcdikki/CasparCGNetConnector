@@ -22,24 +22,24 @@ Public Class MixerBlendCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal blendmode As String)
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, Optional ByVal blendmode As String = "")
         MyBase.New("MIXER BLEND", "Every layer in the Mixer module can be set to a blend mode over than the default Normal mode, similar to applications like Photoshop. Some common uses are to use screen to make a all the black image data become transparent, or to use add to selectively lighten highlights.")
         InitParameter()
         setChannel(channel)
         If layer > -1 Then setLayer(layer)
-        setBlendmode(blendmode)
+        If blendmode.Length > 0 Then setBlendmode(blendmode)
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of String)("blend mode", "The blend mode to use with the mixer like, OVERLAY, ADD, SCREEN etc.", False, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
+        addCommandParameter(New CommandParameter(Of String)("blendmode", "The blend mode to use with the mixer like, OVERLAY, ADD, SCREEN etc.", "normal", True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " BLEND"
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("blend mode"), CommandParameter(Of String)).getValue()
+        If getCommandParameter("blendmode").isSet Then cmd = cmd & " " & DirectCast(getCommandParameter("blendmode"), CommandParameter(Of String)).getValue()
 
         Return cmd
     End Function
