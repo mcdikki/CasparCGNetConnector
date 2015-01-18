@@ -51,8 +51,8 @@ Public Class CallCommand
 
     Private Sub InitParameter()
         '' Add all parameters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Boolean)("looping", "Loops the media", False, True))
         addCommandParameter(New CommandParameter(Of Integer)("seek", "The Number of frames to seek before playing", 0, True))
         addCommandParameter(New CommandParameter(Of Integer)("length", "The number of frames to play", 0, True))
@@ -76,7 +76,7 @@ Public Class CallCommand
             cmd = cmd & " LENGTH " & getLength()
         End If
         If getCommandParameter("filter").isSet Then
-            cmd = cmd & " FILTER '" & getFilter()
+            cmd = cmd & " FILTER '" & getFilter() & "'"
         End If
 
         Return escape(cmd)

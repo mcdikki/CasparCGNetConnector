@@ -32,8 +32,8 @@ Public Class SwapCommand
     Private Sub Init(ByVal channelA As Integer, ByVal channelB As Integer, ByVal layerA As Integer, ByVal layerB As Integer)
         If channelA > 0 Then DirectCast(getCommandParameter("channelA"), CommandParameter(Of Integer)).setValue(channelA)
         If layerA > -1 Then DirectCast(getCommandParameter("layerA"), CommandParameter(Of Integer)).setValue(layerA)
-        If channelA > 0 Then DirectCast(getCommandParameter("channelB"), CommandParameter(Of Integer)).setValue(channelB)
-        If layerA > -1 Then DirectCast(getCommandParameter("layerB"), CommandParameter(Of Integer)).setValue(layerB)
+        If channelB > 0 Then DirectCast(getCommandParameter("channelB"), CommandParameter(Of Integer)).setValue(channelB)
+        If layerB > -1 Then DirectCast(getCommandParameter("layerB"), CommandParameter(Of Integer)).setValue(layerB)
     End Sub
 
     Private Sub InitParameter()

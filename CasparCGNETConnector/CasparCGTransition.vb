@@ -16,8 +16,6 @@
 
 Public Class CasparCGTransition
 
-
-
     Private trans As CasparCGUtil.Transitions
     Private duration As Integer
     Private direction As CasparCGUtil.Directions
@@ -32,6 +30,9 @@ Public Class CasparCGTransition
     End Sub
 
     Public Overloads Function toString() As String
+        If trans = CasparCGUtil.Transitions.MIX OrElse trans = CasparCGUtil.Transitions.CUT Then
+            Return CasparCGUtil.Transitions.GetName(GetType(CasparCGUtil.Transitions), trans) & " " & duration & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), tween)
+        End If
         Return CasparCGUtil.Transitions.GetName(GetType(CasparCGUtil.Transitions), trans) & " " & duration & " " & CasparCGUtil.Directions.GetName(GetType(CasparCGUtil.Directions), direction) & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), tween)
     End Function
 

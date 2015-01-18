@@ -60,8 +60,8 @@ Public Class PlayCommand
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of String)("media", "The media to play", "", True))
         addCommandParameter(New CommandParameter(Of Boolean)("looping", "Loops the media", False, True))
         addCommandParameter(New CommandParameter(Of Integer)("seek", "The Number of frames to seek before playing", 0, True))

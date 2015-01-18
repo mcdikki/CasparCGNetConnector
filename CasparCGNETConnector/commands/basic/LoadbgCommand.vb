@@ -63,8 +63,8 @@ Public Class LoadbgCommand
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of String)("media", "The media to play", "", True))
         addCommandParameter(New CommandParameter(Of Boolean)("autostarting", "Starts playing the media automatically when coming to foreground", False, True))
         addCommandParameter(New CommandParameter(Of Boolean)("looping", "Loops the media", False, True))

@@ -30,23 +30,23 @@ Public Class RouteCommand
 
 
     Private Sub Init(ByVal destChannel As Integer, ByVal destLayer As Integer, ByVal sourceChannel As Integer, ByVal sourceLayer As Integer)
-        If destChannel > 0 Then DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(destChannel)
-        If destLayer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(destLayer)
-        If sourceChannel > 0 Then DirectCast(getCommandParameter("source channel"), CommandParameter(Of Integer)).setValue(sourceChannel)
-        If sourceLayer > -1 Then DirectCast(getCommandParameter("source layer"), CommandParameter(Of Integer)).setValue(sourceLayer)
+        If destChannel > 0 Then setChannel(destChannel)
+        If destLayer > -1 Then setLayer(destLayer)
+        If sourceChannel > 0 Then setSourceChannel(sourceChannel)
+        If sourceLayer > -1 Then setSourceLayer(sourceLayer)
     End Sub
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The destination channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The destination layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Integer)("source channel", "The source channel (content)", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("source layer", "The source layer (content)", 0, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "ROUTE " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
-        cmd = cmd & " ROUTE://" & getDestination(getCommandParameter("source channel"), getCommandParameter("source layer"))
+        cmd = cmd & " route://" & getDestination(getCommandParameter("source channel"), getCommandParameter("source layer"))
 
         Return escape(cmd)
     End Function

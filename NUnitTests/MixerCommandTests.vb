@@ -23,7 +23,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerAnchorCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -67,7 +67,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerBlendCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -104,7 +104,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerBrightnessCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -148,7 +148,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerChromaCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -192,7 +192,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerClearCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -221,7 +221,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerClipCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -266,7 +266,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerContrastCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -307,7 +307,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerCropCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -351,7 +351,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerFillCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -396,7 +396,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerGridCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(5)
@@ -430,7 +430,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerKeyerCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -466,7 +466,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerLevelsCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -512,7 +512,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerMastervolumeCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         ' construct default layer works
@@ -549,7 +549,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerOpacityCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -591,7 +591,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerPerspectiveCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -639,7 +639,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerRotationCommand()
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -681,7 +681,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerSaturationCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -723,7 +723,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerStraightAlphaOutputCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -760,7 +760,7 @@ Public Class MixerCommandTests
         Dim cmd As New MixerVolumeCommand
 
         ' Nothing should be set yet
-        testCommandParameterUnset(cmd)
+        TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
         testCommandDestination(cmd)
@@ -792,16 +792,6 @@ Public Class MixerCommandTests
 
         ' Test compatibility 
         Assert.That(cmd.getRequiredVersion, [Is].EqualTo({1}), "Wrong requiredVersion")
-    End Sub
-
-
-    '' Generic helper tests
-    ''======================
-
-    Private Sub testCommandParameterUnset(ByRef cmd As AbstractCommand)
-        For Each cp In cmd.getCommandParameters
-            Assert.That(cp.isSet, [Is].False, "Uninitialized command parameter marked as set.")
-        Next
     End Sub
 
     Private Sub testCommandDestination(ByRef cmd As AbstractCommand)

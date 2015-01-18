@@ -63,6 +63,11 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicCommandTests.vb" />
+    <Compile Include="CgCommandTests.vb" />
+    <Compile Include="DataCommandTests.vb" />
+    <Compile Include="ThumbnailCommandTests.vb" />
+    <Compile Include="QueryCommandTests.vb" />
     <Compile Include="MixerCommandTests.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -79,6 +84,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TestUtils.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

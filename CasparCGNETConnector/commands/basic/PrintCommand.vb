@@ -25,12 +25,12 @@ Public Class PrintCommand
     Public Sub New(ByVal channel As Integer, Optional ByVal file As String = "")
         MyBase.New("PRINT", "Saves a screenshot of a given channel")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If Not IsNothing(file) AndAlso file.Length > 0 Then DirectCast(getCommandParameter("file"), CommandParameter(Of String)).setValue(file)
+        setChannel(channel)
+        If Not IsNothing(file) AndAlso file.Length > 0 Then setFile(file)
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
+        addCommandParameter(New ChannelParameter)
         addCommandParameter(New CommandParameter(Of String)("file", "The destination filename", "", True, {2, 0, 4}))
     End Sub
 

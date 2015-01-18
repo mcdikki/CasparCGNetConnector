@@ -30,14 +30,14 @@ Public Class StopCommand
 
 
     Private Sub Init(ByVal channel As Integer, ByVal layer As Integer)
-        If channel > 0 Then DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        If channel > 0 Then setChannel(channel)
+        If layer > -1 Then setLayer(layer)
     End Sub
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
     End Sub
 
     Public Overrides Function getCommandString() As String

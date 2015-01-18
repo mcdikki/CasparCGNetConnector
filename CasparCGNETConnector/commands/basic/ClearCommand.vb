@@ -22,7 +22,7 @@ Public Class ClearCommand
         InitParameter()
     End Sub
 
-    Public Sub New(Optional ByVal channel As Integer = -1, Optional ByVal layer As Integer = -1)
+    Public Sub New(ByVal channel As Integer, Optional ByVal layer As Integer = -1)
         MyBase.New("CLEAR", "Clears the server channels, a given channel or layer")
         InitParameter()
         Init(channel, layer)
@@ -36,8 +36,8 @@ Public Class ClearCommand
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, True))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
     End Sub
 
     Public Overrides Function getCommandString() As String

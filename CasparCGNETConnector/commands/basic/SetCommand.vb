@@ -25,19 +25,20 @@ Public Class SetCommand
     Public Sub New(ByVal channel As Integer, ByVal videomode As String)
         MyBase.New("SET", "Sets the video mode of the given channel")
         InitParameter()
-        DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        DirectCast(getCommandParameter("video mode"), CommandParameter(Of String)).setValue(videomode)
+        setChannel(channel)
+        setVidemode(videomode)
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of String)("channel", "The channel", 1, False))
+        addCommandParameter(New ChannelParameter)
         addCommandParameter(New CommandParameter(Of String)("video mode", "The video mode", "PAL", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "SET " & getDestination(getCommandParameter("channel"))
         If getCommandParameter("video mode").isSet Then
-            cmd = cmd & " " & getVideomode()
+            cmd = cmd & " MODE " & getVideomode()
+        Else : Throw New ArgumentNullException("Videomode has to be set an not be nothing.")
         End If
         Return cmd
     End Function

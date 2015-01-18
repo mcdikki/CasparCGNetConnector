@@ -35,8 +35,8 @@ Public Class PauseCommand
 
     Private Sub InitParameter()
         '' Add all paramters here:
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
     End Sub
 
     Public Overrides Function getCommandString() As String
