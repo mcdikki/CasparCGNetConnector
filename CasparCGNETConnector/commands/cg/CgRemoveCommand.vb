@@ -31,16 +31,18 @@ Public Class CgRemoveCommand
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
     End Sub
 
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " REMOVE"
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).getValue
-
+        If getCommandParameter("flashlayer").isSet Then
+            cmd = cmd & " " & getFlashlayer()
+        Else : Throw New ArgumentNullException("The parameter flashlayer is mandatory but not set.")
+        End If
         Return cmd
     End Function
 

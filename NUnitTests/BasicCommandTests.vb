@@ -568,12 +568,12 @@ Public Class BasicCommandTests
         ' construct default layer works
         DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(5)
         Assert.That(DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).getValue, [Is].EqualTo(5), "Set channel failed.")
-        Assert.That(cmd.getCommandString(), [Is].StringContaining(cmd.getName & " 5").IgnoreCase, "Default layer not set correctly.")
+        Assert.That(cmd.getCommandString(), [Is].StringStarting(cmd.getName & " 5").IgnoreCase, "Default layer not set correctly.")
 
         ' Set layer works
         DirectCast(cmd.getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(2)
         Assert.That(DirectCast(cmd.getCommandParameter("layer"), CommandParameter(Of Integer)).getValue, [Is].EqualTo(2), "Set layer failed.")
-        Assert.That(cmd.getCommandString(), [Is].StringContaining(cmd.getName & " 5-2").IgnoreCase, "Destination not set correctly.")
+        Assert.That(cmd.getCommandString(), [Is].StringStarting(cmd.getName & " 5-2").IgnoreCase, "Destination not set correctly.")
     End Sub
 
 End Class

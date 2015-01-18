@@ -22,7 +22,7 @@ Public Class CgAddCommand
         InitParameter()
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As ICasparCGMedia, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = "")
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As CasparCGTemplate, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False)
         MyBase.New("CG ADD", "Adds a flashtemplate to a given channel / layer on a given flashlayer")
         InitParameter()
         setChannel(channel)
@@ -30,10 +30,25 @@ Public Class CgAddCommand
         setFlashlayer(flashlayer)
         setTemplate(template)
         setPlayOnLoad(playOnLoad)
-        setData(data)
+        If template.hasData Then setData(template.getDataString)
     End Sub
 
-    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As String, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = "")
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As CasparCGTemplate, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = Nothing)
+        MyBase.New("CG ADD", "Adds a flashtemplate to a given channel / layer on a given flashlayer")
+        InitParameter()
+        setChannel(channel)
+        If layer > -1 Then setLayer(layer)
+        setFlashlayer(flashlayer)
+        setTemplate(template)
+        setPlayOnLoad(playOnLoad)
+        If Not IsNothing(data) Then
+            setData(data)
+        ElseIf template.hasData Then
+            setData(template.getDataString)
+        End If
+    End Sub
+
+    Public Sub New(ByVal channel As Integer, ByVal layer As Integer, ByVal template As String, ByVal flashlayer As Integer, Optional ByVal playOnLoad As Boolean = False, Optional ByVal data As String = Nothing)
         MyBase.New("CG ADD", "Adds a flashtemplate to a given channel / layer on a given flashlayer")
         InitParameter()
         setChannel(channel)
@@ -41,12 +56,12 @@ Public Class CgAddCommand
         setFlashlayer(flashlayer)
         setTemplate(template)
         setPlayOnLoad(playOnLoad)
-        setData(data)
+        If Not IsNothing(data) Then setData(data)
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of String)("template", "The template", "", False))
         addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
         addCommandParameter(New CommandParameter(Of Boolean)("play on load", "Starts playing the template when loaded", False, False))
@@ -56,18 +71,20 @@ Public Class CgAddCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " ADD"
 
-        cmd = cmd & " " & getFlashlayer()
-        cmd = cmd & " '" & getTemplate() & "'"
+        If getCommandParameter("template").isSet AndAlso getCommandParameter("flashlayer").isSet Then
+            cmd = cmd & " " & getFlashlayer()
+            cmd = cmd & " '" & getTemplate() & "'"
 
-        If getPlayOnLoad() Then
-            cmd = cmd & " 1"
-        Else
-            cmd = cmd & " 0"
+            If getPlayOnLoad() Then
+                cmd = cmd & " 1"
+            Else
+                cmd = cmd & " 0"
+            End If
+            If getCommandParameter("data").isSet Then
+                cmd = cmd & " '" & getData() & "'"
+            End If
+        Else : Throw New ArgumentNullException("The parameter template and flashlayer are mandatory but not set.")
         End If
-        If getCommandParameter("data").isSet Then
-            cmd = cmd & " '" & getData() & "'"
-        End If
-
         Return escape(cmd)
     End Function
 

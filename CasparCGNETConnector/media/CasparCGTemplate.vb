@@ -95,6 +95,10 @@ Public Class CasparCGTemplate
         End If
     End Sub
 
+    Public Function hasData() As Boolean
+        Return getData.hasData
+    End Function
+
     Public Function getData() As CasparCGTemplateData
         Return data
     End Function
@@ -211,6 +215,13 @@ Public Class CasparCGTemplateData
         Return instances.ContainsKey(instanceName)
     End Function
 
+    Public Function hasData() As Boolean
+        For Each i In getInstances()
+            If i.hasData Then Return True
+        Next
+        Return False
+    End Function
+
     Public Function toDataXML() As Xml.XmlDocument
         Dim domDoc As New Xml.XmlDocument
         domDoc.AppendChild(domDoc.CreateElement("templateData"))
@@ -295,9 +306,9 @@ Public Class CasparCGTemplateComponentProperty
     Public Property Name As String = ""
     Public Property Type As String = "none"
     Public Property Info As String = "This property is not initialized"
-    Public Property Value As String = ""
+    Public Property Value As String = Nothing
 
-    Public Sub New(ByVal name As String, ByVal type As String, ByVal info As String, Optional ByVal value As String = "")
+    Public Sub New(ByVal name As String, ByVal type As String, ByVal info As String, Optional ByVal value As String = Nothing)
         Me.Name = name
         Me.Type = type
         Me.Info = info
@@ -316,6 +327,10 @@ Public Class CasparCGTemplateComponentProperty
         End If
     End Sub
 
+    Public Function isSet() As Boolean
+        Return Not IsNothing(Value)
+    End Function
+
     Public Function toXML() As Xml.XmlDocument
         Dim domDoc As New Xml.XmlDocument
         Dim pnode As Xml.XmlElement = domDoc.CreateElement("property")
@@ -328,10 +343,12 @@ Public Class CasparCGTemplateComponentProperty
 
     Public Function toDataXML() As Xml.XmlDocument
         Dim domDoc As New Xml.XmlDocument
-        Dim pnode As Xml.XmlElement = domDoc.CreateElement("data")
-        pnode.SetAttribute("id", Name)
-        pnode.SetAttribute("value", Value)
-        domDoc.AppendChild(pnode)
+        If Not IsNothing(Value) Then
+            Dim pnode As Xml.XmlElement = domDoc.CreateElement("data")
+            pnode.SetAttribute("id", Name)
+            pnode.SetAttribute("value", Value)
+            domDoc.AppendChild(pnode)
+        End If
         Return domDoc
     End Function
 
@@ -393,6 +410,13 @@ Public Class CasparCGTemplateInstance
 
     Public Function getName() As String
         Return name
+    End Function
+
+    Public Function hasData() As Boolean
+        For Each p In getProperties()
+            If p.isSet Then Return True
+        Next
+        Return False
     End Function
 
     Public Function toDataXML() As Xml.XmlDocument

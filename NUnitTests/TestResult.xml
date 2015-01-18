@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\NUnitTests.nunit" total="44" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2015-01-18" time="16:32:19">
+  <environment nunit-version="2.6.4.14350" clr-version="2.0.50727.5485" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\Windows\system32" machine-name="MOBILSKLAVE" user="chrissi" user-domain="Mobilsklave" />
+  <culture-info current-culture="de-DE" current-uiculture="de-DE" />
+  <test-suite type="Project" name="C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\NUnitTests.nunit" executed="True" result="Success" success="True" time="0.737" asserts="0">
+    <results>
+      <test-suite type="Assembly" name="C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\NUnitTests\bin\Release\NUnitTests.dll" executed="True" result="Success" success="True" time="0.737" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="NUnitTests" executed="True" result="Success" success="True" time="0.736" asserts="0">
+            <results>
+              <test-suite type="TestFixture" name="BasicCommandTests" executed="True" result="Success" success="True" time="0.255" asserts="0">
+                <results>
+                  <test-case name="NUnitTests.BasicCommandTests.testAdd" executed="True" result="Success" success="True" time="0.010" asserts="7" />
+                  <test-case name="NUnitTests.BasicCommandTests.testCall" executed="True" result="Success" success="True" time="0.026" asserts="24" />
+                  <test-case name="NUnitTests.BasicCommandTests.testClear" executed="True" result="Success" success="True" time="0.007" asserts="13" />
+                  <test-case name="NUnitTests.BasicCommandTests.testKill" executed="True" result="Success" success="True" time="0.003" asserts="2" />
+                  <test-case name="NUnitTests.BasicCommandTests.testLoad" executed="True" result="Success" success="True" time="0.023" asserts="26" />
+                  <test-case name="NUnitTests.BasicCommandTests.testLoadbg" executed="True" result="Success" success="True" time="0.026" asserts="28" />
+                  <test-case name="NUnitTests.BasicCommandTests.testPause" executed="True" result="Success" success="True" time="0.009" asserts="13" />
+                  <test-case name="NUnitTests.BasicCommandTests.testPlay" executed="True" result="Success" success="True" time="0.024" asserts="28" />
+                  <test-case name="NUnitTests.BasicCommandTests.testPrint" executed="True" result="Success" success="True" time="0.009" asserts="8" />
+                  <test-case name="NUnitTests.BasicCommandTests.testRemove" executed="True" result="Success" success="True" time="0.015" asserts="7" />
+                  <test-case name="NUnitTests.BasicCommandTests.testRestart" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+                  <test-case name="NUnitTests.BasicCommandTests.testResume" executed="True" result="Success" success="True" time="0.011" asserts="13" />
+                  <test-case name="NUnitTests.BasicCommandTests.testRoute" executed="True" result="Success" success="True" time="0.010" asserts="13" />
+                  <test-case name="NUnitTests.BasicCommandTests.testSet" executed="True" result="Success" success="True" time="0.011" asserts="8" />
+                  <test-case name="NUnitTests.BasicCommandTests.testStop" executed="True" result="Success" success="True" time="0.008" asserts="13" />
+                  <test-case name="NUnitTests.BasicCommandTests.testSwap" executed="True" result="Success" success="True" time="0.011" asserts="11" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="CgCommandTests" executed="True" result="Success" success="True" time="0.120" asserts="0">
+                <results>
+                  <test-case name="NUnitTests.CgCommandTests.testCgAdd" executed="True" result="Success" success="True" time="0.022" asserts="23" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgClear" executed="True" result="Success" success="True" time="0.007" asserts="12" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgInvoke" executed="True" result="Success" success="True" time="0.014" asserts="15" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgNext" executed="True" result="Success" success="True" time="0.010" asserts="13" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgPlay" executed="True" result="Success" success="True" time="0.013" asserts="13" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgRemove" executed="True" result="Success" success="True" time="0.013" asserts="13" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgStop" executed="True" result="Success" success="True" time="0.015" asserts="13" />
+                  <test-case name="NUnitTests.CgCommandTests.testCgUpdate" executed="True" result="Success" success="True" time="0.001" asserts="16" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="MixerCommandTests" executed="True" result="Success" success="True" time="0.350" asserts="0">
+                <results>
+                  <test-case name="NUnitTests.MixerCommandTests.testChannelGrid" executed="True" result="Success" success="True" time="0.003" asserts="2" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerAnchor" executed="True" result="Success" success="True" time="0.020" asserts="19" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerBlend" executed="True" result="Success" success="True" time="0.011" asserts="14" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerBrightness" executed="True" result="Success" success="True" time="0.014" asserts="18" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerChroma" executed="True" result="Success" success="True" time="0.015" asserts="18" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerClear" executed="True" result="Success" success="True" time="0.009" asserts="11" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerClip" executed="True" result="Success" success="True" time="0.019" asserts="21" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerContrast" executed="True" result="Success" success="True" time="0.013" asserts="18" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerCrop" executed="True" result="Success" success="True" time="0.019" asserts="21" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerFill" executed="True" result="Success" success="True" time="0.019" asserts="21" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerGrid" executed="True" result="Success" success="True" time="0.014" asserts="10" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerKeyer" executed="True" result="Success" success="True" time="0.010" asserts="14" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerLevels" executed="True" result="Success" success="True" time="0.020" asserts="22" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerMasterVolume" executed="True" result="Success" success="True" time="0.010" asserts="8" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerOpacity" executed="True" result="Success" success="True" time="0.014" asserts="18" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerPerspective" executed="True" result="Success" success="True" time="0.026" asserts="25" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerRotation" executed="True" result="Success" success="True" time="0.016" asserts="18" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerSaturation" executed="True" result="Success" success="True" time="0.015" asserts="18" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerStraightAlphaOutput" executed="True" result="Success" success="True" time="0.009" asserts="14" />
+                  <test-case name="NUnitTests.MixerCommandTests.testMixerVolume" executed="True" result="Success" success="True" time="0.014" asserts="18" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

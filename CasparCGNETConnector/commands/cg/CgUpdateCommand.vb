@@ -37,12 +37,12 @@ Public Class CgUpdateCommand
         setChannel(channel)
         If layer > -1 Then setLayer(layer)
         setFlashlayer(flashlayer)
-        setData(data)
+        setData(data.getDataString)
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
         addCommandParameter(New CommandParameter(Of String)("data", "The xml data string", "", True))
     End Sub
@@ -50,9 +50,11 @@ Public Class CgUpdateCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " UPDATE"
 
-        cmd = cmd & " " & DirectCast(getCommandParameter("flashlayer"), CommandParameter(Of Integer)).getValue
-        cmd = cmd & " '" & DirectCast(getCommandParameter("data"), CommandParameter(Of String)).getValue & "'"
-
+        If getCommandParameter("flashlayer").isSet AndAlso getCommandParameter("data").isSet Then
+            cmd = cmd & " " & getFlashlayer()
+            cmd = cmd & " '" & getData() & "'"
+        Else : Throw New ArgumentNullException("The parameter flashlayer and data is mandatory but not set.")
+        End If
         Return escape(cmd)
     End Function
 
