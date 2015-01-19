@@ -65,7 +65,7 @@ Public Class LoadbgCommand
         '' Add all paramters here:
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of String)("media", "The media to play", "", True))
+        addCommandParameter(New CommandParameter(Of String)("media", "The media to play", "", False))
         addCommandParameter(New CommandParameter(Of Boolean)("autostarting", "Starts playing the media automatically when coming to foreground", False, True))
         addCommandParameter(New CommandParameter(Of Boolean)("looping", "Loops the media", False, True))
         addCommandParameter(New CommandParameter(Of Integer)("seek", "The Number of frames to seek before playing", 0, True))
@@ -76,11 +76,8 @@ Public Class LoadbgCommand
 
     Public Overrides Function getCommandString() As String
         checkParameter()
-        Dim cmd As String = "LOADBG " & getDestination()
+        Dim cmd As String = "LOADBG " & getDestination() & " '" & getMedia() & "'"
 
-        If getCommandParameter("media").isSet Then
-            cmd = cmd & " '" & getMedia() & "'"
-        End If
         If getCommandParameter("autostarting").isSet AndAlso getAutostarting() Then
             cmd = cmd & " AUTO"
         End If

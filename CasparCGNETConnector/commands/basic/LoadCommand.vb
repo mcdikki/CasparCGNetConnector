@@ -62,7 +62,7 @@ Public Class LoadCommand
         '' Add all paramters here:
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of String)("media", "The media to play", "", True))
+        addCommandParameter(New CommandParameter(Of String)("media", "The media to play", "", False))
         addCommandParameter(New CommandParameter(Of Boolean)("looping", "Loops the media", False, True))
         addCommandParameter(New CommandParameter(Of Integer)("seek", "The Number of frames to seek before playing", 0, True))
         addCommandParameter(New CommandParameter(Of Integer)("length", "The number of frames to play", 0, True))
@@ -72,11 +72,8 @@ Public Class LoadCommand
 
     Public Overrides Function getCommandString() As String
         checkParameter()
-        Dim cmd As String = "LOAD " & getDestination()
+        Dim cmd As String = "LOAD " & getDestination() & " '" & getMedia() & "'"
 
-        If getCommandParameter("media").isSet Then
-            cmd = cmd & " '" & getMedia() & "'"
-        End If
         If getCommandParameter("looping").isSet AndAlso getLooping() Then
             cmd = cmd & " LOOP"
         End If

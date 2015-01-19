@@ -176,7 +176,7 @@ Public MustInherit Class AbstractCommand
         Next
     End Sub
 
-    Protected Function getDestination() As String
+    Public Function getDestination() As String
         Dim dst As String = ""
         If getCommandParameterNames.Contains("channel") Then
             If getCommandParameter("channel").isSet Then
@@ -191,7 +191,7 @@ Public MustInherit Class AbstractCommand
         Return dst
     End Function
 
-    Protected Shared Function getDestination(ByRef channel As CommandParameter(Of Integer), Optional ByRef layer As CommandParameter(Of Integer) = Nothing) As String
+    Public Shared Function getDestination(ByRef channel As CommandParameter(Of Integer), Optional ByRef layer As CommandParameter(Of Integer) = Nothing) As String
         Dim cmd As String
         If channel.isSet() Then
             cmd = channel.getValue

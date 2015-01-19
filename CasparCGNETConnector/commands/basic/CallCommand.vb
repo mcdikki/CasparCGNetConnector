@@ -79,7 +79,7 @@ Public Class CallCommand
         If getCommandParameter("filter").isSet Then
             cmd = cmd & " FILTER '" & getFilter() & "'"
         End If
-
+        If cmd.Equals("CALL " & getDestination()) Then Throw New ArgumentException("At least one parameter has to be set.")
         Return escape(cmd)
     End Function
 

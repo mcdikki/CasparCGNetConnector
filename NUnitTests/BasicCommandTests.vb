@@ -23,6 +23,12 @@ Public Class BasicCommandTests
 
         ' Test a set command
         cmd.setChannel(1)
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing consumer.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing consumer.")
+        End Try
         cmd.setConsumer("SCREEN")
         Assert.That(cmd.getCommandString, [Is].EqualTo("ADD 1 SCREEN").IgnoreCase, "Wrong set command string.")
 
@@ -46,13 +52,26 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
 
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
         cmd.setLayer(1)
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentException as no parameter is set.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentException), "Should have thrown an ArgumentException as no parameter is set.")
+        End Try
+
         cmd.setLooping(True)
         Assert.That(cmd.getCommandString, [Is].EqualTo("CALL 1-1 LOOP").IgnoreCase, "Wrong set command string.")
         cmd.setTransition(trans)
@@ -92,8 +111,15 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
+
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
@@ -139,11 +165,17 @@ Public Class BasicCommandTests
 
 
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
         cmd.setLayer(1)
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing media.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing media.")
+        End Try
         cmd.setMedia(media)
         Assert.That(cmd.getCommandString, [Is].EqualTo("LOADBG 1-1 ""amb""").IgnoreCase, "Wrong set command string.")
         cmd.setAutostarting(True)
@@ -189,11 +221,17 @@ Public Class BasicCommandTests
 
 
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
         cmd.setLayer(1)
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing media.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing media.")
+        End Try
         cmd.setMedia(media)
         Assert.That(cmd.getCommandString, [Is].EqualTo("LOAD 1-1 ""amb""").IgnoreCase, "Wrong set command string.")
         cmd.setLooping(True)
@@ -235,8 +273,15 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
+
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
@@ -264,9 +309,15 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
 
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
@@ -315,6 +366,12 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
 
         ' Test destination
         DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(5)
@@ -349,6 +406,12 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
 
         ' Test destination
         DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(5)
@@ -357,6 +420,12 @@ Public Class BasicCommandTests
 
         ' Test a set command
         cmd.setChannel(1)
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing consumer.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing consumer.")
+        End Try
         cmd.setConsumer("SCREEN")
         Assert.That(cmd.getCommandString, [Is].EqualTo("REMOVE 1 SCREEN").IgnoreCase, "Wrong set command string.")
 
@@ -396,8 +465,15 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
+
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
@@ -426,14 +502,19 @@ Public Class BasicCommandTests
         TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
-        ' need to add these before dest tests
-        cmd.setSourceChannel(2)
-        cmd.setSourceLayer(1)
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
         cmd.setLayer(1)
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing source channel/layer.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing source channel/layer.")
+        End Try
+        cmd.setSourceChannel(2)
+        cmd.setSourceLayer(1)
         Assert.That(cmd.getCommandString, [Is].EqualTo("ROUTE 1-1 route://2-1").IgnoreCase, "Wrong set command string.")
 
         ' Tests with parameterized construtor
@@ -455,6 +536,12 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
 
         ' Test destination
         DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(5)
@@ -499,8 +586,15 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channel.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channel.")
+        End Try
+
         ' Test destination
-        testCommandDestination(cmd)
+        TestUtils.testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
@@ -528,6 +622,13 @@ Public Class BasicCommandTests
         ' Nothing should be set yet
         TestUtils.testCommandParameterUnset(cmd)
 
+        Try
+            cmd.getCommandString()
+            Assert.That(False, "Should have thrown an ArgumentNullException for missing channelA/B.")
+        Catch ex As Exception
+            Assert.That(ex, [Is].TypeOf(Of ArgumentNullException), "Should have thrown an ArgumentNullException for missing channelA/B.")
+        End Try
+
         ' Test a set command
         cmd.setChannelA(1)
         cmd.setChannelB(2)
@@ -549,24 +650,6 @@ Public Class BasicCommandTests
 
         ' Test compatibility 
         Assert.That(cmd.getRequiredVersion, [Is].EqualTo({1}), "Wrong requiredVersion")
-    End Sub
-
-    '' Generic helper tests
-    ''======================
-    Private Sub testCommandDestination(ByRef cmd As AbstractCommand)
-        ' Channel and Layer parameter exists
-        Assert.That(cmd.getCommandParameter("channel"), [Is].Not.Null, "Channel parameter missing.")
-        Assert.That(cmd.getCommandParameter("layer"), [Is].Not.Null, "Layer parameter missing.")
-
-        ' construct default layer works
-        DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(5)
-        Assert.That(DirectCast(cmd.getCommandParameter("channel"), CommandParameter(Of Integer)).getValue, [Is].EqualTo(5), "Set channel failed.")
-        Assert.That(cmd.getCommandString(), [Is].StringStarting(cmd.getName & " 5").IgnoreCase, "Default layer not set correctly.")
-
-        ' Set layer works
-        DirectCast(cmd.getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(2)
-        Assert.That(DirectCast(cmd.getCommandParameter("layer"), CommandParameter(Of Integer)).getValue, [Is].EqualTo(2), "Set layer failed.")
-        Assert.That(cmd.getCommandString(), [Is].StringStarting(cmd.getName & " 5-2").IgnoreCase, "Destination not set correctly.")
     End Sub
 
 End Class
