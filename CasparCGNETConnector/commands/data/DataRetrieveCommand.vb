@@ -33,7 +33,10 @@ Public Class DataRetrieveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return escape("DATA RETRIEVE '" & DirectCast(getCommandParameter("key"), CommandParameter(Of String)).getValue() & "'")
+        If getCommandParameter("key").isSet Then
+            Return escape("DATA RETRIEVE '" & getKey() & "'")
+        Else : Throw New ArgumentNullException("Parameter key is mandatory but was not set.")
+        End If
     End Function
 
     Public Sub setKey(ByVal key As String)

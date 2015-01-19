@@ -33,7 +33,10 @@ Public Class DataRemoveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Return escape("DATA REMOVE '" & DirectCast(getCommandParameter("key"), CommandParameter(Of String)).getValue() & "'")
+        If getCommandParameter("key").isSet Then
+            Return escape("DATA REMOVE '" & getKey() & "'")
+        Else : Throw New ArgumentNullException("Parameter key is mandatory but was not set.")
+        End If
     End Function
 
     Public Sub setKey(ByVal key As String)
