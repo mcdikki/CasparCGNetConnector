@@ -170,6 +170,26 @@ Public MustInherit Class AbstractCommand
         End If
     End Sub
 
+    Protected Sub checkParameter()
+        For Each p In getCommandParameters()
+            If Not p.isOptional AndAlso Not p.isSet Then Throw New ArgumentNullException(p.getName, p.getName & " is mandatory but not set.")
+        Next
+    End Sub
+
+    Protected Function getDestination() As String
+        Dim dst As String = ""
+        If getCommandParameterNames.Contains("channel") Then
+            If getCommandParameter("channel").isSet Then
+                dst = DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).getValue
+            Else
+                dst = "1"
+            End If
+            If getCommandParameterNames.Contains("layer") AndAlso getCommandParameter("layer").isSet Then
+                dst = dst & "-" & DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).getValue
+            End If
+        End If
+        Return dst
+    End Function
 
     Protected Shared Function getDestination(ByRef channel As CommandParameter(Of Integer), Optional ByRef layer As CommandParameter(Of Integer) = Nothing) As String
         Dim cmd As String
@@ -319,6 +339,8 @@ Public Interface ICommandParameter
     Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
 
     Function toXml() As Xml.XmlDocument
+
+    Sub unset()
 End Interface
 
 Public Class CommandParameter(Of t)
@@ -397,6 +419,10 @@ Public Class CommandParameter(Of t)
     Public Function isSet() As Boolean Implements ICommandParameter.isSet
         Return _isSet
     End Function
+
+    Public Sub unset() Implements ICommandParameter.unset
+        _isSet = False
+    End Sub
 
     ''' <summary>
     ''' Returns the required version to run this parameter

@@ -35,9 +35,8 @@ Public Class CgClearCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CLEAR"
-
-        Return cmd
+        checkParameter()
+        Return "CG " & getDestination() & " CLEAR"
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

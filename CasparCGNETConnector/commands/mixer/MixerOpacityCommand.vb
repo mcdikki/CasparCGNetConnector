@@ -52,13 +52,14 @@ Public Class MixerOpacityCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Single)("opacity", "The opacity of the layer", 0.0, False))
+        addCommandParameter(New CommandParameter(Of Single)("opacity", "The opacity of the layer", 0.0, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " OPACITY"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " OPACITY"
 
         If getCommandParameter("opacity").isSet Then
             cmd = cmd & " " & getOpacity().ToString(CultureInfo.GetCultureInfo("en-US"))

@@ -37,7 +37,8 @@ Public Class RemoveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "REMOVE " & getDestination(getCommandParameter("channel")) & " " & getConsumer()
+        checkParameter()
+        Dim cmd As String = "REMOVE " & getDestination() & " " & getConsumer()
         If getCommandParameter("parameter").isSet AndAlso Not IsNothing(getParameter()) AndAlso getParameter().Length > 0 Then
             For Each p In getParameter()
                 cmd = cmd & " " & p

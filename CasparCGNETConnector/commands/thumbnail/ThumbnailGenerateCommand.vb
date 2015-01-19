@@ -19,18 +19,19 @@ Public Class ThumbnailGenerateCommand
 
     Public Sub New()
         MyBase.New("THUMBNAIL GENERATE", "Requests the server to (re-)generate the thumbnails for a specific media file")
+        InitParameter()
     End Sub
 
     Public Sub New(ByVal media As String)
         MyBase.New("THUMBNAIL GENERATE", "Requests the server to (re-)generate the thumbnails for a specific media file")
         InitParameter()
-        setMedia(media)
+        If Not IsNothing(media) AndAlso media.Length > 0 Then setMedia(media)
     End Sub
 
     Public Sub New(ByVal media As AbstractCasparCGMedia)
         MyBase.New("THUMBNAIL GENERATE", "Requests the server to (re-)generate the thumbnails for a specific media file")
         InitParameter()
-        setMedia(media)
+        If Not IsNothing(media) Then setMedia(media)
     End Sub
 
     Private Sub InitParameter()
@@ -38,8 +39,8 @@ Public Class ThumbnailGenerateCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd = "THUMBNAIL GENERATE '" & DirectCast(getCommandParameter("media"), CommandParameter(Of String)).getValue & "'"
-        Return escape(cmd)
+        checkParameter()
+        Return escape("THUMBNAIL GENERATE '" & getMedia() & "'")
     End Function
 
     Public Sub setMedia(ByVal media As String)

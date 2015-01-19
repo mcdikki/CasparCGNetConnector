@@ -56,7 +56,8 @@ Public Class MixerRotationCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " ROTATION"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " ROTATION"
 
         If getCommandParameter("angle").isSet Then
             cmd = cmd & " " & getAngle()

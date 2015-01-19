@@ -37,7 +37,8 @@ Public Class MixerBlendCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " BLEND"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " BLEND"
 
         If getCommandParameter("blendmode").isSet Then cmd = cmd & " " & DirectCast(getCommandParameter("blendmode"), CommandParameter(Of String)).getValue()
 

@@ -44,7 +44,8 @@ Public Class MixerKeyerCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " KEYER"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " KEYER"
         If getCommandParameter("keyer").isSet Then
             If DirectCast(getCommandParameter("keyer"), CommandParameter(Of Boolean)).getValue() Then
                 cmd = cmd & " 1"

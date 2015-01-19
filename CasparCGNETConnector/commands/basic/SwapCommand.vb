@@ -45,6 +45,7 @@ Public Class SwapCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
+        checkParameter()
         Dim cmd As String = "SWAP "
         If getCommandParameter("layerA").isSet AndAlso getCommandParameter("layerB").isSet Then
             cmd = cmd & getDestination(getCommandParameter("channelA"), getCommandParameter("layerA")) & " " & getDestination(getCommandParameter("channelB"), getCommandParameter("layerB"))

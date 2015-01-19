@@ -67,7 +67,8 @@ Public Class MixerCropCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CROP"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " CROP"
 
         If getCommandParameter("left").isSet OrElse getCommandParameter("top").isSet OrElse getCommandParameter("right").isSet OrElse getCommandParameter("bottom").isSet Then
             cmd = cmd & " " & getLeft().ToString(CultureInfo.GetCultureInfo("en-US"))

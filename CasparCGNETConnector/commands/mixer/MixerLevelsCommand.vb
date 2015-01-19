@@ -60,17 +60,18 @@ Public Class MixerLevelsCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Single)("minInput", "Documentation missing. Sorry :-(", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("maxInput", "Documentation missing. Sorry :-(", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("gamma", "Documentation missing. Sorry :-(", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("minOutput", "Documentation missing. Sorry :-(", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("maxOutput", "Documentation missing. Sorry :-(", 1, False))
+        addCommandParameter(New CommandParameter(Of Single)("minInput", "Documentation missing. Sorry :-(", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("maxInput", "Documentation missing. Sorry :-(", 1, True))
+        addCommandParameter(New CommandParameter(Of Single)("gamma", "Documentation missing. Sorry :-(", 1, True))
+        addCommandParameter(New CommandParameter(Of Single)("minOutput", "Documentation missing. Sorry :-(", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("maxOutput", "Documentation missing. Sorry :-(", 1, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " LEVELS"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " LEVELS"
 
         If getCommandParameter("minInput").isSet OrElse getCommandParameter("maxInput").isSet OrElse getCommandParameter("gamma").isSet _
         OrElse getCommandParameter("minOutput").isSet OrElse getCommandParameter("maxOutput").isSet Then

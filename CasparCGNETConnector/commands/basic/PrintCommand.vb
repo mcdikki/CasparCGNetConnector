@@ -35,7 +35,8 @@ Public Class PrintCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "PRINT " & getDestination(getCommandParameter("channel"))
+        checkParameter()
+        Dim cmd As String = "PRINT " & getDestination()
         If getCommandParameter("file").isSet AndAlso getFile().Length > 0 Then
             cmd = cmd & " '" & getFile() & "'"
         End If

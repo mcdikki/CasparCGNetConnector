@@ -44,18 +44,12 @@ Public Class CgUpdateCommand
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
-        addCommandParameter(New CommandParameter(Of String)("data", "The xml data string", "", True))
+        addCommandParameter(New CommandParameter(Of String)("data", "The xml data string", "", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " UPDATE"
-
-        If getCommandParameter("flashlayer").isSet AndAlso getCommandParameter("data").isSet Then
-            cmd = cmd & " " & getFlashlayer()
-            cmd = cmd & " '" & getData() & "'"
-        Else : Throw New ArgumentNullException("The parameter flashlayer and data is mandatory but not set.")
-        End If
-        Return escape(cmd)
+        checkParameter()
+        Return escape("CG " & getDestination() & " UPDATE " & getFlashlayer() & " '" & getData() & "'")
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

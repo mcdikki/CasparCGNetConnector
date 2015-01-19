@@ -35,12 +35,8 @@ Public Class SetCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "SET " & getDestination(getCommandParameter("channel"))
-        If getCommandParameter("video mode").isSet Then
-            cmd = cmd & " MODE " & getVideomode()
-        Else : Throw New ArgumentNullException("Videomode has to be set an not be nothing.")
-        End If
-        Return cmd
+        checkParameter()
+        Return "SET " & getDestination() & " MODE " & getVideomode()
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

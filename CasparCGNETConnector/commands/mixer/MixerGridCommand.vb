@@ -48,7 +48,8 @@ Public Class MixerGridCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel")) & " GRID " & getResolution()
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " GRID " & getResolution()
 
         If getCommandParameter("duration").isSet AndAlso getCommandParameter("tween").isSet Then
             cmd = cmd & " " & getDuratrion() & " " & getTween.ToString

@@ -35,18 +35,12 @@ Public Class CgInvokeCommand
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
-        addCommandParameter(New CommandParameter(Of String)("method", "The methode to invoke", "", True))
+        addCommandParameter(New CommandParameter(Of String)("method", "The methode to invoke", "", False))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " INVOKE"
-
-        If getCommandParameter("flashlayer").isSet AndAlso getCommandParameter("method").isSet Then
-            cmd = cmd & " " & getFlashlayer()
-            cmd = cmd & " '" & getMethod() & "'"
-        Else : Throw New ArgumentNullException("The parameter flashlayer and method are mandatory but not set.")
-        End If
-        Return escape(cmd)
+        checkParameter()
+        Return escape("CG " & getDestination() & " INVOKE " & getFlashlayer() & " '" & getMethod() & "'")
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

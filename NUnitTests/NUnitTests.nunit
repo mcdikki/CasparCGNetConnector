@@ -3,4 +3,10 @@
   <Config name="Default" binpathtype="Auto">
     <assembly path="bin\Release\NUnitTests.dll" />
   </Config>
+  <Config name="Debug" binpathtype="Auto">
+    <assembly path="bin\Debug\NUnitTests.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto">
+    <assembly path="bin\Release\NUnitTests.dll" />
+  </Config>
 </NUnitProject>

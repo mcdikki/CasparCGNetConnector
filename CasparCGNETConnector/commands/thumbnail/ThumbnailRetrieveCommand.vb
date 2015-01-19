@@ -19,18 +19,19 @@ Public Class ThumbnailRetrieveCommand
 
     Public Sub New()
         MyBase.New("THUMBNAIL RETRIEVE", "Requests the base64 encoded thumbnail for a specific media file")
+        InitParameter()
     End Sub
 
     Public Sub New(ByVal media As String)
         MyBase.New("THUMBNAIL RETRIEVE", "Requests the base64 encoded thumbnail for a specific media file")
         InitParameter()
-        setMedia(media)
+        If Not IsNothing(media) AndAlso media.Length > 0 Then setMedia(media)
     End Sub
 
     Public Sub New(ByVal media As ICasparCGMedia)
         MyBase.New("THUMBNAIL RETRIEVE", "Requests the base64 encoded thumbnail for a specific media file")
         InitParameter()
-        setMedia(media)
+        If Not IsNothing(media) Then setMedia(media)
     End Sub
 
     Private Sub InitParameter()
@@ -38,8 +39,8 @@ Public Class ThumbnailRetrieveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd = "THUMBNAIL RETRIEVE '" & DirectCast(getCommandParameter("media"), CommandParameter(Of String)).getValue & "'"
-        Return escape(cmd)
+        checkParameter()
+        Return escape("THUMBNAIL RETRIEVE '" & getMedia() & "'")
     End Function
 
     Public Sub setMedia(ByVal media As String)

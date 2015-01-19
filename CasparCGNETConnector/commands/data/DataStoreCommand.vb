@@ -35,10 +35,8 @@ Public Class DataStoreCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        If getCommandParameter("key").isSet AndAlso getCommandParameter("data").isSet Then
-            Return escape("DATA STORE '" & getKey() & "' '" & getData() & "'")
-        Else : Throw New ArgumentNullException("Parameter key and data are mandatory but not set.")
-        End If
+        checkParameter()
+        Return escape("DATA STORE '" & getKey() & "' '" & getData() & "'")
     End Function
 
     Public Sub setKey(ByVal key As String)

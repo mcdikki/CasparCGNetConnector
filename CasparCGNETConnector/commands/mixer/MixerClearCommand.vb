@@ -30,14 +30,13 @@ Public Class MixerClearCommand
     End Sub
 
     Private Sub InitParameter()
-        addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
-        addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
+        addCommandParameter(New ChannelParameter)
+        addCommandParameter(New LayerParameter)
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CLEAR"
-
-        Return cmd
+        checkParameter()
+        Return "MIXER " & getDestination() & " CLEAR"
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

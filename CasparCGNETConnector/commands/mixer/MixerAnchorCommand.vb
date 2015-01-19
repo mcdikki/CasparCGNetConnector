@@ -61,7 +61,8 @@ Public Class MixerAnchorCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " ANCHOR"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " ANCHOR"
 
         If getCommandParameter("x").isSet OrElse getCommandParameter("y").isSet Then
             cmd = cmd & " " & getX().ToString(CultureInfo.GetCultureInfo("en-US"))

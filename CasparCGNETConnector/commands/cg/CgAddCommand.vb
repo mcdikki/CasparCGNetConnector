@@ -64,26 +64,24 @@ Public Class CgAddCommand
         addCommandParameter(New LayerParameter)
         addCommandParameter(New CommandParameter(Of String)("template", "The template", "", False))
         addCommandParameter(New CommandParameter(Of Integer)("flashlayer", "The flashlayer", 0, False))
-        addCommandParameter(New CommandParameter(Of Boolean)("play on load", "Starts playing the template when loaded", False, False))
+        addCommandParameter(New CommandParameter(Of Boolean)("play on load", "Starts playing the template when loaded", False, True))
         addCommandParameter(New CommandParameter(Of String)("data", "The xml data string", "", True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " ADD"
+        checkParameter()
+        Dim cmd As String = "CG " & getDestination() & " ADD"
 
-        If getCommandParameter("template").isSet AndAlso getCommandParameter("flashlayer").isSet Then
-            cmd = cmd & " " & getFlashlayer()
-            cmd = cmd & " '" & getTemplate() & "'"
+        cmd = cmd & " " & getFlashlayer()
+        cmd = cmd & " '" & getTemplate() & "'"
 
-            If getPlayOnLoad() Then
-                cmd = cmd & " 1"
-            Else
-                cmd = cmd & " 0"
-            End If
-            If getCommandParameter("data").isSet Then
-                cmd = cmd & " '" & getData() & "'"
-            End If
-        Else : Throw New ArgumentNullException("The parameter template and flashlayer are mandatory but not set.")
+        If getPlayOnLoad() Then
+            cmd = cmd & " 1"
+        Else
+            cmd = cmd & " 0"
+        End If
+        If getCommandParameter("data").isSet Then
+            cmd = cmd & " '" & getData() & "'"
         End If
         Return escape(cmd)
     End Function

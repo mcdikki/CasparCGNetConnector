@@ -40,7 +40,8 @@ Public Class PauseCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "PAUSE " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
+        checkParameter()
+        Dim cmd As String = "PAUSE " & getDestination()
 
         Return escape(cmd)
     End Function

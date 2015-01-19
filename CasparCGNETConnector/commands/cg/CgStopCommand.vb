@@ -37,13 +37,8 @@ Public Class CgStopCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CG " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " STOP"
-
-        If getCommandParameter("flashlayer").isSet Then
-            cmd = cmd & " " & getFlashlayer()
-        Else : Throw New ArgumentNullException("The parameter flashlayer is mandatory but not set.")
-        End If
-        Return cmd
+        checkParameter()
+        Return "CG " & getDestination() & " STOP " & getFlashlayer()
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

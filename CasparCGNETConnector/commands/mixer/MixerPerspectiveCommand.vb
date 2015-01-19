@@ -79,7 +79,8 @@ Public Class MixerPerspectiveCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " PERSPECTIVE"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " PERSPECTIVE"
 
         ' To make live easier, if the first value of the command is set,
         ' assume that everything is set. If not, the default value is ok ;-)

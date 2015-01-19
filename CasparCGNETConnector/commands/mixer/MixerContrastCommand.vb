@@ -52,13 +52,14 @@ Public Class MixerContrastCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Single)("contrast", "The contrast value of the layer", 0.0, False))
+        addCommandParameter(New CommandParameter(Of Single)("contrast", "The contrast value of the layer", 0.0, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CONTRAST"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " CONTRAST"
 
         If getCommandParameter("contrast").isSet Then
             cmd = cmd & " " & getContrast.ToString(CultureInfo.GetCultureInfo("en-US"))

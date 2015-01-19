@@ -44,13 +44,14 @@ Public Class MixerChromaCommand
     Private Sub InitParameter()
         addCommandParameter(New CommandParameter(Of Integer)("channel", "The channel", 1, False))
         addCommandParameter(New CommandParameter(Of Integer)("layer", "The layer", 0, True))
-        addCommandParameter(New CommandParameter(Of String)("color", "The color to key with. Only blue, green or none allowed", "none", False))
-        addCommandParameter(New CommandParameter(Of Single)("threshold", "The threshold", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("softness", "The softness", 0, False))
+        addCommandParameter(New CommandParameter(Of String)("color", "The color to key with. Only blue, green or none allowed", "none", True))
+        addCommandParameter(New CommandParameter(Of Single)("threshold", "The threshold", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("softness", "The softness", 0, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " CHROMA"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " CHROMA"
 
         If getCommandParameter("color").isSet Then
             If (getColor().ToLower.Equals("blue") OrElse getColor().ToLower.Equals("green")) Then

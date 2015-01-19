@@ -52,13 +52,14 @@ Public Class MixerVolumeCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Single)("volume", "The volume value of the layer", 0.0, False))
+        addCommandParameter(New CommandParameter(Of Single)("volume", "The volume value of the layer", 0.0, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " VOLUME"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " VOLUME"
 
         If getCommandParameter("volume").isSet Then
             cmd = cmd & " " & getVolume.ToString(CultureInfo.GetCultureInfo("en-US"))

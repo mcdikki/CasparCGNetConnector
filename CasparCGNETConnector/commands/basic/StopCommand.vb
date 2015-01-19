@@ -41,9 +41,8 @@ Public Class StopCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "STOP " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
-
-        Return escape(cmd)
+        checkParameter()
+        Return "STOP " & getDestination()
     End Function
 
     Public Sub setChannel(ByVal channel As Integer)

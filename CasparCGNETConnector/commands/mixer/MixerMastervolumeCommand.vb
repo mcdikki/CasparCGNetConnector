@@ -39,11 +39,12 @@ Public Class MixerMastervolumeCommand
 
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
-        addCommandParameter(New CommandParameter(Of Single)("volume", "The volume to set the channel to between", 1, False))
+        addCommandParameter(New CommandParameter(Of Single)("volume", "The volume to set the channel to between", 1, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel")) & " MASTERVOLUME"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " MASTERVOLUME"
 
         If getCommandParameter("volume").isSet Then cmd = cmd & " " & getVolume().ToString(CultureInfo.GetCultureInfo("en-US"))
 

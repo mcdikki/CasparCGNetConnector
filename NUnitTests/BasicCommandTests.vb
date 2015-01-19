@@ -103,8 +103,6 @@ Public Class BasicCommandTests
         ' Tests with parameterized construtor
         '-------------------------------------
         ' Test a set command
-        cmd = New ClearCommand()
-        Assert.That(cmd.getCommandString, [Is].EqualTo("CLEAR 1").IgnoreCase, "Wrong set command string.")
         cmd = New ClearCommand(2)
         Assert.That(cmd.getCommandString, [Is].EqualTo("CLEAR 2").IgnoreCase, "Wrong set command string.")
         cmd = New ClearCommand(2, 1)
@@ -248,8 +246,6 @@ Public Class BasicCommandTests
         ' Tests with parameterized construtor
         '-------------------------------------
         ' Test a set command
-        cmd = New PauseCommand
-        Assert.That(cmd.getCommandString, [Is].EqualTo("PAUSE 1").IgnoreCase, "Wrong set command string.")
         cmd = New PauseCommand(2)
         Assert.That(cmd.getCommandString, [Is].EqualTo("PAUSE 2").IgnoreCase, "Wrong set command string.")
         cmd = New PauseCommand(2, 1)
@@ -411,8 +407,6 @@ Public Class BasicCommandTests
         ' Tests with parameterized construtor
         '-------------------------------------
         ' Test a set command
-        cmd = New ResumeCommand
-        Assert.That(cmd.getCommandString, [Is].EqualTo("RESUME 1").IgnoreCase, "Wrong set command string.")
         cmd = New ResumeCommand(2)
         Assert.That(cmd.getCommandString, [Is].EqualTo("RESUME 2").IgnoreCase, "Wrong set command string.")
         cmd = New ResumeCommand(2, 1)
@@ -432,13 +426,14 @@ Public Class BasicCommandTests
         TestUtils.testCommandParameterUnset(cmd)
 
         ' Test destination
+        ' need to add these before dest tests
+        cmd.setSourceChannel(2)
+        cmd.setSourceLayer(1)
         testCommandDestination(cmd)
 
         ' Test a set command
         cmd.setChannel(1)
         cmd.setLayer(1)
-        cmd.setSourceChannel(2)
-        cmd.setSourceLayer(1)
         Assert.That(cmd.getCommandString, [Is].EqualTo("ROUTE 1-1 route://2-1").IgnoreCase, "Wrong set command string.")
 
         ' Tests with parameterized construtor
@@ -515,8 +510,6 @@ Public Class BasicCommandTests
         ' Tests with parameterized construtor
         '-------------------------------------
         ' Test a set command
-        cmd = New StopCommand
-        Assert.That(cmd.getCommandString, [Is].EqualTo("STOP 1").IgnoreCase, "Wrong set command string.")
         cmd = New StopCommand(2)
         Assert.That(cmd.getCommandString, [Is].EqualTo("STOP 2").IgnoreCase, "Wrong set command string.")
         cmd = New StopCommand(2, 1)

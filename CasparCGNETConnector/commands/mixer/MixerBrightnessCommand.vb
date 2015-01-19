@@ -52,13 +52,14 @@ Public Class MixerBrightnessCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Single)("brightness", "The brightness value of the layer", 0.0, False))
+        addCommandParameter(New CommandParameter(Of Single)("brightness", "The brightness value of the layer", 0.0, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " BRIGHTNESS"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " BRIGHTNESS"
 
         If getCommandParameter("brightness").isSet Then
             cmd = cmd & " " & getBrightness.ToString(CultureInfo.GetCultureInfo("en-US"))

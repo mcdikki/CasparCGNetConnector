@@ -61,7 +61,8 @@ Public Class CallCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "CALL " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
+        checkParameter()
+        Dim cmd As String = "CALL " & getDestination()
 
         If getLooping() Then
             cmd = cmd & " LOOP"

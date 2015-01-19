@@ -39,11 +39,8 @@ Public Class InfoTemplateCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "INFO TEMPLATE"
-        If getCommandParameter("template").isSet Then
-            cmd = cmd & " '" & DirectCast(getCommandParameter("template"), CommandParameter(Of String)).getValue & "'"
-        End If
-        Return escape(cmd)
+        checkParameter()
+        Return escape("INFO TEMPLATE '" & getTemplate() & "'")
     End Function
 
     Public Sub setTemplate(ByVal template As String)

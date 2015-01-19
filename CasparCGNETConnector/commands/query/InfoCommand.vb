@@ -29,8 +29,8 @@ Public Class InfoCommand
     End Sub
 
     Private Sub Init(ByVal channel As Integer, ByVal layer As Integer, Optional ByVal onlyBackground As Boolean = False, Optional ByVal onlyForeground As Boolean = False, Optional ByVal delay As Boolean = False)
-        If channel > 0 Then DirectCast(getCommandParameter("channel"), CommandParameter(Of Integer)).setValue(channel)
-        If layer > -1 Then DirectCast(getCommandParameter("layer"), CommandParameter(Of Integer)).setValue(layer)
+        If channel > 0 Then setChannel(channel)
+        If layer > -1 Then setLayer(layer)
 
         If onlyBackground Then
             setOnlyBackground(onlyBackground)
@@ -54,14 +54,14 @@ Public Class InfoCommand
     Public Overrides Function getCommandString() As String
         Dim cmd As String = "INFO"
         If getCommandParameter("channel").isSet AndAlso getChannel() > 0 Then
-            cmd = cmd & " " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
-            If getCommandParameter("layer").isSet AndAlso getLayer() > -1 Then
-                If getCommandParameter("only background").isSet AndAlso DirectCast(getCommandParameter("only background"), CommandParameter(Of Boolean)).getValue Then
-                    cmd = cmd & " B"
-                ElseIf getCommandParameter("only foreground").isSet AndAlso DirectCast(getCommandParameter("only foreground"), CommandParameter(Of Boolean)).getValue Then
-                    cmd = cmd & " F"
-                End If
-            ElseIf getCommandParameter("delay").isSet AndAlso DirectCast(getCommandParameter("delay"), CommandParameter(Of Boolean)).getValue Then
+            cmd = cmd & " " & getDestination()
+
+            If getCommandParameter("only background").isSet AndAlso getOnlyBackground() Then
+                cmd = cmd & " B"
+            ElseIf getCommandParameter("only foreground").isSet AndAlso getOnlyForeground() Then
+                cmd = cmd & " F"
+            End If
+            If getCommandParameter("delay").isSet AndAlso getDelay() Then
                 cmd = cmd & " DELAY"
             End If
         End If

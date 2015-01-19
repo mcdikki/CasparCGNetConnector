@@ -58,16 +58,17 @@ Public Class MixerFillCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Single)("x", " The left edge of the new fillSize, 0 = left edge of monitor, 0.5 = middle of monitor, 1.0 = right edge of monitor. Higher and lower values allowed. ", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("y", "The top edge of the new fillSize, 0 = top edge of monitor, 0.5 = middle of monitor, 1.0 = bottom edge of monitor. Higher and lower values allowed.", 0, False))
-        addCommandParameter(New CommandParameter(Of Single)("xscale", "The size of the new fillSize, 1 = 1x the screen size, 0.5 = half the screen size. Higher and lower values allowed. ", 1, False))
-        addCommandParameter(New CommandParameter(Of Single)("yscale", "The size of the new fillSize, 1 = 1x the screen size, 0.5 = half the screen size. Higher and lower values allowed. ", 1, False))
+        addCommandParameter(New CommandParameter(Of Single)("x", " The left edge of the new fillSize, 0 = left edge of monitor, 0.5 = middle of monitor, 1.0 = right edge of monitor. Higher and lower values allowed. ", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("y", "The top edge of the new fillSize, 0 = top edge of monitor, 0.5 = middle of monitor, 1.0 = bottom edge of monitor. Higher and lower values allowed.", 0, True))
+        addCommandParameter(New CommandParameter(Of Single)("xscale", "The size of the new fillSize, 1 = 1x the screen size, 0.5 = half the screen size. Higher and lower values allowed. ", 1, True))
+        addCommandParameter(New CommandParameter(Of Single)("yscale", "The size of the new fillSize, 1 = 1x the screen size, 0.5 = half the screen size. Higher and lower values allowed. ", 1, True))
         addCommandParameter(New CommandParameter(Of Integer)("duration", "The the duration of the tween", 0, True))
         addCommandParameter(New CommandParameter(Of CasparCGUtil.Tweens)("tween", "The the tween to use", CasparCGUtil.Tweens.linear, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " FILL"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " FILL"
 
         If getCommandParameter("x").isSet OrElse getCommandParameter("y").isSet OrElse getCommandParameter("xscale").isSet OrElse getCommandParameter("yscale").isSet Then
             cmd = cmd & " " & getX().ToString(CultureInfo.GetCultureInfo("en-US"))

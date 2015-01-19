@@ -71,7 +71,8 @@ Public Class LoadCommand
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "LOAD " & getDestination(getCommandParameter("channel"), getCommandParameter("layer"))
+        checkParameter()
+        Dim cmd As String = "LOAD " & getDestination()
 
         If getCommandParameter("media").isSet Then
             cmd = cmd & " '" & getMedia() & "'"

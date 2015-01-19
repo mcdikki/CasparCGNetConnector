@@ -40,11 +40,12 @@ Public Class MixerStraightAlphaOutputCommand
     Private Sub InitParameter()
         addCommandParameter(New ChannelParameter)
         addCommandParameter(New LayerParameter)
-        addCommandParameter(New CommandParameter(Of Boolean)("active", "Sets whether or not straight alpha output should be active", False, False))
+        addCommandParameter(New CommandParameter(Of Boolean)("active", "Sets whether or not straight alpha output should be active", False, True))
     End Sub
 
     Public Overrides Function getCommandString() As String
-        Dim cmd As String = "MIXER " & getDestination(getCommandParameter("channel"), getCommandParameter("layer")) & " STRAIGHT_ALPHA_OUTPUT"
+        checkParameter()
+        Dim cmd As String = "MIXER " & getDestination() & " STRAIGHT_ALPHA_OUTPUT"
         If getCommandParameter("active").isSet Then
             If getActive() Then
                 cmd = cmd & " 1"
