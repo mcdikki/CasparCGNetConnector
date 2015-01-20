@@ -70,10 +70,7 @@ Public Class CgAddCommand
 
     Public Overrides Function getCommandString() As String
         checkParameter()
-        Dim cmd As String = "CG " & getDestination() & " ADD"
-
-        cmd = cmd & " " & getFlashlayer()
-        cmd = cmd & " '" & getTemplate() & "'"
+        Dim cmd As String = "CG " & getDestination() & " ADD " & getFlashlayer() & " '" & getTemplate() & "'"
 
         If getPlayOnLoad() Then
             cmd = cmd & " 1"

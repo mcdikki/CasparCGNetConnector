@@ -26,6 +26,10 @@ Public Class CgCommandTests
         TestUtils.testCommandParameterUnset(cmd)
 
 
+        ' Test destination
+        TestUtils.testCommandDestination(cmd)
+
+
         ' Test a set command
         cmd.setChannel(1)
         cmd.setLayer(1)
@@ -48,9 +52,6 @@ Public Class CgCommandTests
         Assert.That(cmd.getCommandString, [Is].EqualTo("CG 1-1 ADD 1 ""SIMPLETEMPLATE2"" 1").IgnoreCase, "Wrong set command string.")
         cmd.setData("empty")
         Assert.That(cmd.getCommandString, [Is].EqualTo("CG 1-1 ADD 1 ""SIMPLETEMPLATE2"" 1 ""empty""").IgnoreCase, "Wrong set command string.")
-
-        ' Test destination
-        TestUtils.testCommandDestination(cmd)
 
 
         ' Tests with parameterized construtor

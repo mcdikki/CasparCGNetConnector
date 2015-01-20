@@ -14,7 +14,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("A NET library for connection your app with CasparCG")> 
 <Assembly: AssemblyCompany("Sublan.tv")> 
 <Assembly: AssemblyProduct("CasparCGNETConnector")> 
-<Assembly: AssemblyCopyright("Copyright ©  2013 - 2014")> 
+<Assembly: AssemblyCopyright("Copyright ©  2013 - 2015")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)> 
