@@ -144,6 +144,7 @@
     <Compile Include="commands\query\VersionFlashCommand.vb" />
     <Compile Include="commands\query\VersionServerCommand.vb" />
     <Compile Include="commands\query\VersionTemplatehostCommand.vb" />
+    <Compile Include="FailoverCasparCGConnection.vb" />
     <Compile Include="ICasparCGConnection.vb" />
     <Compile Include="media\CasparCGAudio.vb" />
     <Compile Include="media\AbstractCasparCGMedia.vb" />
