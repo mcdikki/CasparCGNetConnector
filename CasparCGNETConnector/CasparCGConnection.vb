@@ -451,6 +451,7 @@ Public Class CasparCGConnection
                     Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
                 Else
                     Return New CasparCGResponse("000 TIMEOUT", cmd)
+                    'TODO: Maybe change to Exception???
                 End If
             Finally
                 connectionLock.Release()

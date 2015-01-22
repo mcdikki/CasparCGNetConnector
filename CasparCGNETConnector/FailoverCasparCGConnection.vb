@@ -22,7 +22,7 @@ Imports System.Threading
 ''' <summary>
 ''' This FailoverCasparCGConnection bundles two separte CasparCGConnections and always send commands to both.
 ''' There is a master and a slave connection. While commands are send to both, only the result of the master is routed to the caller.
-''' If the master fails, the slave will over take over control.
+''' If the master fails, the slave will take over control.
 ''' In any case of failure, master or slave, an event will be rissen.
 ''' </summary>
 ''' <remarks></remarks>
@@ -35,13 +35,34 @@ Public Class FailoverCasparCGConnection
     Private ccgVersion As String = "-1.-1.-1"
     Private channels As Integer = 0
 
-    Private master As ICasparCGConnection = Nothing
-    Private slave As ICasparCGConnection = Nothing
+    Private WithEvents master As ICasparCGConnection = Nothing
+    Private WithEvents slave As ICasparCGConnection = Nothing
 
-    Private masterTask As Task
-    Private slaveTask As Task
+    Private masterWorker As ConnectionWorker
+    Private slaveWorker As ConnectionWorker
+
+    Private waitLock As New Semaphore(1, 1)
 
     Public Property failoverMode As failoverModes
+        Get
+            Return _failoverMode
+        End Get
+        Set(value As failoverModes)
+            _failoverMode = value
+            Select Case failoverMode
+                Case failoverModes.master_slave
+                    If Not IsNothing(masterWorker) Then masterWorker.Role = connectionRoles.master
+                    If Not IsNothing(slaveWorker) Then slaveWorker.Role = connectionRoles.slave
+                Case failoverModes.master_master
+                    If Not IsNothing(masterWorker) Then masterWorker.Role = connectionRoles.master
+                    If Not IsNothing(slaveWorker) Then slaveWorker.Role = connectionRoles.master
+                Case failoverModes.slave_slave
+                    If Not IsNothing(masterWorker) Then masterWorker.Role = connectionRoles.both
+                    If Not IsNothing(slaveWorker) Then slaveWorker.Role = connectionRoles.both
+            End Select
+        End Set
+    End Property
+    Private _failoverMode As failoverModes = failoverModes.master_slave
 
     ''' <summary>
     ''' Reads or sets the number of retires to perform if a connection can't be established
@@ -93,14 +114,14 @@ Public Class FailoverCasparCGConnection
     ''' <summary>
     ''' The mode controls the way the connection is handled.
     '''     master_slave: one connection is the main one. The command succeeds if it succeeds on the master. Errors on the slave will be reported but no execption will be thrown. The connection only waits for the response of the master. If the master fails, the slave takes the master role and a error event will be raised, but no exception will be thrown.
-    '''     masrer_master: both connections are equal. Commands are successfull if they are on both. Any error will be forwarded to the user just as it would be a normal connection.
-    '''     slidingMaster: if one connection succeeds, the command succeeds. The first response will be reported. So the master is changing to the fastest all the time. Errors are reported and exceptions are thrown if both connections does fail.
+    '''     mastrer_master: both connections are equal. Commands are successfull if they are on both. Any error will be forwarded to the user just as it would be a normal connection.
+    '''     slave_slave: if one connection succeeds, the command succeeds. The first response will be reported. So the master is changing to the fastest all the time. Errors are reported and exceptions are thrown if both connections does fail.
     ''' </summary>
     ''' <remarks></remarks>
     Public Enum failoverModes
         master_slave
         master_master
-        slidingMaster
+        slave_slave
     End Enum
 #End Region
 
@@ -138,6 +159,7 @@ Public Class FailoverCasparCGConnection
         connectionLock = New Semaphore(1, 1)
         master = New CasparCGConnection(masterServerAddress, masterServerPort)
         slave = New CasparCGConnection(slaveServerAddress, slaveServerPort)
+        initWorker()
     End Sub
 
     ''' <summary>
@@ -156,6 +178,33 @@ Public Class FailoverCasparCGConnection
         connectionLock = New Semaphore(1, 1)
         master = masterConnection
         slave = slaveConnection
+        initWorker()
+    End Sub
+
+    Private Sub initWorker()
+        Select Case failoverMode
+            Case failoverModes.master_slave
+                masterWorker = New ConnectionWorker(master, connectionRoles.master)
+                slaveWorker = New ConnectionWorker(slave, connectionRoles.slave)
+            Case failoverModes.master_master
+                masterWorker = New ConnectionWorker(master, connectionRoles.master)
+                slaveWorker = New ConnectionWorker(slave, connectionRoles.master)
+            Case failoverModes.slave_slave
+                masterWorker = New ConnectionWorker(master, connectionRoles.both)
+                slaveWorker = New ConnectionWorker(slave, connectionRoles.both)
+        End Select
+    End Sub
+
+    Private Sub handleDisconnected(ByRef connection As ICasparCGConnection) Handles master.disconnected, slave.disconnected
+        If Not isConnected() Then
+            RaiseEvent disconnected(Me)
+        End If
+    End Sub
+
+    Private Sub handleConnected(ByRef connection As ICasparCGConnection) Handles master.connected, slave.connected
+        If isConnected() Then
+            RaiseEvent connected(Me)
+        End If
     End Sub
 
     ''' <summary>
@@ -190,7 +239,23 @@ Public Class FailoverCasparCGConnection
     ''' <param name="tryConnect"></param>
     ''' <returns>true, if and only if the connection is established, false otherwise</returns>
     Public Function isConnected(Optional ByVal tryConnect As Boolean = False) As Boolean Implements ICasparCGConnection.isConnected
-        Return (Not master Is Nothing AndAlso master.isConnected(tryConnect)) Or (Not slave Is Nothing AndAlso slave.isConnected(tryConnect))
+        Select Case failoverMode
+            Case failoverModes.master_slave
+                'master_slave: one connection is the main one. The command succeeds if it succeeds on the master. 
+                'Errors on the slave will be reported but no execption will be thrown. The connection only waits for the response of the master. 
+                'If the master fails, the slave takes the master role and an error event will be raised, but no exception will be thrown.
+                Return (Not master Is Nothing AndAlso master.isConnected(tryConnect)) Or (Not slave Is Nothing AndAlso slave.isConnected(tryConnect))
+            Case failoverModes.master_master
+                'master_master: both connections are equal. Commands are successfull if they are on both. 
+                'Any error will be forwarded to the user just as it would be a normal connection.
+                Return (Not master Is Nothing AndAlso master.isConnected(tryConnect) AndAlso Not slave Is Nothing AndAlso slave.isConnected(tryConnect))
+            Case failoverModes.slave_slave
+                'slave_slave: if one connection succeeds, the command succeeds. The first response will be reported. 
+                'So the master is changing to the fastest all the time. Errors are reported and exceptions are thrown if both connections does fail.
+                Return (Not master Is Nothing AndAlso master.isConnected(tryConnect)) Or (Not slave Is Nothing AndAlso slave.isConnected(tryConnect))
+        End Select
+        ' should never come to this point
+        Return False
     End Function
 
     ''' <summary>
@@ -301,9 +366,21 @@ Public Class FailoverCasparCGConnection
     ''' <param name="cmd"></param>
     Public Sub sendAsyncCommand(ByVal cmd As String) Implements ICasparCGConnection.sendAsyncCommand
         If isConnected(tryConnect) Then
-            connectionLock.WaitOne(timeout)
-            '' TODO
-            connectionLock.Release()
+            If connectionLock.WaitOne(timeout) Then
+                Try
+                    master.sendAsyncCommand(cmd)
+                Catch ex As Exception
+                    RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(master, connectionRoles.master, FailoverConnectionFailedEventArgs.reasons.UNKNOWN_EXCEPTION))
+                End Try
+                Try
+                    slave.sendAsyncCommand(cmd)
+                Catch ex As Exception
+                    RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(slave, connectionRoles.slave, FailoverConnectionFailedEventArgs.reasons.UNKNOWN_EXCEPTION))
+                End Try
+                connectionLock.Release()
+            Else
+                Throw New TimeoutException("FailoverConnection.sendAsyncCommand: Timeout while waiting for connection lock after " & timeout & "ms.")
+            End If
         Else : logger.err("CasparCGConnection.sendAsyncCommand: Not connected to server. Can't send command.")
         End If
     End Sub
@@ -316,33 +393,112 @@ Public Class FailoverCasparCGConnection
     ''' <param name="cmd"></param>
     Public Function sendCommand(ByVal cmd As String) As CasparCGResponse Implements ICasparCGConnection.sendCommand
         If isConnected(tryConnect) Then
-            ''TODO
-            Dim masterResponse As CasparCGResponse
-            Dim slaveResponse As CasparCGResponse
+            If connectionLock.WaitOne(timeout) Then
+                Try
+                    ' get semaphor to block this thread until the sending is done
+                    waitLock.WaitOne()
+                    masterWorker.sendCommand(cmd)
+                    slaveWorker.sendCommand(cmd)
 
-            Try
-                masterTask = Task.Factory.StartNew(New Action(Sub() masterResponse = master.sendCommand(cmd)))
-                slaveTask = Task.Factory.StartNew(New Action(Sub() slaveResponse = slave.sendCommand(cmd)))
+                    'Wait until the command has been send
+                    If waitLock.WaitOne(timeout) Then ' TODO: Maybe add timeout
+                        waitLock.Release()
 
-                Select Case failoverMode
-                    Case failoverModes.master_slave
-                        masterTask.Wait()
-
-                    Case failoverModes.master_master
-
-                    Case failoverModes.slidingMaster
-
-                End Select
-
-            Catch ex As Exception
-
-            End Try
+                        If masterWorker.isDone AndAlso Not IsNothing(masterWorker.Exception) Then
+                            Return masterWorker.Response
+                        ElseIf slaveWorker.isDone AndAlso Not IsNothing(slaveWorker.Exception) Then
+                            Return slaveWorker.Response
+                        Else
+                            Throw New Exception("Unknown error while sending command '" & cmd & "'")
+                        End If
+                    Else
+                        ' Timeout
+                        Throw New TimeoutException("FailoverConnection.sendCommand: Timeout after " & timeout & "ms while sending command: '" & cmd & "'")
+                    End If
+                Catch ex As Exception
+                    Throw ex
+                Finally
+                    connectionLock.Release()
+                End Try
+            Else
+                Throw New TimeoutException("FailoverConnection.sendCommand: Timeout while waiting for connection lock after " & timeout & "ms sending command: '" & cmd & "'")
+            End If
         Else
             logger.err("FailoverCasparCGConnection.sendCommand: Not connected to server. Can't send command.")
             RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(Me, connectionRoles.both, FailoverConnectionFailedEventArgs.reasons.NOT_CONNECTED))
             Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
         End If
     End Function
+
+    ' received the completed events of the connection worker and decides how to handle them.
+    ' At best, they have been successful and the waitLock will be released
+    ' Depending on the mode, there are different requirements for that.
+    Private Sub handleWorkerCompleted(ByRef worker As ConnectionWorker)
+        Select Case failoverMode
+            Case failoverModes.master_slave
+                'master_slave: 
+                'one connection is the main one. The command succeeds if it succeeds on the master. Errors on the slave will be reported but no execption will be thrown. The connection only waits for the response of the master. If the master fails, the slave takes the master role and a error event will be raised, but no exception will be thrown.
+                If worker.Equals(master) Then
+                    If Not IsNothing(worker.Exception) Then
+                        ' All good, we can release the lock
+                        waitLock.Release()
+                    Else
+                        ' the master failed, it's going to be the slave now
+                        worker.Role = connectionRoles.slave
+                        ' inform user of this error
+                        RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(worker.connection, connectionRoles.master, FailoverConnectionFailedEventArgs.reasons.UNKNOWN_EXCEPTION))
+
+                        If slaveWorker.isDone AndAlso Not IsNothing(slaveWorker.Exception) Then
+                            ' All is messed up, the slave did fail too, we're throwing the exception again
+                            Throw worker.Exception
+                        End If
+                    End If
+
+                ElseIf worker.Equals(slave) Then
+                    If masterWorker.isDone AndAlso Not IsNothing(masterWorker.Exception) Then
+                        ' the master failed, if slave did not fail, roles will be changed
+                        If Not IsNothing(slaveWorker.Exception) Then
+                            slaveWorker.Role = connectionRoles.master
+                        Else
+                            ' All is messed up, both connections failed
+                            Throw masterWorker.Exception
+                        End If
+                    Else
+                        ' only the slave has failed, lets raise the event
+                        RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(slaveWorker.connection, connectionRoles.slave, FailoverConnectionFailedEventArgs.reasons.UNKNOWN_EXCEPTION))
+                    End If
+                End If
+            Case failoverModes.master_master
+                'master_master: 
+                'both connections are equal. Commands are successfull if they are on both. Any error will be forwarded to the user just as it would be a normal connection.
+                If IsNothing(worker.Exception) Then
+                    Throw worker.Exception
+                Else
+                    If masterWorker.isDone AndAlso slaveWorker.isDone AndAlso Not IsNothing(masterWorker.Exception) AndAlso Not IsNothing(slaveWorker.Exception) Then
+                        ' Both connections are doen without errors, we can release the waitLock
+                        waitLock.Release()
+                    End If
+                End If
+            Case failoverModes.slave_slave
+                'slave_slave: 
+                'if one connection succeeds, the command succeeds. The first response will be reported. So the master is changing to the fastest all the time. Errors are reported and exceptions are thrown if both connections does fail.
+                If masterWorker.isDone Xor slaveWorker.isDone Then
+                    If Not IsNothing(worker.Exception) Then
+                        ' the worker did not fail and is the first one done, so we release the waitLock
+                        waitLock.Release()
+                    Else
+                        ' Report error
+                        RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(worker.connection, connectionRoles.both, FailoverConnectionFailedEventArgs.reasons.UNKNOWN_EXCEPTION))
+                    End If
+                ElseIf Not IsNothing(masterWorker.Exception) AndAlso Not IsNothing(slaveWorker.Exception) Then
+                    ' Both connections failed, throw the exception
+                    Throw worker.Exception
+                ElseIf Not IsNothing(worker.Exception) Then
+                    ' Only the second connection failed, so inform
+                    RaiseEvent connectionFailed(Me, New FailoverConnectionFailedEventArgs(worker.connection, connectionRoles.both, FailoverConnectionFailedEventArgs.reasons.UNKNOWN_EXCEPTION))
+                End If
+        End Select
+    End Sub
 
     ''' <summary>
     ''' Returns the CasparCG Server address this connection is using
@@ -510,4 +666,91 @@ Public Class FailoverConnectionFailedEventArgs
         Me.connectionRole = connectionRole
         Me.reason = reason
     End Sub
+End Class
+
+Public Class ConnectionWorker
+    Private workerThread As Thread
+    Private sendingLock As New Semaphore(1, 1)
+
+#Region "Properties"
+    Public ReadOnly Property connection As ICasparCGConnection
+        Get
+            Return _connection
+        End Get
+    End Property
+    Private _connection As ICasparCGConnection = Nothing
+
+    Public Property Role As FailoverCasparCGConnection.connectionRoles
+
+    Public ReadOnly Property Response As CasparCGResponse
+        Get
+            Return _response
+        End Get
+    End Property
+    Private _response As CasparCGResponse = Nothing
+
+    Public ReadOnly Property isDone As Boolean
+        Get
+            Return _isDone
+        End Get
+    End Property
+    Private _isDone As Boolean = False
+
+    Public ReadOnly Property Exception As Exception
+        Get
+            Return _exception
+        End Get
+    End Property
+    Private _exception As Exception = Nothing
+#End Region
+
+#Region "Events"
+    Public Event sendCompleted(ByRef sender As ConnectionWorker)
+#End Region
+
+#Region "Methods"
+    Public Sub New(ByRef connection As ICasparCGConnection, ByVal role As FailoverCasparCGConnection.connectionRoles)
+        If Not IsNothing(connection) Then
+            _connection = connection
+            _Role = role
+        Else : Throw New ArgumentNullException("connection")
+        End If
+    End Sub
+
+    Public Sub sendCommand(ByVal command As String)
+        reset()
+        sendingLock.WaitOne()
+        workerThread = New Thread(Sub() sendAsyncCommand(command))
+        workerThread.Start()
+    End Sub
+
+    Private Sub sendAsyncCommand(ByVal command As String)
+        Try
+            _response = connection.sendCommand(command)
+        Catch ex As Exception
+            _exception = New Exception("An error occured while sending the command '" & command & "'. See the inner exception for details", ex)
+        Finally
+            _isDone = True
+            RaiseEvent sendCompleted(Me)
+            sendingLock.Release()
+        End Try
+    End Sub
+
+    Public Function reset() As Boolean
+        Try
+            If sendingLock.WaitOne(100) Then
+                _isDone = False
+                _exception = Nothing
+                _response = Nothing
+                Return True
+            Else
+                Return False
+            End If
+        Catch ex As Exception
+            Return False
+        Finally
+            sendingLock.Release()
+        End Try
+    End Function
+#End Region
 End Class

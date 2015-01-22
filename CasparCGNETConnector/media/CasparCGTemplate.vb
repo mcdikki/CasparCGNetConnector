@@ -107,18 +107,18 @@ Public Class CasparCGTemplate
         Return data.getDataString
     End Function
 
-    Public Function getComponents() As IEnumerable(Of CasparCGTemplateComponent)
+    Private Function getComponents() As IEnumerable(Of CasparCGTemplateComponent)
         Return components.Values
     End Function
 
-    Public Function getComponent(ByVal componentName As String) As CasparCGTemplateComponent
+    Private Function getComponent(ByVal componentName As String) As CasparCGTemplateComponent
         If components.ContainsKey(componentName) Then
             Return components.Item(componentName)
         Else : Return Nothing
         End If
     End Function
 
-    Public Function containsComponent(ByVal compnentName As String) As Boolean
+    Private Function containsComponent(ByVal compnentName As String) As Boolean
         Return components.ContainsKey(compnentName)
     End Function
 
@@ -394,7 +394,7 @@ Public Class CasparCGTemplateInstance
 
     ''' <summary>
     ''' Sets the given property to the given value and returns true.
-    ''' If no such property exists in this instance, nothing will be set false returned.
+    ''' If no such property exists in this instance, nothing will be set and false returned.
     ''' </summary>
     ''' <param name="propertyName"></param>
     ''' <param name="value"></param>

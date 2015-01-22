@@ -228,6 +228,172 @@ CasparCGNETConnector
  Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
 	<param name="connection">the connection to use</param>
+</member><member name="P:CasparCGNETConnector.FailoverCasparCGConnection.reconnectTries">
+	<summary>
+ Reads or sets the number of retires to perform if a connection can't be established
+ </summary>
+</member><member name="P:CasparCGNETConnector.FailoverCasparCGConnection.reconnectTimeout">
+	<summary>
+ Reads or sets the number of milliseconds to wait between two connection attempts
+ </summary>
+</member><member name="P:CasparCGNETConnector.FailoverCasparCGConnection.timeout">
+	<summary>
+ Reads or sets the number of milliseconds to wait for incoming data before stop reading
+ </summary>
+</member><member name="P:CasparCGNETConnector.FailoverCasparCGConnection.strictVersionControl">
+	<summary>
+ Gets or sets whether strict version control is activated. If True, only commands that pass the isCompatible() check will be executed.
+ </summary>
+</member><member name="P:CasparCGNETConnector.FailoverCasparCGConnection.checkInterval">
+	<summary>
+ Reads or sets the interval in milliseconds the connection status will be checked.
+ </summary>
+	<value>The number of milliseconds between connection checks</value>
+	<returns>The number of milliseconds between connection checks</returns>
+</member><member name="T:CasparCGNETConnector.FailoverCasparCGConnection.failoverModes">
+	<summary>
+ The mode controls the way the connection is handled.
+     master_slave: one connection is the main one. The command succeeds if it succeeds on the master. Errors on the slave will be reported but no execption will be thrown. The connection only waits for the response of the master. If the master fails, the slave takes the master role and a error event will be raised, but no exception will be thrown.
+     masrer_master: both connections are equal. Commands are successfull if they are on both. Any error will be forwarded to the user just as it would be a normal connection.
+     slidingMaster: if one connection succeeds, the command succeeds. The first response will be reported. So the master is changing to the fastest all the time. Errors are reported and exceptions are thrown if both connections does fail.
+ </summary>
+	<remarks></remarks>
+</member><member name="E:CasparCGNETConnector.FailoverCasparCGConnection.disconnected">
+	<summary>
+ Fires if this connection has been disconnected.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.FailoverCasparCGConnection.connected">
+	<summary>
+ Fires if this connection has been connected to the remote host.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.FailoverCasparCGConnection.connectionFailed">
+	<summary>
+ Fires if an error accures in one of the connections
+ </summary>
+	<param name="sender">The FailoverCasparCGConnection which is the source of this event</param>
+	<param name="args">Additionl information about what happend</param>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.#ctor(System.String,System.Int32,System.String,System.Int32)">
+	<summary>
+ Creates a new CasparCGConnection to the given serverAddress and serverPort
+ </summary>
+	<param name="masterServerAddress">the server ip or hostname of the master server</param>
+	<param name="masterServerPort">the master servers port</param>
+	<param name="slaveServerAddress">the server ip or hostname of the slave server</param>
+	<param name="slaveServerPort">the slave servers port</param>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.#ctor(System.String,System.String)">
+	<summary>
+ Creates a new CasparCGConnection to the given serverAddress and the default port
+ </summary>
+	<param name="masterServerAddress">the server ip or hostname of the master server</param>
+	<param name="slaveServerAddress">the server ip or hostname of the slave server</param>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.#ctor(CasparCGNETConnector.ICasparCGConnection@,CasparCGNETConnector.ICasparCGConnection@)">
+	<summary>
+ Creates a new CasparCGConnection to localhost and the default port
+ </summary>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.connect">
+	<summary>
+ Connects to the given server and port and returns true if a connection could be established and false otherwise.
+ </summary>
+	<returns>true, if and only if the connection is established, false otherwise</returns>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.isConnected(System.Boolean)">
+	<summary>
+ Return whether or not the FailoverCasparCGConnection is connect to the server which means one of master or client is connected. If tryConnect is given and true, it will try to establish a connection if not Already connected.
+ </summary>
+	<param name="tryConnect"></param>
+	<returns>true, if and only if the connection is established, false otherwise</returns>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.close">
+	<summary>
+ Disconnects and closes the connection to the CasparCG Server
+ </summary>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.isOSCSupported">
+	<summary>
+ Returns whether or not the connected CasparCG Server supports OSC
+ </summary>
+	<returns>true, if and only if a connection is established and the sever supports OSC</returns>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.getVersion">
+	<summary>
+ Returns the version string of the connected CasparCG Server
+ </summary>
+	<returns>The version of the connected server or 0.0.0 if not connected</returns>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.getVersionPart(System.Int32,System.String)">
+	<summary>
+ Returns a specific part of the version number. 
+ e.g.: If the version is 2.0.1 Beta3, you would get 
+ getVersionPart(0) = 2
+ getVersionPart(2) = 1
+ getVersionPart(3) = -1
+ </summary>
+	<param name="part">The part of the version starting by 0</param>
+	<param name="Version">Optional version string to get the part form. If not set, the version of the connected server will be parsed</param>
+	<returns>The numberical part of the version or -1 if the part is not pressent or not numerical</returns>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.getServerChannels">
+	<summary>
+ Returns the number of channels on the connected CasparCG Server
+ </summary>
+	<returns>The number of channels</returns>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.sendAsyncCommand(System.String)">
+	<summary>
+ Sends a command to the casparCG server and returns imediatly after sending no matter if the command was accepted or not.
+ </summary>
+	<param name="cmd"></param>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.sendCommand(System.String)">
+	<summary>
+ Sends a command to the casparCG server and returns a CasparCGResonse.
+ sendCommand will wait until it receives a returncode. So it may stay longer inside the function.
+ If the given commandstring has more than one casparCG command, the response will be only for one of those!
+ </summary>
+	<param name="cmd"></param>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.getServerAddress">
+	<summary>
+ Returns the CasparCG Server address this connection is using
+ </summary>
+	<returns>The IP or DNS address of this connection</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.getServerPort">
+	<summary>
+ Returns the port number this connection is using
+ </summary>
+	<returns>The TCP port nummber of this connection</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.setServerAddress(System.String)">
+	<summary>
+ Sets the address on which this connection tries to connect to the casparCG Server.
+ </summary>
+	<param name="serverAddress">The IP or DNS address of the server</param>
+	<returns>True if this connection is not connected and the address could be set, False otherwise. </returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.setServerPort(System.Int32)">
+	<summary>
+ Sets the port on which this connection tries to connect to the casparCG Server.
+ </summary>
+	<param name="serverPort">The TCP port number</param>
+	<returns>True if this connection is not connected and the port could be set, False otherwise. </returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.isLayerFree(System.Int32,System.Int32,System.Boolean,System.Boolean)">
+	<summary>
+ Returns whether or not a layer of a channel is free, which means no producer is playing on it.
+ </summary>
+	<param name="layer"></param>
+	<param name="channel"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.FailoverCasparCGConnection.getFreeLayer(System.Int32)">
+	<summary>
+ Returns the smallest free layer of the given channel
+ </summary>
+	<param name="channel"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="T:CasparCGNETConnector.FailoverCasparCGConnection">
+	<summary>
+ This FailoverCasparCGConnection bundles two separte CasparCGConnections and always send commands to both.
+ There is a master and a slave connection. While commands are send to both, only the result of the master is routed to the caller.
+ If the master fails, the slave will over take over control.
+ In any case of failure, master or slave, an event will be rissen.
+ </summary>
+	<remarks></remarks>
 </member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillMediaInfo(CasparCGNETConnector.CasparCGConnection@,System.Int32)">
 	<summary>
  Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
