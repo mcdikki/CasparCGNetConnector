@@ -420,8 +420,15 @@ Public Class CasparCGConnection
             Dim input As String = ""
             Dim size As Integer = 0
             Try
-                '                                                                                                                                                                                                                                                                                                         '' Version BUGFIX    201 THUMBNAIL RETRIEVE OK
-                Do Until (input.Trim().Length > 3) AndAlso (((input.Trim().Substring(0, 3) = "201" OrElse input.Trim().Substring(0, 3) = "200") AndAlso (input.EndsWith(vbLf & vbCrLf) OrElse input.EndsWith(vbCrLf & " " & vbCrLf))) OrElse (input.Trim().Substring(0, 3) <> "201" AndAlso input.Trim().Substring(0, 3) <> "200" AndAlso input.EndsWith(vbCrLf)) OrElse (input.Trim().Length > 16 AndAlso input.Trim().Substring(0, 14) = "201 VERSION OK" AndAlso input.EndsWith(vbCrLf)) OrElse (input.Trim().Length > 27 AndAlso input.Trim().Substring(0, 25) = "201 THUMBNAIL RETRIEVE OK" AndAlso input.EndsWith(vbCrLf)))
+                ' Loop until the end is detected which is when
+                '  1. 200: Multi line ends with 2x crlf or lf + crlf or crlf + " " + crlf
+                '  2. 101 & 201: One data line ends with single crlf. So the second crlf is the end of the transmission.
+                '  3. Else: No data. Messages ends with crlf
+                Do Until (input.Trim.Length > 3) _
+                    AndAlso ((input.Trim.Substring(0, 3) = "200" AndAlso (input.EndsWith(vbLf & vbCrLf) OrElse input.EndsWith(vbLf & " " & vbCrLf) OrElse input.EndsWith(vbCrLf & " " & vbCrLf) OrElse input.EndsWith(vbCrLf & vbCrLf))) _
+                    OrElse ((input.Trim.Substring(0, 3) = "201" OrElse input.Trim.Substring(0, 3) = "101") AndAlso input.IndexOf(vbCrLf) < input.LastIndexOf(vbCrLf)) _
+                    OrElse (input.Trim.Substring(0, 3) <> "201" AndAlso input.Trim().Substring(0, 3) <> "200" AndAlso input.EndsWith(vbCrLf)))
+
                     If client.Available > 0 Then
                         timeouttimer.Stop()
                         size = client.Available
@@ -430,7 +437,7 @@ Public Class CasparCGConnection
                         input = input & System.Text.Encoding.UTF8.GetString(buffer, 0, size)
                     Else
                         If timeouttimer.ElapsedMilliseconds > timeout Then
-                            Throw New TimeoutException("The remote host took to long for an answer. Timeout after " & timeout & "ms.")
+                            Throw New TimeoutException("The remote host " & getServerAddress() & ":" & getServerPort() & " took to long for an answer. Timeout after " & timeouttimer.ElapsedMilliseconds & "ms.")
                         End If
                         If Not timeouttimer.IsRunning Then timeouttimer.Restart()
                         ' Wait a short time to keep the app from generating to much cpu load
@@ -443,21 +450,21 @@ Public Class CasparCGConnection
                 logger.debug("CasparCGConnection.sendCommand: Received response for '" & cmd & "'. The first 1024 bytes are: " & input.Substring(0, Math.Min(input.Length, 1024)))
                 Return New CasparCGResponse(input, cmd)
 
-            Catch e As Exception
+            Catch e As TimeoutException
                 logger.err("CasparCGConnection.sendCommand: Error: " & e.Message)
                 logger.debug("CasparCGConnection.sendCommand: So far reveived from server:" & vbNewLine & input)
                 If disconnectOnTimeout Then
                     closed()
-                    Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
+                    Throw New TimeoutException("Timeout while sending command " & cmd & ". Connection " & getServerAddress() & ":" & getServerPort() & " closed!", e)
                 Else
-                    Return New CasparCGResponse("000 TIMEOUT", cmd)
+                    Throw e
                 End If
             Finally
                 connectionLock.Release()
             End Try
         Else
             logger.err("CasparCGConnection.sendCommand: Not connected to server. Can't send command.")
-            Return New CasparCGResponse("000 NOT_CONNECTED_ERROR", cmd)
+            Throw New Exception("Not connected to host " & getServerAddress() & ":" & getServerPort() & ". Can't send command " & cmd)
         End If
     End Function
 
