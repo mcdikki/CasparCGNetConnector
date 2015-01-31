@@ -77,7 +77,7 @@ Public Class CasparCGTemplate
         End If
     End Sub
 
-    Public Overrides Sub fillMediaInfo(ByRef connection As CasparCGConnection, Optional channel As Integer = 1)
+    Public Overrides Sub fillMediaInfo(ByRef connection As ICasparCGConnection, Optional channel As Integer = 1)
         If connection.isConnected Then
             Dim info As New InfoTemplateCommand(Me)
             If info.execute(connection).isOK Then

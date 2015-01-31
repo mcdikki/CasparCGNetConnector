@@ -7,6 +7,11 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "CasparCGNetConnectorExample
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "NUnitTests", "..\NUnitTests\NUnitTests.vbproj", "{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{88DB31AA-A31E-4B53-9CF6-20485C55768A}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +30,7 @@ Global
 		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E96607A-0D2A-476F-AC7E-293A2A5D6D4B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

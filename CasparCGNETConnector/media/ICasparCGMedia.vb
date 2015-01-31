@@ -64,12 +64,12 @@ Public Interface ICasparCGMedia
     ''' <param name="connection">The connection on which the info should be requested</param>
     ''' <param name="channel">The channel to load the media on</param>
     ''' <remarks></remarks>
-    Sub fillMediaInfo(ByRef connection As CasparCGConnection, Optional ByVal channel As Integer = 1)
+    Sub fillMediaInfo(ByRef connection As ICasparCGConnection, Optional ByVal channel As Integer = 1)
     ''' <summary>
     ''' Retrieves a thumbnail (if present and support) using the given serverconnection.
     ''' </summary>
     ''' <param name="connection">the connection to use</param>
-    Sub fillThumbnail(ByRef connection As CasparCGConnection)
+    Sub fillThumbnail(ByRef connection As ICasparCGConnection)
     Sub parseXML(ByVal xml As String)
     Sub setInfo(ByVal info As String, ByVal value As String)
     Sub addInfo(ByVal info As String, ByVal value As String)

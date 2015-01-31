@@ -164,7 +164,7 @@ Public MustInherit Class AbstractCasparCGMedia
     ''' <param name="connection">The connection on which the info should be requested</param>
     ''' <param name="channel">The channel to load the media on</param>
     ''' <remarks></remarks>
-    Public Overridable Sub fillMediaInfo(ByRef connection As CasparCGConnection, Optional ByVal channel As Integer = 1) Implements ICasparCGMedia.fillMediaInfo
+    Public Overridable Sub fillMediaInfo(ByRef connection As ICasparCGConnection, Optional ByVal channel As Integer = 1) Implements ICasparCGMedia.fillMediaInfo
         If connection.isConnected() Then
             Dim layer = connection.getFreeLayer(channel)
             Dim cmd As AbstractCommand = New LoadbgCommand(channel, layer, FullName)
@@ -195,7 +195,7 @@ Public MustInherit Class AbstractCasparCGMedia
     ''' Retrieves a thumbnail (if present and support) using the given serverconnection.
     ''' </summary>
     ''' <param name="connection">the connection to use</param>
-    Public Overridable Sub fillThumbnail(ByRef connection As CasparCGConnection) Implements ICasparCGMedia.fillThumbnail
+    Public Overridable Sub fillThumbnail(ByRef connection As ICasparCGConnection) Implements ICasparCGMedia.fillThumbnail
         ' get Thumbnail
         Dim cmd = New ThumbnailRetrieveCommand(Me)
         If MediaType = ICasparCGMedia.MediaTypes.MOVIE Or MediaType = ICasparCGMedia.MediaTypes.STILL AndAlso cmd.isCompatible(connection) Then

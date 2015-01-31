@@ -216,26 +216,26 @@ CasparCGNETConnector
  </summary>
 	<param name="sender"></param>
 	<param name="info"></param>
-</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillMediaInfo(CasparCGNETConnector.CasparCGConnection@,System.Int32)">
+</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillMediaInfo(CasparCGNETConnector.ICasparCGConnection@,System.Int32)">
 	<summary>
  Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
  </summary>
 	<param name="connection">The connection on which the info should be requested</param>
 	<param name="channel">The channel to load the media on</param>
 	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillThumbnail(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillThumbnail(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
 	<param name="connection">the connection to use</param>
-</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillMediaInfo(CasparCGNETConnector.CasparCGConnection@,System.Int32)">
+</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillMediaInfo(CasparCGNETConnector.ICasparCGConnection@,System.Int32)">
 	<summary>
  Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
  </summary>
 	<param name="connection">The connection on which the info should be requested</param>
 	<param name="channel">The channel to load the media on</param>
 	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillThumbnail(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillThumbnail(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
@@ -274,7 +274,7 @@ CasparCGNETConnector
  </summary>
 	<param name="parameterName">the all lowercase name of the parameter</param>
 	<returns>the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> if, and only if, it exists, else nothing</returns>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.AbstractCommand.isCompatible(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Returns whether or not this command is compatible to the CasparCG Server version of the given connection.
  </summary>
@@ -343,7 +343,7 @@ CasparCGNETConnector
  Returns the maximum version to run this parameter
  </summary>
 	<returns>the highest version to run this parameter as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.ICommandParameter.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.ICommandParameter.isCompatible(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Returns whether or not this parameter is compatible to the CasparCG Server version of the given connection.
  </summary>
@@ -386,7 +386,7 @@ CasparCGNETConnector
  Returns the maximum version to run this parameter
  </summary>
 	<returns>the highest version to run this parameter as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.CommandParameter`1.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.CommandParameter`1.isCompatible(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Returns whether or not this parameter is compatible to the CasparCG Server version of the given connection.
  </summary>

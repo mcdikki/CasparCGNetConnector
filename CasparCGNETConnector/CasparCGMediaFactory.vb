@@ -17,7 +17,7 @@
 '' Factory for all CasparCGMedia 
 Public Class CasparCGMediaFactory
 
-    Public Shared Function createMedia(ByVal xml As String, Optional fillFromName As Boolean = False, Optional ByRef connection As CasparCGConnection = Nothing) As AbstractCasparCGMedia
+    Public Shared Function createMedia(ByVal xml As String, Optional fillFromName As Boolean = False, Optional ByRef connection As ICasparCGConnection = Nothing) As AbstractCasparCGMedia
         Dim configDoc As New Xml.XmlDocument
         Dim media As AbstractCasparCGMedia
         configDoc.LoadXml(xml)
@@ -44,10 +44,10 @@ Public Class CasparCGMediaFactory
                 If fillFromName AndAlso Not IsNothing(connection) Then
                     media.fillMediaInfo(connection)
                     media.fillThumbnail(connection)
-                ElseIf Not IsNothing(pnode.selectSingleNode("infos")) Then
+                ElseIf Not IsNothing(pnode.SelectSingleNode("infos")) Then
                     media.parseXML(pnode.SelectSingleNode("infos").OuterXml)
                     media.Base64Thumbnail = pnode.SelectSingleNode("thumb").InnerText
-                ElseIf Not IsNothing(pnode.selectSingleNode("template")) Then
+                ElseIf Not IsNothing(pnode.SelectSingleNode("template")) Then
                     media.parseXML(pnode.SelectSingleNode("template").OuterXml)
                 End If
 

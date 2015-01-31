@@ -100,7 +100,7 @@ Public MustInherit Class AbstractCommand
     ''' </summary>
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the commmand is compatible</returns>
-    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
+    Public Function isCompatible(ByRef connection As ICasparCGConnection) As Boolean
         ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
         Dim i As Integer = 0
@@ -336,7 +336,7 @@ Public Interface ICommandParameter
     ''' </summary>
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the parameter is compatible</returns>
-    Function isCompatible(ByRef connection As CasparCGConnection) As Boolean
+    Function isCompatible(ByRef connection As ICasparCGConnection) As Boolean
 
     Function toXml() As Xml.XmlDocument
 
@@ -453,7 +453,7 @@ Public Class CommandParameter(Of t)
     ''' </summary>
     ''' <param name="connection">the <see cref=" CasparCGConnection ">connection</see></param>
     ''' <returns>true, if and only if the parameter is compatible</returns>
-    Public Function isCompatible(ByRef connection As CasparCGConnection) As Boolean Implements ICommandParameter.isCompatible
+    Public Function isCompatible(ByRef connection As ICasparCGConnection) As Boolean Implements ICommandParameter.isCompatible
         ' Check if Version is high enough
         Dim reqVersion() = getRequiredVersion()
         Dim i As Integer = 0
@@ -499,22 +499,22 @@ Public Class CommandParameter(Of t)
         Dim pnode As Xml.XmlNode
         Dim node As Xml.XmlNode
         ' Kopfdaten eintragen
-        pnode = configDoc.createElement("parameter")
-        node = configDoc.createElement("name")
+        pnode = configDoc.CreateElement("parameter")
+        node = configDoc.CreateElement("name")
         node.InnerText = getName()
-        pnode.appendChild(node)
-        node = configDoc.createElement("parameterType")
+        pnode.AppendChild(node)
+        node = configDoc.CreateElement("parameterType")
         node.InnerText = getGenericParameterType().ToString
-        pnode.appendChild(node)
-        node = configDoc.createElement("valueType")
+        pnode.AppendChild(node)
+        node = configDoc.CreateElement("valueType")
         node.InnerText = getGenericType().ToString
-        pnode.appendChild(node)
-        node = configDoc.createElement("description")
+        pnode.AppendChild(node)
+        node = configDoc.CreateElement("description")
         node.InnerText = getDescription()
-        pnode.appendChild(node)
-        node = configDoc.createElement("optional")
+        pnode.AppendChild(node)
+        node = configDoc.CreateElement("optional")
         node.InnerText = isOptional()
-        pnode.appendChild(node)
+        pnode.AppendChild(node)
         'node = configDoc.createElement("reqVersion")
         'node.InnerText = getRequiredVersion()
         'pnode.appendChild(node)
@@ -522,11 +522,11 @@ Public Class CommandParameter(Of t)
         'node.InnerText = getMaxAllowedVersion()
         'pnode.appendChild(node)
         If isSet() Then
-            node = configDoc.createElement("value")
+            node = configDoc.CreateElement("value")
             node.InnerText = getValue().ToString
-            pnode.appendChild(node)
+            pnode.AppendChild(node)
         End If
-        configDoc.appendChild(pnode)
+        configDoc.AppendChild(pnode)
         Return configDoc
     End Function
 
