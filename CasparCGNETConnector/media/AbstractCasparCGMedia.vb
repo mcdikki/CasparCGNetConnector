@@ -130,7 +130,7 @@ Public MustInherit Class AbstractCasparCGMedia
         If nameWithPath.Contains("\") Then
             Return nameWithPath.Substring(nameWithPath.LastIndexOf("\") + 1)
         ElseIf nameWithPath.Contains("/") Then
-            Return nameWithPath.Substring(Name.LastIndexOf("/") + 1)
+            Return nameWithPath.Substring(nameWithPath.LastIndexOf("/") + 1)
         Else
             Return nameWithPath
         End If
