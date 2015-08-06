@@ -257,7 +257,7 @@ Public MustInherit Class AbstractCommand
 
         '' Add all parameter
         For Each param In getCommandParameters()
-            pnode.AppendChild(configDoc.ImportNode(param.toXml().FirstChild, False))
+            pnode.AppendChild(configDoc.ImportNode(param.toXml().FirstChild, True))
         Next
         configDoc.appendChild(pnode)
         Return configDoc

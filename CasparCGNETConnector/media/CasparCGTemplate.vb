@@ -90,7 +90,7 @@ Public Class CasparCGTemplate
     End Sub
 
     Private Sub addComponent(ByRef component As CasparCGTemplateComponent)
-        If Not components.ContainsValue(component) Then
+        If Not components.ContainsValue(component) AndAlso Not components.ContainsKey(component.getName) Then
             components.Add(component.getName, component)
         End If
     End Sub
@@ -425,6 +425,7 @@ Public Class CasparCGTemplateInstance
         pnode.SetAttribute("id", getName)
 
         For Each prop In getProperties()
+            ' TODO: Null check!!!
             pnode.AppendChild(domDoc.ImportNode(prop.toDataXML.FirstChild, True))
         Next
         domDoc.AppendChild(pnode)
