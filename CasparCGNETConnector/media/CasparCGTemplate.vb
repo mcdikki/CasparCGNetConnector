@@ -151,14 +151,14 @@ Public Class CasparCGTemplate
         ' add components
         Dim cnode = domDoc.createElement("components")
         For Each comp In getComponents()
-            cnode.AppendChild(domDoc.ImportNode(comp.toXML.FirstChild, False))
+            cnode.AppendChild(domDoc.ImportNode(comp.toXML.FirstChild, True))
         Next
         node.appendChild(cnode)
 
         ' add instances
         Dim inode = domDoc.createElement("instances")
         For Each inst In data.getInstances
-            inode.AppendChild(domDoc.ImportNode(inst.toXML.FirstChild, False))
+            inode.AppendChild(domDoc.ImportNode(inst.toXML.FirstChild, True))
         Next
         node.appendChild(inode)
 
@@ -292,7 +292,7 @@ Public Class CasparCGTemplateComponent
         pnode.setAttribute("name", name)
 
         For Each prop As CasparCGTemplateComponentProperty In properties.Values
-            pnode.AppendChild(domDoc.ImportNode(prop.toXML.FirstChild, False))
+            pnode.AppendChild(domDoc.ImportNode(prop.toXML.FirstChild, True))
         Next
         domDoc.appendChild(pnode)
 
