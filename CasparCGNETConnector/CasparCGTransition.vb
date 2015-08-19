@@ -14,26 +14,74 @@
 '' Thank you!
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Public Class CasparCGTransition
+Imports System.ComponentModel
 
-    Private trans As CasparCGUtil.Transitions
-    Private duration As Integer
-    Private direction As CasparCGUtil.Directions
-    Private tween As CasparCGUtil.Tweens
+Public Class CasparCGTransition
+    Implements INotifyPropertyChanged
+
+
+    Public Property transition As CasparCGUtil.Transitions
+        Get
+            Return _trans
+        End Get
+        Set(value As CasparCGUtil.Transitions)
+            _trans = value
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs("transition"))
+        End Set
+    End Property
+
+    Public Property duration As Integer
+        Get
+            Return _duration
+        End Get
+        Set(value As Integer)
+            _duration = value
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs("duration"))
+        End Set
+    End Property
+
+    Public Property direction As CasparCGUtil.Directions
+        Get
+            Return _direction
+        End Get
+        Set(value As CasparCGUtil.Directions)
+            _direction = value
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs("direction"))
+        End Set
+    End Property
+
+    Public Property tween As CasparCGUtil.Tweens
+        Get
+            Return _tween
+        End Get
+        Set(value As CasparCGUtil.Tweens)
+            _tween = value
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs("tween"))
+        End Set
+    End Property
+
+
+    Private _trans As CasparCGUtil.Transitions
+    Private _duration As Integer
+    Private _direction As CasparCGUtil.Directions
+    Private _tween As CasparCGUtil.Tweens
+
+    Public Event PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Implements INotifyPropertyChanged.PropertyChanged
 
     Public Sub New(ByVal transition As CasparCGUtil.Transitions, Optional ByVal duration As Integer = 0, Optional ByVal direction As CasparCGUtil.Directions = CasparCGUtil.Directions.RIGHT, Optional ByVal tween As CasparCGUtil.Tweens = CasparCGUtil.Tweens.linear)
         '' Logik checken!!
-        trans = transition
+        Me.transition = transition
         Me.duration = duration
         Me.direction = direction
         Me.tween = tween
     End Sub
 
     Public Overloads Function toString() As String
-        If trans = CasparCGUtil.Transitions.MIX OrElse trans = CasparCGUtil.Transitions.CUT Then
-            Return CasparCGUtil.Transitions.GetName(GetType(CasparCGUtil.Transitions), trans) & " " & duration & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), tween)
+        If transition = CasparCGUtil.Transitions.MIX OrElse transition = CasparCGUtil.Transitions.CUT Then
+            Return CasparCGUtil.Transitions.GetName(GetType(CasparCGUtil.Transitions), transition) & " " & duration & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), tween)
         End If
-        Return CasparCGUtil.Transitions.GetName(GetType(CasparCGUtil.Transitions), trans) & " " & duration & " " & CasparCGUtil.Directions.GetName(GetType(CasparCGUtil.Directions), direction) & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), tween)
+        Return CasparCGUtil.Transitions.GetName(GetType(CasparCGUtil.Transitions), transition) & " " & duration & " " & CasparCGUtil.Directions.GetName(GetType(CasparCGUtil.Directions), direction) & " " & CasparCGUtil.Tweens.GetName(GetType(CasparCGUtil.Tweens), tween)
     End Function
+
 
 End Class
