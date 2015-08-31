@@ -161,5 +161,39 @@ Public Class CasparCGCommandFactory
         Return list
     End Function
 
+    Public Shared Function createCommand(ByVal xml As String) As AbstractCommand
+        Dim configDoc As New Xml.XmlDocument
+        Dim command As AbstractCommand
+        configDoc.LoadXml(xml)
+        If configDoc.HasChildNodes AndAlso configDoc.FirstChild.Name.Equals("command") Then
+            Try
+                ' Get command type
+                Dim pnode As Xml.XmlNode = configDoc.FirstChild
+                command = getCommand(pnode.SelectSingleNode("type").FirstChild.Value)
+
+                ' get all parameters
+                Dim params = pnode.SelectNodes("parameter")
+
+                ' Try to set all parameters
+                For Each p In command.getCommandParameters
+
+                    ' and search for the matching paramter in the xml def.
+                    For Each par As Xml.XmlNode In params
+                        If par.SelectSingleNode("name").InnerText = p.getName Then
+                            ' Cast value into right type and set from xml
+                            CTypeDynamic(p, p.getGenericParameterType).setValue(CTypeDynamic(par.SelectSingleNode("value").InnerText, p.getGenericType))
+                        End If
+                    Next
+                Next
+
+                Return command
+            Catch e As Exception
+                logger.err("CasparCGMediaFactory.createMedia: Error while parsing a CasparCGMedia from xml definition. Error was: " + e.Message)
+            End Try
+        End If
+        logger.warn("CasparCGMediaFactory.createMedia: Can't read xml. No media created. Reason: No or a wrong xml definition was given.")
+        Return Nothing
+    End Function
+
 End Class
 
