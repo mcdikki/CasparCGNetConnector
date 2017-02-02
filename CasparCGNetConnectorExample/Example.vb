@@ -97,42 +97,50 @@ Public Module Example
 
     Private Sub test()
         ' Quick tests for debugging
-        Console.Write("Name des Templates: ")
-        Dim name = Console.ReadLine()
-        Console.WriteLine()
-        Dim template As New CasparCGTemplate(name)
+        Console.Write("Test DATA commands ")
 
-        template.fillMediaInfo(connection)
-        template.getData.getInstance("f0").setValue("text", "Test f0")
-        template.getData.getInstance("f1").setValue("text", "Test f1")
+        Dim data As String = "Testdaten"
+        Dim key As String = "datakey"
 
-        Dim cmd As AbstractCommand = New CgAddCommand(1, 1, template, 1, True)
-        cmd.execute(connection)
+        ' Daten hinzufügen
+        Dim cmd As AbstractCommand = New DataStoreCommand(key, data)
+        Console.WriteLine("Store data set " + key)
+        If cmd.execute(connection).isOK Then
+            Console.WriteLine("Successfull.")
+        Else
+            Console.WriteLine("Error")
+            Console.WriteLine(cmd.getResponse.getServerMessage())
+        End If
 
-        'Console.WriteLine("TEXT: " & vbNewLine & template.toString)
-        'Console.WriteLine("Data XML: " & vbNewLine & template.getData.getDataString)
+        ' Liste abrufen und checken ob key dabei ist
+        cmd = New DataListCommand()
+        Console.WriteLine("List stored datasets ")
+        If cmd.execute(connection).isOK Then
+            Console.WriteLine("Successfull.")
+            Console.WriteLine(cmd.getResponse.getData)
+        Else
+            Console.WriteLine("Error")
+            Console.WriteLine(cmd.getResponse.getServerMessage())
+        End If
 
-        'Dim i As String = ""
-        'Do
-        '    Console.WriteLine("Type an instance name if you want to change the data or just press ENTER to leave: ")
-        '    i = Console.ReadLine()
-        '    If i.Length > 0 Then
-        '        If template.getData.containsInstance(i) Then
-        '            For Each p In template.getData.getInstance(i).getProperties
-        '                Console.WriteLine("Type the new value for " & i & "." & p.Name & "(" & p.Type & "): ")
-        '                'p.Value = Console.ReadLine
-        '                template.getData.getInstance(i).setValue("text", Console.ReadLine)
-        '            Next
-        '            cmd = New CgUpdateCommand(1, 1, 1, template.getData)
-        '            Console.WriteLine("Command: " & cmd.getCommandString)
-        '            cmd.execute(connection)
-        '            cmd = New CgNextCommand(1, 1, 1)
-        '            cmd.execute(connection)
-        '        Else
-        '            Console.WriteLine("No such instance found.")
-        '        End If
-        '    End If
-        'Loop While i.Length > 0
+        cmd = New DataRetrieveCommand(key)
+        Console.WriteLine("Retrieve stored dataset " + key)
+        If cmd.execute(connection).isOK Then
+            Console.WriteLine("Successfull.")
+            Console.WriteLine(cmd.getResponse.getData)
+        Else
+            Console.WriteLine("Error")
+            Console.WriteLine(cmd.getResponse.getServerMessage())
+        End If
+
+        cmd = New DataRemoveCommand(key)
+        Console.WriteLine("Remove stored dataset " + key)
+        If cmd.execute(connection).isOK Then
+            Console.WriteLine("Successfull.")
+        Else
+            Console.WriteLine("Error")
+            Console.WriteLine(cmd.getResponse.getServerMessage())
+        End If
 
     End Sub
 

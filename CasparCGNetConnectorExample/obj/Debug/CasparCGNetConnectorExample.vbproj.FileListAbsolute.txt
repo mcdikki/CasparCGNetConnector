@@ -7,8 +7,8 @@ C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnector
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNetConnectorExample.xml
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.dll
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\logger.dll
-C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.pdb
-C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.xml
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.exe
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.xml
 C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\obj\Debug\CasparCGNetConnectorExample.pdb
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.pdb
+C:\Daten\Gemeinde\Sublan\Programierung\CasparCGNETConnector\CasparCGNetConnectorExample\bin\Debug\CasparCGNETConnector.xml

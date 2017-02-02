@@ -22,6 +22,22 @@ CasparCGNETConnector
 	<summary>
  Gets or sets whether strict version control is activated. If True, only commands that pass the isCompatible() check will be executed.
  </summary>
+</member><member name="P:CasparCGNETConnector.CasparCGConnection.checkInterval">
+	<summary>
+ Reads or sets the interval in milliseconds the connection status will be checked.
+ </summary>
+	<value>The number of milliseconds between connection checks</value>
+	<returns>The number of milliseconds between connection checks</returns>
+</member><member name="E:CasparCGNETConnector.CasparCGConnection.disconnected">
+	<summary>
+ Fires if this connection has been disconnected.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.CasparCGConnection.connected">
+	<summary>
+ Fires if this connection has been connected to the remote host.
+ </summary>
+	<param name="sender"></param>
 </member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor(System.String,System.Int32)">
 	<summary>
  Creates a new CasparCGConnection to the given serverAddress and serverPort
@@ -29,6 +45,15 @@ CasparCGNETConnector
 	<param name="serverAddress">the server ip or hostname</param>
 	<param name="serverPort">the servers port</param>
 	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor(System.String)">
+	<summary>
+ Creates a new CasparCGConnection to the given serverAddress and the default port
+ </summary>
+	<param name="serverAddress">the server ip or hostname</param>
+</member><member name="M:CasparCGNETConnector.CasparCGConnection.#ctor">
+	<summary>
+ Creates a new CasparCGConnection to localhost and the default port
+ </summary>
 </member><member name="M:CasparCGNETConnector.CasparCGConnection.connect">
 	<summary>
  Connects to the given server and port and returns true if a connection could be established and false otherwise.
@@ -45,7 +70,7 @@ CasparCGNETConnector
 	<remarks></remarks>
 </member><member name="M:CasparCGNETConnector.CasparCGConnection.isConnected(System.Boolean)">
 	<summary>
- Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not allready connected.
+ Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not Already connected.
  </summary>
 	<param name="tryConnect"></param>
 	<returns>true, if and only if the connection is established, false otherwise</returns>
@@ -175,74 +200,47 @@ CasparCGNETConnector
 	<summary>
  This class holds util functions and Enumns for CasparCGNetConnector 
  </summary>
-</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillMediaInfo(CasparCGNETConnector.CasparCGConnection@,System.Int32)">
+</member><member name="E:CasparCGNETConnector.ICasparCGMedia.MediaFilled">
+	<summary>
+ Notifies that the medias metadata (infos) has been filled.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.ICasparCGMedia.ThumbnailFilled">
+	<summary>
+ Notifies that the thumbnail of the media has been filled.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.ICasparCGMedia.InfoChanged">
+	<summary>
+ Notifies that an info of this media has been changed.
+ </summary>
+	<param name="sender"></param>
+	<param name="info"></param>
+</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillMediaInfo(CasparCGNETConnector.ICasparCGConnection@,System.Int32)">
 	<summary>
  Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
  </summary>
 	<param name="connection">The connection on which the info should be requested</param>
 	<param name="channel">The channel to load the media on</param>
 	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.ICommand.execute(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.ICasparCGMedia.fillThumbnail(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
- Executes the command using the given connection and returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see>.
- Throws a <see cref="T:System.NotSupportedException">NotSupportedException</see> if the command is not compatible to the CasparCG Server version.
+ Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
-	<param name="connection">the CasparCGConnection to execute the command on</param>
-	<returns>a CasparCGResponse if, and only if the command is compatible to the connected server version, else throws a NotSupportedException</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getResponse">
+	<param name="connection">the connection to use</param>
+</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillMediaInfo(CasparCGNETConnector.ICasparCGConnection@,System.Int32)">
 	<summary>
- Returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see> of the last command execution or nothing.
+ Fills the metadata informations given by the casparCG servers info command. The media will be loaded to background on the given channel and the first free layer. After polling the the INFO, the layer will be cleared again. It is recommend to use a non production channel for this
  </summary>
-	<returns>the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see> or nothing</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getName">
-	<summary>
- Returns the name of this command
- </summary>
-	<returns>The name of this command</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getDescription">
-	<summary>
- Returns the Description of this command
- </summary>
-	<returns>the Description of this command</returns>
+	<param name="connection">The connection on which the info should be requested</param>
+	<param name="channel">The channel to load the media on</param>
 	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.ICommand.getParameterNames">
+</member><member name="M:CasparCGNETConnector.AbstractCasparCGMedia.fillThumbnail(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
- Returns a list of all <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> names of this command
+ Retrieves a thumbnail (if present and support) using the given serverconnection.
  </summary>
-	<returns>a list of paramter names</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getParameters">
-	<summary>
- Returns a list of all <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> of this command
- </summary>
-	<returns>a list of paramters</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getParameter(System.String)">
-	<summary>
- Returns the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> ot the given name or nothing if no parameter of this name exists.
- </summary>
-	<param name="parameterName">the all lowercase name of the parameter</param>
-	<returns>the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> if, and only if, it exists, else nothing</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
-	<summary>
- Returns whether or not this command is compatible to the CasparCG Server version of the given connection.
- </summary>
-	<param name="connection">the <see cref="T:CasparCGNETConnector.CasparCGConnection">connection</see></param>
-	<returns>true, if and only if the commmand is compatible</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getCommandString">
-	<summary>
- Returns the command as string
- </summary>
-	<returns>the command as string</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getRequiredVersion">
-	<summary>
- Returns the required version to run this command
- </summary>
-	<returns>the version to run this command as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.ICommand.getMaxAllowedVersion">
-	<summary>
- Returns the maximum version to run this command
- </summary>
-	<returns>the highest version to run this command as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.execute(CasparCGNETConnector.CasparCGConnection@)">
+	<param name="connection">the connection to use</param>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.execute(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Executes the command using the given connection and returns the <see cref="T:CasparCGNETConnector.CasparCGResponse">CasparCGResponse</see>.
  Throws a <see cref="T:System.NotSupportedException">NotSupportedException</see> if the command is not compatible to the CasparCG Server version.
@@ -265,18 +263,18 @@ CasparCGNETConnector
  </summary>
 	<returns>the Description of this command</returns>
 	<remarks></remarks>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.getParameterNames">
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getCommandParameterNames">
 	<summary>
  Returns a list of all <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> names of this command
  </summary>
 	<returns>a list of paramter names</returns>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.getParameter(System.String)">
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getCommandParameter(System.String)">
 	<summary>
  Returns the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> ot the given name or nothing if no parameter of this name exists.
  </summary>
 	<param name="parameterName">the all lowercase name of the parameter</param>
 	<returns>the <seealso cref="T:CasparCGNETConnector.ICommandParameter">parameter</seealso> if, and only if, it exists, else nothing</returns>
-</member><member name="M:CasparCGNETConnector.AbstractCommand.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.AbstractCommand.isCompatible(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Returns whether or not this command is compatible to the CasparCG Server version of the given connection.
  </summary>
@@ -288,6 +286,21 @@ CasparCGNETConnector
  </summary>
 	<param name="str"></param>
 	<returns></returns>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getCommandString">
+	<summary>
+ Returns the command as string
+ </summary>
+	<returns>the command as string</returns>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getRequiredVersion">
+	<summary>
+ Returns the required version to run this command
+ </summary>
+	<returns>the version to run this command as array of Integer</returns>
+</member><member name="M:CasparCGNETConnector.AbstractCommand.getMaxAllowedVersion">
+	<summary>
+ Returns the maximum version to run this command
+ </summary>
+	<returns>the highest version to run this command as array of Integer</returns>
 </member><member name="M:CasparCGNETConnector.ICommandParameter.getName">
 	<summary>
  Returns the name of this parameter
@@ -330,7 +343,7 @@ CasparCGNETConnector
  Returns the maximum version to run this parameter
  </summary>
 	<returns>the highest version to run this parameter as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.ICommandParameter.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.ICommandParameter.isCompatible(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Returns whether or not this parameter is compatible to the CasparCG Server version of the given connection.
  </summary>
@@ -373,12 +386,155 @@ CasparCGNETConnector
  Returns the maximum version to run this parameter
  </summary>
 	<returns>the highest version to run this parameter as array of Integer</returns>
-</member><member name="M:CasparCGNETConnector.CommandParameter`1.isCompatible(CasparCGNETConnector.CasparCGConnection@)">
+</member><member name="M:CasparCGNETConnector.CommandParameter`1.isCompatible(CasparCGNETConnector.ICasparCGConnection@)">
 	<summary>
  Returns whether or not this parameter is compatible to the CasparCG Server version of the given connection.
  </summary>
 	<param name="connection">the <see cref="T:CasparCGNETConnector.CasparCGConnection">connection</see></param>
 	<returns>true, if and only if the parameter is compatible</returns>
+</member><member name="P:CasparCGNETConnector.ICasparCGConnection.reconnectTries">
+	<summary>
+ Reads or sets the number of retires to perform if a connection can't be established
+ </summary>
+</member><member name="P:CasparCGNETConnector.ICasparCGConnection.reconnectTimeout">
+	<summary>
+ Reads or sets the number of milliseconds to wait between two connection attempts
+ </summary>
+</member><member name="P:CasparCGNETConnector.ICasparCGConnection.timeout">
+	<summary>
+ Reads or sets the number of milliseconds to wait for incoming data before stop reading
+ </summary>
+</member><member name="P:CasparCGNETConnector.ICasparCGConnection.strictVersionControl">
+	<summary>
+ Gets or sets whether strict version control is activated. If True, only commands that pass the isCompatible() check will be executed.
+ </summary>
+</member><member name="P:CasparCGNETConnector.ICasparCGConnection.checkInterval">
+	<summary>
+ Reads or sets the interval in milliseconds the connection status will be checked.
+ </summary>
+	<value>The number of milliseconds between connection checks</value>
+	<returns>The number of milliseconds between connection checks</returns>
+</member><member name="E:CasparCGNETConnector.ICasparCGConnection.disconnected">
+	<summary>
+ Fires if this connection has been disconnected.
+ </summary>
+	<param name="sender"></param>
+</member><member name="E:CasparCGNETConnector.ICasparCGConnection.connected">
+	<summary>
+ Fires if this connection has been connected to the remote host.
+ </summary>
+	<param name="sender"></param>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.connect">
+	<summary>
+ Connects to the given server and port and returns true if a connection could be established and false otherwise.
+ </summary>
+	<returns>true, if and only if the connection is established, false otherwise</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.isConnected(System.Boolean)">
+	<summary>
+ Return whether or not the CasparCGConnection is connect to the server. If tryConnect is given and true, it will try to establish a connection if not Already connected.
+ </summary>
+	<param name="tryConnect"></param>
+	<returns>true, if and only if the connection is established, false otherwise</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.close">
+	<summary>
+ Disconnects and closes the connection to the CasparCG Server
+ </summary>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.isOSCSupported">
+	<summary>
+ Returns whether or not the connected CasparCG Server supports OSC
+ </summary>
+	<returns>true, if and only if a connection is established and the sever supports OSC</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.getVersion">
+	<summary>
+ Returns the version string of the connected CasparCG Server
+ </summary>
+	<returns>The version of the connected server or 0.0.0 if not connected</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.getVersionPart(System.Int32,System.String)">
+	<summary>
+ Returns a specific part of the version number. 
+ e.g.: If the version is 2.0.1 Beta3, you would get 
+ getVersionPart(0) = 2
+ getVersionPart(2) = 1
+ getVersionPart(3) = -1
+ </summary>
+	<param name="part">The part of the version starting by 0</param>
+	<param name="Version">Optional version string to get the part form. If not set, the version of the connected server will be parsed</param>
+	<returns>The numberical part of the version or -1 if the part is not pressent or not numerical</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.getServerChannels">
+	<summary>
+ Returns the number of channels on the connected CasparCG Server
+ </summary>
+	<returns>The number of channels</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.sendAsyncCommand(System.String)">
+	<summary>
+ Sends a command to the casparCG server and returns imediatly after sending no matter if the command was accepted or not.
+ </summary>
+	<param name="cmd"></param>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.sendCommand(System.String)">
+	<summary>
+ Sends a command to the casparCG server and returns a CasparCGResonse.
+ sendCommand will wait until it receives a returncode. So it may stay longer inside the function.
+ If the given commandstring has more than one casparCG command, the response will be only for one of those!
+ </summary>
+	<param name="cmd"></param>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.getServerAddress">
+	<summary>
+ Returns the CasparCG Server address this connection is using
+ </summary>
+	<returns>The IP or DNS address of this connection</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.getServerPort">
+	<summary>
+ Returns the port number this connection is using
+ </summary>
+	<returns>The TCP port nummber of this connection</returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.setServerAddress(System.String)">
+	<summary>
+ Sets the address on which this connection tries to connect to the casparCG Server.
+ </summary>
+	<param name="serverAddress">The IP or DNS address of the server</param>
+	<returns>True if this connection is not connected and the address could be set, False otherwise. </returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.setServerPort(System.Int32)">
+	<summary>
+ Sets the port on which this connection tries to connect to the casparCG Server.
+ </summary>
+	<param name="serverPort">The TCP port number</param>
+	<returns>True if this connection is not connected and the port could be set, False otherwise. </returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.isLayerFree(System.Int32,System.Int32,System.Boolean,System.Boolean)">
+	<summary>
+ Returns whether or not a layer of a channel is free, which means no producer is playing on it.
+ </summary>
+	<param name="layer"></param>
+	<param name="channel"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.ICasparCGConnection.getFreeLayer(System.Int32)">
+	<summary>
+ Returns the smallest free layer of the given channel
+ </summary>
+	<param name="channel"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:CasparCGNETConnector.CasparCGTemplateInstance.setValue(System.String,System.String)">
+	<summary>
+ Sets the given property to the given value and returns true.
+ If no such property exists in this instance, nothing will be set false returned.
+ </summary>
+	<param name="propertyName"></param>
+	<param name="value"></param>
+	<returns>true if, and only if, the property exists
+ false otherwise</returns>
 </member>
 </members>
 </doc>

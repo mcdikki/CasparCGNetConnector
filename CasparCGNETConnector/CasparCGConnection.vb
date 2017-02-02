@@ -423,10 +423,20 @@ Public Class CasparCGConnection
                 ' Loop until the end is detected which is when
                 '  1. 200: Multi line ends with 2x crlf or lf + crlf or crlf + " " + crlf
                 '  2. 101 & 201: One data line ends with single crlf. So the second crlf is the end of the transmission.
-                '  3. Else: No data. Messages ends with crlf
+                '  -->  Maybe this is wrong. There are commands returning a 201 and no extra line of data.
+                '       See "data remove" as example. This may be compilant to the protocol descriptions as they are ambigious whether the data line is on the same line as the return code or not.
+                '       Quote: 
+                '           "201 [command] OK	- The command has been executed and data (terminated by \r\n) is being returned. "
+                '
+                '  3. Else: No data. Messages ends with crlf (like 202)
+                '
+
+                ' Temporal Bugfix Issue 3 - Data remove sends no data but uses returncode 201 which leads to a timeout since we're waiting for a line of data which never arrives,
+                '                  so we 're adding an extra selector for this case only.
                 Do Until (input.Trim.Length > 3) _
                     AndAlso ((input.Trim.Substring(0, 3) = "200" AndAlso (input.EndsWith(vbLf & vbCrLf) OrElse input.EndsWith(vbLf & " " & vbCrLf) OrElse input.EndsWith(vbCrLf & " " & vbCrLf) OrElse input.EndsWith(vbCrLf & vbCrLf))) _
                     OrElse ((input.Trim.Substring(0, 3) = "201" OrElse input.Trim.Substring(0, 3) = "101") AndAlso input.IndexOf(vbCrLf) < input.LastIndexOf(vbCrLf)) _
+                    OrElse (input.Contains("201 DATA REMOVE OK" + vbCrLf)) _
                     OrElse (input.Trim.Substring(0, 3) <> "201" AndAlso input.Trim().Substring(0, 3) <> "200" AndAlso input.EndsWith(vbCrLf)))
 
                     If client.Available > 0 Then
