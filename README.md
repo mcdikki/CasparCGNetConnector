@@ -82,10 +82,9 @@ Just check out the code.
 Development
 -----------
 
-CasparCGNetConnector is still under development and has reached an alpha state now.
-This means you can use it and I will provide compiled dlls, but the chances are given that the interface of the classes change over the releases. With the first beta release, interface changes will only occur with big version steps.
-Any contributions are welcome. 
-The first development phase was under high time pressure, so some parts of the code are not or only hardly documented so far. But it's getting better ;-)
+CasparCGNetConnector won't be actively maintained any longer.
+Since I'm not using it anymore, I can't afford the time needed to keep track with the development of the CasparCG server.
+If you still use it and find a bug, feel free to open an issue and I may find the time to look into it, but don't expect it be closed any time sone :-(
 
 [1]: https://github.com/CasparCG/Server "CasparCG Server"
 [2]: http://www.gnu.org/licenses/gpl-3.0-standalone.html "Gnu General Public License Version 3"
